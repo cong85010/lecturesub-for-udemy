@@ -3,6 +3,9 @@
   const app = globalThis.CCUdemy;
   const $ = selector => document.querySelector(selector);
   let settings = app.normalizeSettings({}), words = [], filtered = [], lastDeleted;
+  let activeCards = [], currentCardIndex = 0, isCardFlipped = false, gameStreak = 1, gameXP = 0;
+  let gameAudioCtx = null, gameSoundEnabled = true, gameListenersBound = false;
+  let confettiParticles = [];
   let pending = 0, saveRevision = 0, availabilityRevision = 0, lastPair = '';
   let settingsEvents = 0, vocabularyEvents = 0;
   const controls = [];
@@ -87,8 +90,12 @@
   }
   activateGroup(0);
   $('#reset').addEventListener('click', () => mutate('settings.reset'));
-  const views = { settings: ['Phụ đề', 'Chọn ngôn ngữ và chỉnh cách hiển thị.'],
-    vocabulary: ['Từ vựng', 'Từ đã lưu cùng ngữ cảnh trong bài học.'], help: ['Hướng dẫn', 'Các thao tác chính và cách khắc phục sự cố.'] };
+  const views = {
+    settings: ['Phụ đề', 'Chọn ngôn ngữ và chỉnh cách hiển thị.'],
+    vocabulary: ['Từ vựng', 'Từ đã lưu cùng ngữ cảnh trong bài học.'],
+    game: ['Đấu trường Thẻ bài 3D', 'Luyện tập từ vựng bằng phương pháp Lặp lại ngắt quãng (Spaced Repetition SM-2).'],
+    help: ['Hướng dẫn', 'Các thao tác chính và cách khắc phục sự cố.']
+  };
   function showView() {
     const view = Object.hasOwn(views, location.hash.slice(1)) ? location.hash.slice(1) : 'settings';
     document.body.dataset.view = view;
@@ -99,6 +106,7 @@
     }
     $('#page-title').textContent = views[view][0]; $('#page-description').textContent = views[view][1];
     document.title = `LectureSub for Udemy — ${views[view][0]}`;
+    if (view === 'game') setupGameDeck();
   }
   document.querySelectorAll('nav button').forEach(button => button.addEventListener('click', () => { location.hash = button.dataset.view; }));
   window.addEventListener('hashchange', showView); showView();
@@ -150,10 +158,15 @@
     catch (error) { $('#word-error').textContent = error.message; }
     finally { $('#undo').disabled = false; }
   });
-  chrome.storage.onChanged.addListener((changes, area) => {
+  chrome?.storage?.onChanged?.addListener((changes, area) => {
     if (area !== 'local') return;
     if (changes.ccUdemySettings) { settingsEvents++; renderSettings(changes.ccUdemySettings.newValue); if (!pending) setStatus('Đã lưu'); }
-    if (changes.ccUdemyVocabulary) { vocabularyEvents++; words = app.readVocabulary(changes.ccUdemyVocabulary.newValue); renderWords(); }
+    if (changes.ccUdemyVocabulary) {
+      vocabularyEvents++;
+      words = app.readVocabulary(changes.ccUdemyVocabulary.newValue);
+      renderWords();
+      if (document.body.dataset.view === 'game') setupGameDeck(false);
+    }
   });
   renderSettings(settings); renderWords();
   const initialSettingsEvents = settingsEvents, initialVocabularyEvents = vocabularyEvents, initialSaveRevision = saveRevision;
@@ -162,4 +175,392 @@
     if (initialVocabularyEvents === vocabularyEvents) { words = app.readVocabulary(items); renderWords(); }
     if (!pending && initialSaveRevision === saveRevision) setStatus('Tự lưu thay đổi');
   }).catch(error => setStatus(error.message, true));
+
+  // ================= 3D Game Flashcards Deck =================
+  function initAudio() {
+    if (!gameAudioCtx && (window.AudioContext || window.webkitAudioContext)) {
+      try { gameAudioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch {}
+    }
+    if (gameAudioCtx?.state === 'suspended') gameAudioCtx.resume();
+  }
+
+  function playTone(freq, type = 'sine', duration = 0.1, gainLevel = 0.1) {
+    if (!gameSoundEnabled) return;
+    try {
+      initAudio();
+      if (!gameAudioCtx) return;
+      const osc = gameAudioCtx.createOscillator();
+      const gain = gameAudioCtx.createGain();
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, gameAudioCtx.currentTime);
+      gain.gain.setValueAtTime(gainLevel, gameAudioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.0001, gameAudioCtx.currentTime + duration);
+      osc.connect(gain);
+      gain.connect(gameAudioCtx.destination);
+      osc.start();
+      osc.stop(gameAudioCtx.currentTime + duration);
+    } catch {}
+  }
+
+  function playVictorySound() {
+    if (!gameSoundEnabled) return;
+    [523.25, 659.25, 783.99, 1046.50].forEach((freq, idx) => {
+      setTimeout(() => playTone(freq, 'triangle', 0.28, 0.12), idx * 75);
+    });
+  }
+
+  function playAgainSound() {
+    playTone(220, 'sawtooth', 0.22, 0.09);
+  }
+
+  function playFlipSound() {
+    playTone(480, 'sine', 0.08, 0.05);
+  }
+
+  function setupConfettiCanvas() {
+    const canvas = $('#game-confetti-canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    function resize() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    function loop() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      confettiParticles = confettiParticles.filter(p => p.alpha > 0.02);
+      confettiParticles.forEach(p => {
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += 0.25;
+        p.rotation += p.rotSpeed;
+        p.alpha *= 0.96;
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate((p.rotation * Math.PI) / 180);
+        ctx.globalAlpha = p.alpha;
+        ctx.fillStyle = p.color;
+        ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.6);
+        ctx.restore();
+      });
+      requestAnimationFrame(loop);
+    }
+    loop();
+  }
+
+  function spawnConfetti(originX, originY) {
+    const colors = ['#c6ed61', '#fae08a', '#9ee6ca', '#d4af37', '#ffffff'];
+    for (let i = 0; i < 35; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      const velocity = 4 + Math.random() * 8;
+      confettiParticles.push({
+        x: originX,
+        y: originY,
+        vx: Math.cos(angle) * velocity,
+        vy: Math.sin(angle) * velocity - 3,
+        size: Math.random() * 8 + 4,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        rotation: Math.random() * 360,
+        rotSpeed: (Math.random() - 0.5) * 12,
+        alpha: 1
+      });
+    }
+  }
+
+  function spawnCoinBurst(originX, originY) {
+    const hudXP = $('.hud-xp');
+    const hudRect = hudXP ? hudXP.getBoundingClientRect() : { left: window.innerWidth / 2, top: 40 };
+    const targetX = hudRect.left + 50;
+    const targetY = hudRect.top + 15;
+
+    for (let i = 0; i < 6; i++) {
+      setTimeout(() => {
+        const coin = document.createElement('div');
+        coin.className = 'gold-coin-3d';
+        coin.textContent = '🪙';
+        document.body.appendChild(coin);
+
+        const spreadX = (Math.random() - 0.5) * 120;
+        const spreadY = (Math.random() - 0.5) * 60;
+        const startX = originX + spreadX;
+        const startY = originY + spreadY;
+
+        coin.style.left = `${startX}px`;
+        coin.style.top = `${startY}px`;
+
+        const anim = coin.animate([
+          { transform: 'translate(0, 0) scale(0.6) rotate(0deg)', opacity: 0 },
+          { transform: 'translate(0, -30px) scale(1.25) rotate(180deg)', opacity: 1, offset: 0.25 },
+          { transform: `translate(${targetX - startX}px, ${targetY - startY}px) scale(0.7) rotate(720deg)`, opacity: 0.95 }
+        ], {
+          duration: 750,
+          easing: 'cubic-bezier(0.25, 1, 0.5, 1)'
+        });
+
+        anim.onfinish = () => {
+          coin.remove();
+          playTone(880 + i * 45, 'triangle', 0.08, 0.05);
+        };
+      }, i * 50);
+    }
+  }
+
+  function setupGameDeck(forceReload = true) {
+    if (forceReload || !activeCards.length) {
+      const now = Date.now();
+      const userDue = words.filter(w => !w.srsDueDate || w.srsDueDate <= now);
+      if (userDue.length > 0) {
+        activeCards = [...userDue];
+      } else if (words.length > 0) {
+        activeCards = [...words];
+      } else {
+        activeCards = [...(app.SAMPLE_TECH_CARDS || [])];
+      }
+      currentCardIndex = 0;
+    }
+
+    if (!gameListenersBound) {
+      bindGameEvents();
+      setupConfettiCanvas();
+      gameListenersBound = true;
+    }
+
+    try {
+      chrome.storage?.local?.get(['ccUdemyGameSRS'], result => {
+        const data = result?.ccUdemyGameSRS || {};
+        gameStreak = typeof data.streak === 'number' ? data.streak : 1;
+        gameXP = typeof data.xp === 'number' ? data.xp : 25;
+        updateGameHUD();
+      });
+    } catch {}
+
+    renderCurrentGameCard();
+  }
+
+  function updateGameHUD() {
+    const streakLabel = $('#game-streak-label');
+    if (streakLabel) streakLabel.textContent = `${gameStreak} ngày`;
+    const xpMod = gameXP % 100;
+    const xpFill = $('#game-xp-fill');
+    if (xpFill) xpFill.style.width = `${xpMod}%`;
+    const xpLabel = $('#game-xp-label');
+    if (xpLabel) xpLabel.textContent = `${xpMod} / 100 XP (Cấp ${Math.floor(gameXP / 100) + 1})`;
+    const counter = $('#game-card-counter');
+    if (counter) counter.textContent = `${Math.min(currentCardIndex + 1, activeCards.length)} / ${activeCards.length}`;
+  }
+
+  function renderCurrentGameCard() {
+    const cardStage = $('#card-stage');
+    const finishedView = $('#deck-finished-view');
+    if (!cardStage || !finishedView) return;
+
+    if (currentCardIndex >= activeCards.length) {
+      cardStage.hidden = true;
+      finishedView.hidden = false;
+      const counter = $('#game-card-counter');
+      if (counter) counter.textContent = `${activeCards.length} / ${activeCards.length}`;
+      return;
+    }
+
+    cardStage.hidden = false;
+    finishedView.hidden = true;
+
+    const data = activeCards[currentCardIndex];
+    const isSample = !words.some(w => w.word.toLowerCase() === data.word.toLowerCase());
+
+    const rarity = $('#card-rarity');
+    if (rarity) rarity.textContent = isSample ? 'CORE TECH' : 'UDEMY CARD';
+    const frontWord = $('#front-word');
+    if (frontWord) frontWord.textContent = data.word;
+    const frontIpa = $('#front-ipa');
+    if (frontIpa) frontIpa.textContent = data.sourceLanguage ? `${app.languageName(data.sourceLanguage).toUpperCase()} VOCABULARY` : 'TECHNICAL TERM';
+
+    let sentence = data.sentence || '';
+    const challengeText = $('#front-challenge-sentence');
+    if (challengeText) {
+      if (sentence) {
+        const regex = new RegExp(`\\b${data.word.replace(/[.*+?^${}()|[\\]\\]/g, '\\$&')}\\b`, 'gi');
+        const blanked = sentence.replace(regex, '<span class="blank-placeholder">[ ????? ]</span>');
+        challengeText.innerHTML = blanked !== sentence ? blanked : `Trong ngữ cảnh: "${sentence}"`;
+      } else {
+        challengeText.innerHTML = `Hãy giải nghĩa và ghi nhớ thuật ngữ <span class="blank-placeholder">[ ????? ]</span> trong ngữ cảnh chuyên ngành.`;
+      }
+    }
+
+    const backOrigin = $('#back-origin');
+    if (backOrigin) backOrigin.textContent = data.title || (data.url ? 'Bài học Udemy' : 'Kiến thức cốt lõi');
+    const backPair = $('#back-pair');
+    if (backPair) backPair.textContent = `${app.languageName(data.sourceLanguage || 'en')} → ${app.languageName(data.targetLanguage || 'vi')}`;
+    const backWord = $('#back-word-title');
+    if (backWord) backWord.textContent = data.word;
+    const backMeaning = $('#back-meaning');
+    if (backMeaning) backMeaning.textContent = data.meaning;
+    const backContext = $('#back-context-sentence');
+    if (backContext) backContext.textContent = sentence ? `"${sentence}"` : `Được sử dụng phổ biến trong các tài liệu & khóa học công nghệ.`;
+
+    isCardFlipped = false;
+    const card = $('#active-card');
+    if (card) {
+      card.classList.remove('is-flipped');
+      card.style.transform = 'perspective(1200px) rotateY(0deg)';
+    }
+    updateGameHUD();
+  }
+
+  function toggleCardFlip() {
+    isCardFlipped = !isCardFlipped;
+    const card = $('#active-card');
+    if (card) {
+      card.classList.toggle('is-flipped', isCardFlipped);
+      card.style.transform = isCardFlipped ? 'perspective(1200px) rotateY(180deg)' : 'perspective(1200px) rotateY(0deg)';
+      playFlipSound();
+    }
+  }
+
+  async function handleCardDecision(rating) {
+    if (currentCardIndex >= activeCards.length) return;
+    const current = activeCards[currentCardIndex];
+    const card = $('#active-card');
+    if (!card) return;
+    const rect = card.getBoundingClientRect();
+    const originX = rect.left + rect.width / 2;
+    const originY = rect.top + rect.height / 2;
+
+    const updated = app.calculateSrs(current, rating);
+
+    if (words.some(w => w.id === current.id)) {
+      try { await app.call('vocabulary.add', { item: updated }); } catch {}
+    }
+
+    if (rating === 3) {
+      playVictorySound();
+      spawnCoinBurst(originX, originY);
+      spawnConfetti(originX, originY);
+      gameXP += 25;
+      saveGameSRSState();
+      card.animate([
+        { transform: 'perspective(1200px) rotateY(180deg) translateX(0) scale(1)', opacity: 1 },
+        { transform: 'perspective(1200px) rotateY(180deg) translateX(300px) rotateZ(12deg) scale(0.8)', opacity: 0 }
+      ], { duration: 320, easing: 'ease-in' }).onfinish = () => {
+        currentCardIndex++;
+        renderCurrentGameCard();
+      };
+    } else if (rating === 2) {
+      playTone(587.33, 'triangle', 0.18, 0.08);
+      gameXP += 15;
+      saveGameSRSState();
+      card.animate([
+        { transform: 'perspective(1200px) rotateY(180deg) translateX(0) scale(1)', opacity: 1 },
+        { transform: 'perspective(1200px) rotateY(180deg) translateX(260px) scale(0.85)', opacity: 0 }
+      ], { duration: 280, easing: 'ease-in' }).onfinish = () => {
+        currentCardIndex++;
+        renderCurrentGameCard();
+      };
+    } else {
+      playAgainSound();
+      gameXP += 5;
+      saveGameSRSState();
+      activeCards.push(current);
+      card.animate([
+        { transform: 'translateX(0)' },
+        { transform: 'translateX(-14px) rotateZ(-3deg)' },
+        { transform: 'translateX(14px) rotateZ(3deg)' },
+        { transform: 'translateX(-8px)' },
+        { transform: 'translateX(0)' }
+      ], { duration: 320 }).onfinish = () => {
+        currentCardIndex++;
+        renderCurrentGameCard();
+      };
+    }
+  }
+
+  function saveGameSRSState() {
+    try {
+      chrome.storage?.local?.set({ ccUdemyGameSRS: { streak: gameStreak, xp: gameXP, lastDate: new Date().toDateString() } });
+    } catch {}
+    updateGameHUD();
+  }
+
+  function bindGameEvents() {
+    const card = $('#active-card');
+    const stage = $('#card-stage');
+    const sheenFront = $('#sheen-front');
+    const sheenBack = $('#sheen-back');
+
+    if (stage && card) {
+      stage.addEventListener('mousemove', e => {
+        const rect = stage.getBoundingClientRect();
+        const x = e.clientX - rect.left - rect.width / 2;
+        const y = e.clientY - rect.top - rect.height / 2;
+        const rotY = (x / (rect.width / 2)) * 14;
+        const rotX = -(y / (rect.height / 2)) * 14;
+
+        const baseRotate = isCardFlipped ? 180 : 0;
+        card.style.transform = `perspective(1200px) rotateX(${rotX}deg) rotateY(${baseRotate + (isCardFlipped ? -rotY : rotY)}deg)`;
+
+        const pctX = ((e.clientX - rect.left) / rect.width) * 100;
+        const pctY = ((e.clientY - rect.top) / rect.height) * 100;
+        const sheenBg = `radial-gradient(circle at ${pctX}% ${pctY}%, rgba(255,255,255,0.7) 0%, rgba(254,240,138,0.3) 30%, rgba(134,239,172,0.15) 55%, transparent 80%)`;
+        if (sheenFront) sheenFront.style.background = sheenBg;
+        if (sheenBack) sheenBack.style.background = sheenBg;
+      });
+
+      stage.addEventListener('mouseleave', () => {
+        card.style.transform = `perspective(1200px) rotateY(${isCardFlipped ? 180 : 0}deg)`;
+      });
+
+      card.addEventListener('click', e => {
+        if (e.target.closest('button') || e.target.closest('a')) return;
+        toggleCardFlip();
+      });
+    }
+
+    const audioBtn = $('#btn-audio-pronounce');
+    if (audioBtn) {
+      audioBtn.addEventListener('click', e => {
+        e.stopPropagation();
+        const current = activeCards[currentCardIndex];
+        if (!current?.word) return;
+        try {
+          const u = new SpeechSynthesisUtterance(current.word);
+          u.lang = current.sourceLanguage || 'en-US';
+          speechSynthesis.speak(u);
+        } catch {}
+      });
+    }
+
+    $('#btn-srs-again')?.addEventListener('click', e => { e.stopPropagation(); handleCardDecision(1); });
+    $('#btn-srs-good')?.addEventListener('click', e => { e.stopPropagation(); handleCardDecision(2); });
+    $('#btn-srs-easy')?.addEventListener('click', e => { e.stopPropagation(); handleCardDecision(3); });
+
+    $('#game-sound-btn')?.addEventListener('click', () => {
+      gameSoundEnabled = !gameSoundEnabled;
+      $('#game-sound-btn').textContent = gameSoundEnabled ? '🔊' : '🔇';
+    });
+
+    $('#btn-restart-deck')?.addEventListener('click', () => setupGameDeck(true));
+    $('#btn-practice-samples')?.addEventListener('click', () => {
+      activeCards = [...(app.SAMPLE_TECH_CARDS || [])];
+      currentCardIndex = 0;
+      renderCurrentGameCard();
+    });
+
+    window.addEventListener('keydown', e => {
+      if (document.body.dataset.view !== 'game') return;
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
+      if (e.code === 'Space') {
+        e.preventDefault();
+        toggleCardFlip();
+      } else if (e.key === '1') {
+        handleCardDecision(1);
+      } else if (e.key === '2') {
+        handleCardDecision(2);
+      } else if (e.key === '3') {
+        handleCardDecision(3);
+      }
+    });
+  }
 })();

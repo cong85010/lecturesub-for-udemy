@@ -4,7 +4,7 @@
   <a class="skip-link" href="#page-title">Đến nội dung chính</a>
   <header class="app-header"><div class="header-inner">
     <a class="logo" href="#settings"><img class="logo-mark" src="assets/icon-48.png" alt="" width="28" height="28" /><strong>Lecture</strong><span>Sub</span></a>
-    <nav aria-label="Điều hướng"><button data-view="settings" type="button">Phụ đề</button><button data-view="vocabulary" type="button">Từ vựng</button><button data-view="help" type="button">Hướng dẫn</button></nav>
+    <nav aria-label="Điều hướng"><button data-view="settings" type="button">Phụ đề</button><button data-view="vocabulary" type="button">Từ vựng</button><button data-view="game" type="button">🎮 Thẻ bài 3D</button><button data-view="help" type="button">Hướng dẫn</button></nav>
     <div class="save-state" data-state="idle"><svg width="21" height="21" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11"/><path d="m7 12 3.2 3.2L17 8.5"/></svg><span id="save-status" role="status">Đang tải…</span></div><span class="version">v0.3.0</span>
   </div></header>
   <main>
@@ -35,9 +35,119 @@
       </section>
     </section>
     <section id="vocabulary-view" hidden>
-      <div class="notebook-tools"><div class="search"><label for="word-search">Tìm từ vựng</label><input id="word-search" type="search" placeholder="Từ, nghĩa hoặc câu gốc…"></div><button id="export" type="button" class="primary">Xuất CSV</button></div>
+      <div class="notebook-tools">
+        <div class="search"><label for="word-search">Tìm từ vựng</label><input id="word-search" type="search" placeholder="Từ, nghĩa hoặc câu gốc…"></div>
+        <div class="notebook-actions">
+          <a href="#game" class="game-jump-btn">🎮 Luyện tập 3D</a>
+          <button id="export" type="button" class="primary">Xuất CSV</button>
+        </div>
+      </div>
       <div class="notebook-summary"><span id="word-count"></span><div id="undo-area" hidden><span>Đã xóa từ.</span> <button id="undo" type="button" class="text-button">Hoàn tác</button></div></div>
       <p id="word-error" role="alert"></p><ul id="words" class="word-list"></ul><div id="empty" class="empty" hidden><h2></h2><p></p></div>
+    </section>
+    <section id="game-view" class="game-view" hidden>
+      <div class="game-hud">
+        <div class="hud-item hud-streak">
+          <span class="hud-streak-fire">🔥</span>
+          <span id="game-streak-label">1 ngày</span>
+        </div>
+        <div class="hud-item hud-xp">
+          <div class="xp-bar-bg"><div id="game-xp-fill" class="xp-bar-fill"></div></div>
+          <span id="game-xp-label">0 / 100 XP</span>
+        </div>
+        <div class="hud-item hud-controls">
+          <span id="game-card-counter" class="card-counter">0 / 0</span>
+          <button id="game-sound-btn" class="hud-sound-btn" type="button" aria-label="Bật/Tắt âm thanh" title="Âm thanh game">🔊</button>
+        </div>
+      </div>
+
+      <div class="arena-deck-wrapper">
+        <div class="card-stage" id="card-stage">
+          <div class="game-card" id="active-card" tabindex="0" role="region" aria-label="Thẻ bài học tập 3D">
+            <!-- FRONT FACE -->
+            <div class="card-face card-front">
+              <div class="holo-sheen" id="sheen-front"></div>
+              <div class="card-inner-frame">
+                <div class="card-top-bar">
+                  <span class="rarity-badge" id="card-rarity">CORE CONCEPT</span>
+                  <button id="btn-audio-pronounce" class="speaker-btn" type="button" aria-label="Phát âm tiếng Anh" title="Nghe phát âm">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+                  </button>
+                </div>
+                <div class="card-body">
+                  <div class="card-word-title" id="front-word">...</div>
+                  <div class="card-ipa" id="front-ipa"></div>
+                  <div class="challenge-box">
+                    <span class="challenge-label">THỬ THÁCH ĐIỀN TỪ:</span>
+                    <p id="front-challenge-sentence" class="challenge-text"></p>
+                  </div>
+                </div>
+                <div class="card-footer-hint">
+                  <span>Chạm thẻ hoặc bấm <kbd>Space</kbd> để lật xem nghĩa</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- BACK FACE -->
+            <div class="card-face card-back">
+              <div class="holo-sheen" id="sheen-back"></div>
+              <div class="card-inner-frame">
+                <div class="card-top-bar">
+                  <span class="card-origin-pill" id="back-origin">Bài học</span>
+                  <span class="card-pair-badge" id="back-pair">EN → VI</span>
+                </div>
+                <div class="card-body">
+                  <div class="card-word-title back-title" id="back-word-title">...</div>
+                  <div class="meaning-box">
+                    <div class="meaning-label">Ý NGHĨA CHUYÊN NGÀNH:</div>
+                    <p id="back-meaning" class="meaning-text"></p>
+                  </div>
+                  <div class="context-box">
+                    <div class="context-label">NGỮ CẢNH BÀI HỌC:</div>
+                    <p id="back-context-sentence" class="context-text"></p>
+                  </div>
+                </div>
+                <div class="card-srs-actions">
+                  <button id="btn-srs-again" class="srs-btn srs-again" type="button">
+                    <span class="srs-btn-num">[1]</span>
+                    <span class="srs-btn-label">Quên</span>
+                    <span class="srs-btn-time">&lt; 5p</span>
+                  </button>
+                  <button id="btn-srs-good" class="srs-btn srs-good" type="button">
+                    <span class="srs-btn-num">[2]</span>
+                    <span class="srs-btn-label">Tạm nhớ</span>
+                    <span class="srs-btn-time">1 ngày</span>
+                  </button>
+                  <button id="btn-srs-easy" class="srs-btn srs-easy" type="button">
+                    <span class="srs-btn-num">[3]</span>
+                    <span class="srs-btn-label">Đã thuộc</span>
+                    <span class="srs-btn-time">+25 XP</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="deck-finished-view" class="deck-finished" hidden>
+          <div class="finished-icon">🏆</div>
+          <h2>Tuyệt vời! Bạn đã hoàn thành các thẻ hôm nay!</h2>
+          <p id="finished-stats">Đã ôn tập xong toàn bộ từ đến hạn. Hãy tiếp tục duy trì chuỗi học để củng cố trí nhớ dài hạn!</p>
+          <div class="finished-actions">
+            <button id="btn-restart-deck" type="button" class="primary">Luyện tập lại bộ từ này</button>
+            <button id="btn-practice-samples" type="button" class="text-button">Thử thách bộ từ Tech mở rộng</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="game-keyboard-legend">
+        <span><kbd>Space</kbd> Lật thẻ</span>
+        <span><kbd>1</kbd> Quên</span>
+        <span><kbd>2</kbd> Tạm nhớ</span>
+        <span><kbd>3</kbd> Đã thuộc</span>
+      </div>
+
+      <canvas id="game-confetti-canvas"></canvas>
     </section>
     <section id="help-view" class="help" hidden><h2>Bắt đầu trên Udemy</h2><ol><li>Mở bài giảng và chọn ngôn ngữ phụ đề trong menu CC của Udemy.</li><li>Chọn cùng ngôn ngữ nguồn trong LectureSub.</li><li>Bấm <strong>Bật dịch miễn phí</strong> trên video. Chrome tải bộ ngôn ngữ lần đầu.</li><li>Bấm một từ trong bản gốc để tra nghĩa, rồi bấm <strong>Lưu từ</strong> nếu muốn ôn lại.</li></ol>
       <h2>Những điều cần biết</h2><p>Ngôn ngữ có thể dùng phụ thuộc bộ dịch Chrome trên máy bạn. Đổi cặp ngôn ngữ có thể cần tải thêm bộ ngôn ngữ. Trang cài đặt kiểm tra khả dụng; bộ dịch được khởi tạo từ nút trên video.</p><p>Phím tắt <kbd>Alt</kbd> + <kbd>Shift</kbd> + <kbd>C</kbd> bật/tắt phụ đề và không chạy khi bạn đang nhập liệu. <kbd>Esc</kbd> đóng ô tra từ.</p><p>Nghĩa là bản dịch của từ đơn, chưa phải từ điển chuyên sâu theo ngữ cảnh. Dịch AI qua API sẽ được bổ sung sau.</p><p>LectureSub chỉ chạy trên www.udemy.com ở Chrome máy tính, không nhận diện giọng nói hoặc tải video. Từ vựng và tối đa 500 bản dịch được lưu cục bộ. Sổ từ tối đa 2.000 mục.</p><p>CSV có thể mở bằng Excel hoặc Google Sheets. Dữ liệu bắt đầu bằng ký tự công thức được thêm dấu nháy để giữ dưới dạng văn bản.</p>

@@ -18,6 +18,10 @@ h1 { margin:0; font-size:24px; line-height:1.2; font-weight:450; letter-spacing:
 .actions button.primary { background:var(--action); border-color:var(--action); }.actions button.primary:hover { background:#343a2e; }
 .actions svg { width:18px; height:18px; fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; }
 #options { justify-content:space-between; }#notebook { gap:10px; }
+#game-btn { justify-content:space-between; background:linear-gradient(135deg, #181d16 0%, #242f1c 100%) !important; color:#fae08a !important; border:1px solid #4a5c37 !important; font-weight:650; }
+#game-btn:hover { background:#283520 !important; color:#ffffff !important; border-color:#d4af37 !important; transform:translateY(-1px); box-shadow:0 4px 14px rgba(0,0,0,0.18); }
+#game-btn:active { background:#141812 !important; transform:translateY(0); }
+.game-badge { background:#d4af37; color:#141713; font-size:11px; font-weight:800; padding:2px 8px; border-radius:99px; }
 .note { margin:17px 0 0; font-size:11px; color:var(--muted); line-height:1.5; }
 .popup-footer { display:flex; align-items:center; justify-content:center; gap:8px; margin-top:16px; padding-top:14px; border-top:1px solid var(--line); font-size:11px; color:var(--muted); }
 .popup-footer a { color:var(--muted); text-decoration:none; }

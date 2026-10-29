@@ -1,0 +1,924 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LectureSub 3D Game Flashcards — Hearthstone Style Learning</title>
+  <link rel="icon" type="image/png" href="assets/icon-32.png">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    :root {
+      --gold: #d4af37;
+      --gold-glow: rgba(212, 175, 55, 0.4);
+      --card-bg: #141713;
+      --card-border: #283023;
+    }
+
+    body {
+      background: radial-gradient(circle at 50% 30%, #fbf9f5 0%, #e8e4d8 100%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      user-select: none;
+      overflow-x: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    .game-arena {
+      flex: 1;
+      width: 100%;
+      max-width: 900px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 30px 20px 60px;
+      position: relative;
+    }
+
+    /* Top HUD (Heads-Up Display) */
+    .game-hud {
+      width: min(100%, 600px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--line);
+      border-radius: 99px;
+      padding: 8px 20px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+      margin-bottom: 36px;
+    }
+
+    .hud-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .hud-streak {
+      color: #e65100;
+    }
+    .hud-streak-fire {
+      font-size: 20px;
+      animation: flamePulse 1.2s ease-in-out infinite alternate;
+    }
+    @keyframes flamePulse {
+      0% { transform: scale(1); filter: drop-shadow(0 0 2px #ff9800); }
+      100% { transform: scale(1.2); filter: drop-shadow(0 0 8px #ff5722); }
+    }
+
+    .hud-xp {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .xp-bar-bg {
+      width: 120px;
+      height: 10px;
+      background: #e5e1d7;
+      border-radius: 99px;
+      overflow: hidden;
+      position: relative;
+    }
+    .xp-bar-fill {
+      height: 100%;
+      width: 65%;
+      background: linear-gradient(90deg, #9ecb18, #c6ed61);
+      border-radius: 99px;
+      transition: width 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .hud-sound-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 18px;
+      padding: 4px;
+      border-radius: 50%;
+      transition: transform 0.15s;
+    }
+    .hud-sound-btn:hover {
+      transform: scale(1.15);
+    }
+
+    /* 3D Card Stage */
+    .card-stage {
+      perspective: 1200px;
+      width: 360px;
+      height: 520px;
+      position: relative;
+      margin-bottom: 30px;
+    }
+
+    .game-card {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+      cursor: pointer;
+      border-radius: 24px;
+    }
+
+    .game-card.is-flipped {
+      transform: rotateY(180deg);
+    }
+
+    /* Card Faces */
+    .card-face {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      border-radius: 24px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 30px 60px -15px rgba(20, 20, 19, 0.25), 
+                  0 0 0 1px rgba(255, 255, 255, 0.1);
+      transition: box-shadow 0.3s ease;
+    }
+
+    /* Holographic Shimmer Layer */
+    .holo-sheen {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), 
+                  rgba(255, 255, 255, 0.25) 0%, 
+                  rgba(198, 237, 97, 0.15) 30%, 
+                  transparent 70%);
+      pointer-events: none;
+      mix-blend-mode: overlay;
+      opacity: 0.8;
+      z-index: 10;
+    }
+
+    /* FRONT FACE: Mythic Obsidian & Gold */
+    .card-front {
+      background: linear-gradient(165deg, #1b2118 0%, #0d100c 100%);
+      border: 3px solid #2e3a28;
+      color: #ffffff;
+      padding: 26px 24px;
+    }
+
+    .card-front::before {
+      content: '';
+      position: absolute;
+      inset: 6px;
+      border: 1px dashed rgba(198, 237, 97, 0.3);
+      border-radius: 18px;
+      pointer-events: none;
+    }
+
+    .card-header-badge {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+
+    .rarity-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(198, 237, 97, 0.15);
+      border: 1px solid #7aa119;
+      color: #c6ed61;
+      padding: 4px 10px;
+      border-radius: 99px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .rarity-gem {
+      width: 7px;
+      height: 7px;
+      background: #c6ed61;
+      border-radius: 50%;
+      box-shadow: 0 0 8px #c6ed61;
+    }
+
+    .lecture-origin {
+      font-size: 11.5px;
+      color: #8c9784;
+      font-weight: 500;
+    }
+
+    .card-front-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      text-align: center;
+      position: relative;
+      z-index: 2;
+    }
+
+    .word-title {
+      font-size: 32px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: #ffffff;
+      margin-bottom: 8px;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+    }
+
+    .word-ipa {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 13.5px;
+      color: #b5c2ad;
+      margin-bottom: 28px;
+      font-family: monospace;
+    }
+
+    .btn-audio-speak {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #ffffff;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      transition: all 0.15s;
+    }
+    .btn-audio-speak:hover {
+      background: var(--accent);
+      color: #141413;
+      transform: scale(1.1);
+    }
+
+    .sentence-challenge-box {
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
+      padding: 16px 14px;
+      font-size: 15px;
+      line-height: 1.6;
+      color: #d8e2d2;
+      text-align: left;
+    }
+
+    .blank-placeholder {
+      display: inline-block;
+      min-width: 90px;
+      border-bottom: 2px dashed #c6ed61;
+      color: #c6ed61;
+      font-weight: 800;
+      text-align: center;
+      padding: 0 4px;
+    }
+
+    .card-front-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 18px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      font-size: 12px;
+      color: #798572;
+    }
+
+    .flip-hint {
+      color: #c6ed61;
+      font-weight: 600;
+      animation: bounceHint 1.4s ease infinite;
+    }
+    @keyframes bounceHint {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-3px); }
+    }
+
+    /* BACK FACE: Pure Ivory Parchment & Emerald */
+    .card-back {
+      background: #ffffff;
+      border: 3px solid #7aa119;
+      color: #141713;
+      padding: 26px 24px;
+      transform: rotateY(180deg);
+    }
+
+    .card-back::before {
+      content: '';
+      position: absolute;
+      inset: 6px;
+      border: 1px dashed rgba(122, 161, 25, 0.3);
+      border-radius: 18px;
+      pointer-events: none;
+    }
+
+    .back-header-badge {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .back-answer-tag {
+      font-size: 12px;
+      font-weight: 800;
+      color: #2e440b;
+      background: #edf7cc;
+      padding: 4px 10px;
+      border-radius: 99px;
+      letter-spacing: 0.04em;
+    }
+
+    .back-meaning-title {
+      font-size: 26px;
+      font-weight: 800;
+      color: #1a2215;
+      margin-bottom: 6px;
+    }
+
+    .back-definition {
+      font-size: 15.5px;
+      line-height: 1.55;
+      color: #384232;
+      background: #f7f5ed;
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 20px;
+      border-left: 4px solid #7aa119;
+      text-align: left;
+    }
+
+    .back-full-sentence {
+      font-size: 14.5px;
+      line-height: 1.6;
+      color: #4b5544;
+      text-align: left;
+      margin-bottom: auto;
+    }
+
+    .back-full-sentence strong {
+      color: #1a2215;
+      background: #e3f79e;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    /* Gaming Control Buttons (SRS Decision) */
+    .srs-controls {
+      display: flex;
+      gap: 10px;
+      width: min(100%, 420px);
+      margin-top: 10px;
+    }
+
+    .srs-btn {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 10px;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: #ffffff;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      transition: all 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
+      user-select: none;
+    }
+
+    .srs-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    }
+    .srs-btn:active {
+      transform: translateY(1px) scale(0.96);
+    }
+
+    .srs-btn-label {
+      font-size: 14px;
+      font-weight: 800;
+      margin-bottom: 2px;
+    }
+    .srs-btn-sub {
+      font-size: 11px;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    .srs-btn.again {
+      border-color: #ffcdd2;
+    }
+    .srs-btn.again:hover {
+      background: #ffebee;
+      color: #c62828;
+      border-color: #ef5350;
+    }
+    .srs-btn.again .srs-btn-label { color: #c62828; }
+
+    .srs-btn.good {
+      border-color: #ffe082;
+    }
+    .srs-btn.good:hover {
+      background: #fff8e1;
+      color: #f57f17;
+      border-color: #ffca28;
+    }
+    .srs-btn.good .srs-btn-label { color: #f57f17; }
+
+    .srs-btn.easy {
+      border-color: #c8e6c9;
+      background: linear-gradient(180deg, #ffffff 0%, #f4fbf0 100%);
+    }
+    .srs-btn.easy:hover {
+      background: #e8f5e9;
+      color: #2e7d32;
+      border-color: #66bb6a;
+    }
+    .srs-btn.easy .srs-btn-label { color: #2e7d32; }
+
+    /* Key Shortcut Pills */
+    .key-hint {
+      display: inline-block;
+      background: rgba(0,0,0,0.06);
+      border: 1px solid rgba(0,0,0,0.1);
+      padding: 1px 5px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-family: monospace;
+      margin-top: 4px;
+    }
+
+    /* 3D Flying Gold Coins */
+    .coin-particle {
+      position: fixed;
+      width: 32px;
+      height: 32px;
+      pointer-events: none;
+      z-index: 1000;
+      background: radial-gradient(circle at 35% 35%, #fff275 0%, #d4af37 60%, #8a6c14 100%);
+      border-radius: 50%;
+      border: 2px solid #ffe57f;
+      box-shadow: 0 4px 14px rgba(212, 175, 55, 0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: 900;
+      color: #5c4403;
+      transform-style: preserve-3d;
+    }
+
+    /* Confetti Canvas */
+    #confetti-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 999;
+    }
+  </style>
+</head>
+<body style="margin:0;">
+  <header style="width:100%;max-width:900px;display:flex;align-items:center;justify-content:space-between;padding:20px 20px 0;">
+    <a href="index.html" style="display:flex;align-items:center;gap:10px;text-decoration:none;color:#141713;font-weight:700;font-size:18px;">
+      <img src="assets/icon-48.png" width="28" height="28" alt="LectureSub Logo" style="border-radius:6px;">
+      <span><strong>Lecture</strong>Sub</span>
+    </a>
+    <a href="index.html" style="font-size:13px;font-weight:600;color:#555;text-decoration:none;padding:6px 14px;border:1px solid #d4d8cc;border-radius:99px;background:#fff;">← Về Trang chủ</a>
+  </header>
+
+  <header class="site-header" style="width:100%;">
+    <div class="header-container">
+      <a class="brand" href="index.html">
+        <img src="assets/icon-48.png" alt="LectureSub Logo" width="32" height="32" class="brand-logo">
+        <span class="brand-text"><strong>Lecture</strong>Sub · Game Suite</span>
+      </a>
+      <a href="index.html" class="nav-link">← Về Landing Page</a>
+    </div>
+  </header>
+
+  <main class="game-arena">
+    <!-- Top Game HUD -->
+    <div class="game-hud">
+      <div class="hud-item hud-streak">
+        <span class="hud-streak-fire">🔥</span>
+        <span id="streak-count">5 Ngày giữ lửa</span>
+      </div>
+
+      <div class="hud-item hud-xp">
+        <span style="color:#5e6457; font-size:12px;">Level 2</span>
+        <div class="xp-bar-bg">
+          <div class="xp-bar-fill" id="xp-bar-fill"></div>
+        </div>
+        <span style="font-size:12px; color:#2e440b; font-weight:800;" id="xp-label">65 / 100 XP</span>
+      </div>
+
+      <button type="button" class="hud-sound-btn" id="btn-sound-toggle" title="Bật/Tắt âm thanh">
+        🔊
+      </button>
+    </div>
+
+    <!-- 3D Card Stage -->
+    <div class="card-stage" id="card-stage">
+      <div class="game-card" id="game-card">
+        <!-- Holographic Sheen Layer -->
+        <div class="holo-sheen" id="holo-sheen"></div>
+
+        <!-- FRONT FACE -->
+        <div class="card-face card-front">
+          <div class="card-header-badge">
+            <div class="rarity-pill">
+              <span class="rarity-gem"></span>
+              <span>CORE CONCEPT</span>
+            </div>
+            <span class="lecture-origin" id="card-origin">ML Fundamentals · Lec 04</span>
+          </div>
+
+          <div class="card-front-body">
+            <h2 class="word-title" id="front-word">backpropagation</h2>
+            <div class="word-ipa">
+              <span>/ˌbæk.prɒp.əˈɡeɪ.ʃən/</span>
+              <button type="button" class="btn-audio-speak" id="btn-speak-front" title="Phát âm chuẩn">
+                🔊
+              </button>
+            </div>
+
+            <div class="sentence-challenge-box">
+              <p>
+                In deep neural networks, <span class="blank-placeholder" id="blank-slot">[ ????? ]</span> calculates the error gradient backwards from output to input.
+              </p>
+            </div>
+          </div>
+
+          <div class="card-front-footer">
+            <span>✨ Thưởng: +25 XP</span>
+            <span class="flip-hint">Space / Chạm để lật bài ➔</span>
+          </div>
+        </div>
+
+        <!-- BACK FACE -->
+        <div class="card-face card-back">
+          <div class="back-header-badge">
+            <span class="back-answer-tag">✓ ĐÁP ÁN ĐẦY ĐỦ</span>
+            <span style="font-size:12px; color:#7aa119; font-weight:700;">+25 XP ĐÃ MỞ</span>
+          </div>
+
+          <h3 class="back-meaning-title" id="back-word-title">lan truyền ngược</h3>
+          <div class="back-definition" id="back-meaning">
+            thuật toán tính đạo hàm riêng (gradient) của hàm mất mát theo từng trọng số, giúp mô hình nơ-ron học và cập nhật qua mỗi chu kỳ.
+          </div>
+
+          <div class="back-full-sentence">
+            <p style="font-size:12px; color:#798572; margin-bottom:4px; font-weight:600;">CÂU GỐC TRONG VIDEO:</p>
+            <p id="back-full-text">
+              "In deep neural networks, <strong>backpropagation</strong> calculates the error gradient backwards from output to input."
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SRS Decision Controls -->
+    <div class="srs-controls" id="srs-controls">
+      <button type="button" class="srs-btn again" id="btn-again">
+        <span class="srs-btn-label">🔴 Quên</span>
+        <span class="srs-btn-sub">Ôn lại sau 5m</span>
+        <span class="key-hint">Phím 1</span>
+      </button>
+
+      <button type="button" class="srs-btn good" id="btn-good">
+        <span class="srs-btn-label">🟡 Tạm nhớ</span>
+        <span class="srs-btn-sub">Nhắc lại sau 1d</span>
+        <span class="key-hint">Phím 2</span>
+      </button>
+
+      <button type="button" class="srs-btn easy" id="btn-easy">
+        <span class="srs-btn-label">🟢 Đã thuộc!</span>
+        <span class="srs-btn-sub">+25 XP · Sau 4d</span>
+        <span class="key-hint">Phím 3</span>
+      </button>
+    </div>
+  </main>
+
+  <canvas id="confetti-canvas"></canvas>
+
+  <script>
+    // ================= 1. Web Audio Synthesizer (0kb external audio) =================
+    let soundEnabled = true;
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    let audioCtx = null;
+
+    function initAudio() {
+      if (!audioCtx) audioCtx = new AudioContext();
+    }
+
+    function playTone(freq, type = 'sine', duration = 0.15, gainVal = 0.1) {
+      if (!soundEnabled) return;
+      initAudio();
+      try {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(gainVal, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+      } catch (e) {}
+    }
+
+    function playFlipSound() {
+      playTone(320, 'triangle', 0.08, 0.08);
+      setTimeout(() => playTone(440, 'sine', 0.09, 0.06), 40);
+    }
+
+    function playSuccessSound() {
+      // Upbeat Nintendo/Duolingo chord
+      playTone(523.25, 'triangle', 0.12, 0.12); // C5
+      setTimeout(() => playTone(659.25, 'triangle', 0.14, 0.12), 80);  // E5
+      setTimeout(() => playTone(783.99, 'triangle', 0.18, 0.15), 160); // G5
+      setTimeout(() => playTone(1046.50, 'sine', 0.25, 0.18), 240);    // C6
+    }
+
+    function playAgainSound() {
+      playTone(280, 'sine', 0.15, 0.08);
+      setTimeout(() => playTone(220, 'sine', 0.2, 0.08), 100);
+    }
+
+    document.getElementById('btn-sound-toggle').addEventListener('click', () => {
+      soundEnabled = !soundEnabled;
+      document.getElementById('btn-sound-toggle').textContent = soundEnabled ? '🔊' : '🔇';
+    });
+
+    // ================= 2. 3D Card Physics & Holographic Sheen =================
+    const stage = document.getElementById('card-stage');
+    const card = document.getElementById('game-card');
+    const holo = document.getElementById('holo-sheen');
+    let isFlipped = false;
+
+    stage.addEventListener('pointermove', (e) => {
+      const rect = stage.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      const normX = (x / rect.width) * 2 - 1;
+      const normY = (y / rect.height) * 2 - 1;
+
+      // Update holo gradient position
+      card.style.setProperty('--mouse-x', `${(x / rect.width) * 100}%`);
+      card.style.setProperty('--mouse-y', `${(y / rect.height) * 100}%`);
+
+      // 3D Tilt calculation
+      const rotX = -normY * 14;
+      const rotY = (isFlipped ? 180 : 0) + normX * 14;
+      card.style.transform = `perspective(1200px) rotateX(${rotX}deg) rotateY(${rotY}deg) scale3d(1.02, 1.02, 1.02)`;
+    });
+
+    stage.addEventListener('pointerleave', () => {
+      card.style.transform = isFlipped ? 'perspective(1200px) rotateY(180deg)' : 'perspective(1200px) rotateY(0deg)';
+    });
+
+    function toggleFlip() {
+      isFlipped = !isFlipped;
+      playFlipSound();
+      card.classList.toggle('is-flipped', isFlipped);
+      card.style.transform = isFlipped ? 'perspective(1200px) rotateY(180deg)' : 'perspective(1200px) rotateY(0deg)';
+    }
+
+    stage.addEventListener('click', (e) => {
+      if (e.target.closest('#btn-speak-front')) return;
+      toggleFlip();
+    });
+
+    // Native Speech Pronunciation
+    function speakWord(word = 'backpropagation') {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(word);
+        utterance.lang = 'en-US';
+        utterance.rate = 0.9;
+        window.speechSynthesis.speak(utterance);
+      }
+    }
+    document.getElementById('btn-speak-front').addEventListener('click', (e) => {
+      e.stopPropagation();
+      speakWord('backpropagation');
+    });
+
+    // ================= 3. Gaming Coin Burst & Confetti =================
+    const confettiCanvas = document.getElementById('confetti-canvas');
+    const ctx = confettiCanvas.getContext('2d');
+    let confettiParticles = [];
+
+    function resizeConfetti() {
+      confettiCanvas.width = window.innerWidth;
+      confettiCanvas.height = window.innerHeight;
+    }
+    resizeConfetti();
+    window.addEventListener('resize', resizeConfetti);
+
+    function spawnCoinBurst(originX, originY) {
+      const hudItem = document.querySelector('.hud-xp');
+      const targetRect = hudItem.getBoundingClientRect();
+      const targetX = targetRect.left + targetRect.width / 2;
+      const targetY = targetRect.top + targetRect.height / 2;
+
+      for (let i = 0; i < 6; i++) {
+        setTimeout(() => {
+          const coin = document.createElement('div');
+          coin.className = 'coin-particle';
+          coin.textContent = '🪙';
+          document.body.appendChild(coin);
+
+          const startX = originX + (Math.random() - 0.5) * 60;
+          const startY = originY + (Math.random() - 0.5) * 40;
+          coin.style.left = `${startX}px`;
+          coin.style.top = `${startY}px`;
+
+          // Animate flight to HUD
+          const anim = coin.animate([
+            { transform: 'translate(0, 0) scale(0.6) rotate(0deg)', opacity: 1 },
+            { transform: `translate(${(targetX - startX) * 0.4}px, -90px) scale(1.3) rotate(360deg)`, opacity: 1 },
+            { transform: `translate(${targetX - startX}px, ${targetY - startY}px) scale(0.5) rotate(720deg)`, opacity: 0 }
+          ], {
+            duration: 800 + i * 80,
+            easing: 'cubic-bezier(0.25, 1, 0.5, 1)'
+          });
+
+          anim.onfinish = () => {
+            coin.remove();
+            playTone(880 + i * 40, 'triangle', 0.08, 0.06);
+          };
+        }, i * 60);
+      }
+    }
+
+    function spawnConfetti(originX, originY) {
+      const colors = ['#c6ed61', '#fae08a', '#9ee6ca', '#d4af37', '#ffffff'];
+      for (let i = 0; i < 40; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const velocity = 4 + Math.random() * 8;
+        confettiParticles.push({
+          x: originX,
+          y: originY,
+          vx: Math.cos(angle) * velocity,
+          vy: Math.sin(angle) * velocity - 3,
+          size: Math.random() * 8 + 4,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          rotation: Math.random() * 360,
+          rotSpeed: (Math.random() - 0.5) * 12,
+          alpha: 1
+        });
+      }
+    }
+
+    function renderConfetti() {
+      ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+      confettiParticles = confettiParticles.filter(p => p.alpha > 0.02);
+
+      confettiParticles.forEach(p => {
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += 0.25; // gravity
+        p.rotation += p.rotSpeed;
+        p.alpha *= 0.96;
+
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate((p.rotation * Math.PI) / 180);
+        ctx.globalAlpha = p.alpha;
+        ctx.fillStyle = p.color;
+        ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.6);
+        ctx.restore();
+      });
+
+      requestAnimationFrame(renderConfetti);
+    }
+    renderConfetti();
+
+    // ================= 4. Gaming Decisions & Vocabulary Sequence =================
+    let currentXP = 65;
+    const cardsDatabase = [
+      {
+        word: 'backpropagation',
+        ipa: '/ˌbæk.prɒp.əˈɡeɪ.ʃən/',
+        origin: 'ML Fundamentals · Lec 04',
+        blankContext: 'In deep neural networks, <span class="blank-placeholder">[ ????? ]</span> calculates the error gradient backwards from output to input.',
+        fullSentence: 'In deep neural networks, <strong>backpropagation</strong> calculates the error gradient backwards from output to input.',
+        meaning: 'lan truyền ngược: thuật toán tính đạo hàm riêng (gradient) của hàm mất mát theo từng trọng số để tối ưu hóa mô hình qua mỗi chu kỳ.'
+      },
+      {
+        word: 'overfitting',
+        ipa: '/ˌoʊ.vɚˈfɪt.ɪŋ/',
+        origin: 'ML Fundamentals · Lec 05',
+        blankContext: 'When a model learns training noise instead of true patterns, it suffers from <span class="blank-placeholder">[ ????? ]</span>.',
+        fullSentence: 'When a model learns training noise instead of true patterns, it suffers from <strong>overfitting</strong>.',
+        meaning: 'quá khớp: hiện tượng mô hình học vẹt chi tiết thừa và nhiễu trên tập huấn luyện, dẫn đến kết quả kém trên dữ liệu thực tế.'
+      },
+      {
+        word: 'hyperparameters',
+        ipa: '/ˌhaɪ.pɚ.pəˈræm.ə.t̬ɚz/',
+        origin: 'ML Fundamentals · Lec 06',
+        blankContext: 'Learning rate and batch size are key <span class="blank-placeholder">[ ????? ]</span> configured before training begins.',
+        fullSentence: 'Learning rate and batch size are key <strong>hyperparameters</strong> configured before training begins.',
+        meaning: 'siêu tham số: các thông số do kỹ sư tự thiết lập trước khi huấn luyện (như learning rate, epochs), không tự học từ dữ liệu.'
+      }
+    ];
+
+    let cardIndex = 0;
+
+    function loadCard(idx) {
+      const data = cardsDatabase[idx % cardsDatabase.length];
+      document.getElementById('front-word').textContent = data.word;
+      document.getElementById('card-origin').textContent = data.origin;
+      document.querySelector('.sentence-challenge-box p').innerHTML = data.blankContext;
+      document.getElementById('back-word-title').textContent = data.word;
+      document.getElementById('back-meaning').textContent = data.meaning;
+      document.getElementById('back-full-text').innerHTML = `"${data.fullSentence}"`;
+
+      // Flip back to front
+      isFlipped = false;
+      card.classList.remove('is-flipped');
+      card.style.transform = 'perspective(1200px) rotateY(0deg)';
+    }
+
+    function handleDecision(type) {
+      const rect = card.getBoundingClientRect();
+      const originX = rect.left + rect.width / 2;
+      const originY = rect.top + rect.height / 2;
+
+      if (type === 'easy') {
+        playSuccessSound();
+        spawnCoinBurst(originX, originY);
+        spawnConfetti(originX, originY);
+
+        currentXP = Math.min(100, currentXP + 25);
+        document.getElementById('xp-bar-fill').style.width = `${currentXP}%`;
+        document.getElementById('xp-label').textContent = `${currentXP} / 100 XP`;
+
+        // Card swipe right animation
+        card.animate([
+          { transform: 'perspective(1200px) rotateY(180deg) translateX(0) scale(1)', opacity: 1 },
+          { transform: 'perspective(1200px) rotateY(180deg) translateX(280px) rotateZ(12deg) scale(0.8)', opacity: 0 }
+        ], { duration: 350, easing: 'ease-in' }).onfinish = () => {
+          cardIndex++;
+          loadCard(cardIndex);
+        };
+      } else if (type === 'again') {
+        playAgainSound();
+        // Card shake red animation
+        card.animate([
+          { transform: 'translateX(0)' },
+          { transform: 'translateX(-12px) rotateZ(-3deg)' },
+          { transform: 'translateX(12px) rotateZ(3deg)' },
+          { transform: 'translateX(-8px)' },
+          { transform: 'translateX(0)' }
+        ], { duration: 320 });
+      } else {
+        playFlipSound();
+        cardIndex++;
+        loadCard(cardIndex);
+      }
+    }
+
+    document.getElementById('btn-easy').addEventListener('click', () => handleDecision('easy'));
+    document.getElementById('btn-good').addEventListener('click', () => handleDecision('good'));
+    document.getElementById('btn-again').addEventListener('click', () => handleDecision('again'));
+
+    // Keyboard Shortcuts (Space, 1, 2, 3)
+    window.addEventListener('keydown', (e) => {
+      if (e.code === 'Space') {
+        e.preventDefault();
+        toggleFlip();
+      } else if (e.key === '1') {
+        handleDecision('again');
+      } else if (e.key === '2') {
+        handleDecision('good');
+      } else if (e.key === '3') {
+        handleDecision('easy');
+      }
+    });
+  </script>
+
+  <!-- Vercel Web Analytics -->
+  <script>
+    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+  </script>
+  <script defer src="/_vercel/insights/script.js"></script>
+  <script>
+    window.si = window.si || function () { (window.siq = window.siq || []).push(arguments); };
+  </script>
+  <script defer src="/_vercel/speed-insights/script.js"></script>
+</body>
+</html>

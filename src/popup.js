@@ -29,4 +29,15 @@
   }
   document.querySelector('#options').addEventListener('click', () => open());
   document.querySelector('#notebook').addEventListener('click', () => open('vocabulary'));
+  document.querySelector('#game-btn').addEventListener('click', () => open('game'));
+  app.call('vocabulary.list').then(items => {
+    const list = app.readVocabulary(items);
+    const now = Date.now();
+    const dueCount = list.filter(w => !w.srsDueDate || w.srsDueDate <= now).length;
+    const badge = document.querySelector('#game-badge');
+    if (badge && dueCount > 0) {
+      badge.textContent = `${dueCount} từ`;
+      badge.hidden = false;
+    }
+  }).catch(() => {});
 })();
