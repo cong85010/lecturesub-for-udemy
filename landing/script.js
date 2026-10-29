@@ -204,4 +204,148 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Initialize language
   applyLanguage(currentLang);
+
+  // ================= 3. React Bits Background Effects =================
+  // Mouse Spotlight Follower
+  let hasMouse = false;
+  window.addEventListener('pointermove', (e) => {
+    if (!hasMouse) {
+      document.body.classList.add('has-mouse');
+      hasMouse = true;
+    }
+    document.documentElement.style.setProperty('--mouse-x', `${e.clientX}px`);
+    document.documentElement.style.setProperty('--mouse-y', `${e.clientY}px`);
+  }, { passive: true });
+
+  // SpotlightCard Effect for Feature Cards
+  const featureCards = document.querySelectorAll('.feature-card');
+  featureCards.forEach(card => {
+    card.addEventListener('pointermove', (e) => {
+      const rect = card.getBoundingClientRect();
+      card.style.setProperty('--card-x', `${e.clientX - rect.left}px`);
+      card.style.setProperty('--card-y', `${e.clientY - rect.top}px`);
+    }, { passive: true });
+  });
+
+  // Floating Ambient Particles Canvas (React Bits Particles style)
+  const canvas = document.getElementById('bg-particles-canvas');
+  if (canvas && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const ctx = canvas.getContext('2d');
+    let width = 0;
+    let height = 0;
+    let animationFrameId = null;
+    let mouse = { x: -1000, y: -1000 };
+
+    function resizeCanvas() {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      width = window.innerWidth;
+      height = window.innerHeight;
+      canvas.width = width * dpr;
+      canvas.height = height * dpr;
+      ctx.scale(dpr, dpr);
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas, { passive: true });
+
+    window.addEventListener('pointermove', (e) => {
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
+    }, { passive: true });
+
+    window.addEventListener('pointerleave', () => {
+      mouse.x = -1000;
+      mouse.y = -1000;
+    }, { passive: true });
+
+    // Particle pool
+    const particleCount = Math.min(Math.floor(window.innerWidth / 30), 45);
+    const colors = [
+      'rgba(198, 237, 97, 0.45)',  // Lime
+      'rgba(248, 218, 120, 0.40)', // Amber
+      'rgba(158, 230, 202, 0.35)', // Sage
+      'rgba(122, 161, 25, 0.30)'   // Olive
+    ];
+
+    const particles = [];
+    for (let i = 0; i < particleCount; i++) {
+      particles.push({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        radius: Math.random() * 2 + 1.2,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        vx: (Math.random() - 0.5) * 0.3,
+        vy: -(Math.random() * 0.35 + 0.15),
+        oscillationSpeed: Math.random() * 0.02 + 0.01,
+        oscillationDist: Math.random() * 20 + 10,
+        initialX: Math.random() * width,
+        angle: Math.random() * Math.PI * 2
+      });
+    }
+
+    function render() {
+      ctx.clearRect(0, 0, width, height);
+
+      for (let i = 0; i < particles.length; i++) {
+        const p = particles[i];
+
+        // Drift upward & sway
+        p.angle += p.oscillationSpeed;
+        p.x = p.initialX + Math.sin(p.angle) * p.oscillationDist;
+        p.y += p.vy;
+
+        // Wrap boundaries
+        if (p.y < -10) {
+          p.y = height + 10;
+          p.initialX = Math.random() * width;
+          p.x = p.initialX;
+        }
+        if (p.x < -20) p.initialX = width + 20;
+        if (p.x > width + 20) p.initialX = -20;
+
+        // Gentle reaction to cursor
+        const dx = p.x - mouse.x;
+        const dy = p.y - mouse.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 80) {
+          const force = (80 - dist) / 80;
+          p.x += (dx / dist) * force * 1.5;
+          p.y += (dy / dist) * force * 1.5;
+        }
+
+        // Draw particle
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        ctx.fillStyle = p.color;
+        ctx.fill();
+
+        // Delicate connecting lines between nearby particles
+        for (let j = i + 1; j < particles.length; j++) {
+          const p2 = particles[j];
+          const dist2 = Math.hypot(p.x - p2.x, p.y - p2.y);
+          if (dist2 < 65) {
+            ctx.beginPath();
+            ctx.moveTo(p.x, p.y);
+            ctx.lineTo(p2.x, p2.y);
+            ctx.strokeStyle = `rgba(180, 210, 110, ${0.15 * (1 - dist2 / 65)})`;
+            ctx.lineWidth = 0.75;
+            ctx.stroke();
+          }
+        }
+      }
+
+      animationFrameId = requestAnimationFrame(render);
+    }
+
+    // Start loop
+    render();
+
+    // Pause when tab hidden to save CPU/battery
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        cancelAnimationFrame(animationFrameId);
+      } else {
+        render();
+      }
+    });
+  }
 });
