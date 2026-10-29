@@ -34,19 +34,25 @@
     lastPair = pair;
     const revision = ++availabilityRevision;
     const status = $('.pair-status');
+    if (!status) return;
     if (settings.sourceLanguage === settings.targetLanguage) { status.textContent = 'Nguồn và đích giống nhau; không cần bộ dịch.'; return; }
     if (!globalThis.Translator?.availability) { status.textContent = 'Kiểm tra và bật bộ dịch trên video trong Chrome 138+.'; return; }
     status.textContent = 'Đang kiểm tra cặp ngôn ngữ trên máy…';
     try {
-      const state = await Translator.availability({ sourceLanguage: settings.sourceLanguage, targetLanguage: settings.targetLanguage });
+      const state = await Promise.resolve().then(() => Translator.availability({
+        sourceLanguage: settings.sourceLanguage,
+        targetLanguage: settings.targetLanguage
+      })).catch(() => 'unavailable');
       if (revision !== availabilityRevision) return;
-      status.textContent = state === 'unavailable' ? 'Cặp ngôn ngữ này chưa dùng được trên máy. Chọn cặp khác để tiếp tục.'
-        : state === 'available' ? 'Cặp ngôn ngữ này có thể dùng. Bật bộ dịch trên video để bắt đầu.'
+      status.textContent = (state === 'unavailable' || state === 'no')
+        ? 'Cặp ngôn ngữ chưa sẵn sàng trên máy. Bật cờ chrome://flags/#translation-api hoặc bấm "Bật dịch miễn phí" trên video.'
+        : (state === 'available' || state === 'readily')
+          ? 'Cặp ngôn ngữ này có thể dùng. Bật bộ dịch trên video để bắt đầu.'
           : 'Cặp ngôn ngữ có thể cần tải bộ ngôn ngữ. Bấm bật dịch trên video để tải.';
     } catch { if (revision === availabilityRevision) status.textContent = 'Chưa kiểm tra được. Hãy thử bật bộ dịch trên video.'; }
   }
   function renderSettings(value) {
-    settings = app.normalizeSettings(value); controls.forEach(control => control.update(settings)); preview(settings); void availability();
+    settings = app.normalizeSettings(value); controls.forEach(control => control.update(settings)); preview(settings); void availability().catch(() => {});
   }
   async function mutate(type, payload = {}) {
     const revision = ++saveRevision;

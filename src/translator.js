@@ -89,8 +89,10 @@
       async availability() {
         if (source === target) return 'available';
         if (!api?.create) return 'unavailable';
-        try { return api.availability ? await api.availability({ sourceLanguage: source, targetLanguage: target }) : 'downloadable'; }
-        catch { return 'unavailable'; }
+        try {
+          if (!api.availability) return 'downloadable';
+          return await Promise.resolve().then(() => api.availability({ sourceLanguage: source, targetLanguage: target })).catch(() => 'unavailable');
+        } catch { return 'unavailable'; }
       },
     };
   };

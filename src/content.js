@@ -120,9 +120,9 @@
     provider.availability().then(result => {
       if (version !== languageVersion || translationState !== 'idle') return;
       if (provider.isEnabled()) translationState = 'ready';
-      else if (result === 'unavailable') translationState = 'unsupported';
+      else if (result === 'unavailable' || result === 'no') translationState = 'unsupported';
       ui?.translatorState(translationState); refreshStatus();
-    });
+    }).catch(() => {});
   }
   function applySettings(value, initial = false) {
     const next = app.normalizeSettings(value);
