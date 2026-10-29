@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>LectureSub for Udemy — Cài đặt</title><link rel="icon" type="image/png" href="assets/icon-32.png"><link rel="stylesheet" href="options.css"></head>
+<body>
+  <a class="skip-link" href="#page-title">Đến nội dung chính</a>
+  <header class="app-header"><div class="header-inner">
+    <a class="logo" href="#settings"><img class="logo-mark" src="assets/icon-48.png" alt="" width="28" height="28" /><strong>Lecture</strong><span>Sub</span></a>
+    <nav aria-label="Điều hướng"><button data-view="settings" type="button">Phụ đề</button><button data-view="vocabulary" type="button">Từ vựng</button><button data-view="help" type="button">Hướng dẫn</button></nav>
+    <div class="save-state" data-state="idle"><svg width="21" height="21" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11"/><path d="m7 12 3.2 3.2L17 8.5"/></svg><span id="save-status" role="status">Đang tải…</span></div><span class="version">v0.3.0</span>
+  </div></header>
+  <main>
+    <header class="page-header"><div><h1 id="page-title" tabindex="-1">Phụ đề</h1><p id="page-description">Chọn ngôn ngữ và chỉnh cách hiển thị.</p></div></header>
+    <section id="settings-view" class="settings-layout">
+      <aside class="settings-panel">
+        <section class="language-block"><div class="inspector-heading"><h2>Ngôn ngữ</h2><div id="enable-control"></div></div>
+          <div id="language-controls" class="language-controls"></div>
+          <p class="language-hint">Chọn cùng ngôn ngữ nguồn trong menu CC của Udemy.</p>
+        </section>
+        <div id="setting-tabs" role="tablist" aria-label="Nhóm cài đặt"></div><div id="settings-groups"></div>
+        <div class="reset-area"><button id="reset" type="button" class="text-button">Khôi phục mặc định</button></div>
+      </aside>
+      <section class="preview-column" aria-label="Xem trước phụ đề">
+        <div class="preview-frame">
+          <div class="lesson-heading"><span>Ví dụ minh họa</span><h2>Learning from data</h2><p>Machine Learning Fundamentals</p></div>
+          <svg class="lesson-diagram" viewBox="0 0 720 230" role="img" aria-label="Dữ liệu đi qua mô hình để tạo ra dự đoán">
+            <g fill="none" stroke="#c6ccd1" stroke-width="1.5"><rect x="39" y="62" width="120" height="125" rx="4" opacity=".25"/><rect x="49" y="72" width="120" height="125" rx="4" opacity=".45"/><rect x="59" y="82" width="120" height="125" rx="4" opacity=".7"/><rect x="294" y="103" width="138" height="81" rx="6" opacity=".85"/><path d="M201 144h62m-11-8 11 8-11 8M460 144h62m-11-8 11 8-11 8M560 197V80m0 117h115"/></g>
+            <g fill="#d3d8dc" opacity=".85"><circle cx="79" cy="106" r="3"/><circle cx="119" cy="99" r="3"/><circle cx="153" cy="111" r="3"/><circle cx="91" cy="132" r="3"/><circle cx="132" cy="128" r="3"/><circle cx="160" cy="145" r="3"/><circle cx="107" cy="154" r="3"/><circle cx="78" cy="173" r="3"/><circle cx="139" cy="181" r="3"/><circle cx="115" cy="187" r="3"/><circle cx="148" cy="158" r="3"/><circle cx="121" cy="114" r="2"/><circle cx="86" cy="156" r="2"/><circle cx="159" cy="185" r="2"/><circle cx="136" cy="147" r="2"/><circle cx="100" cy="106" r="2"/><circle cx="577" cy="178" r="3"/><circle cx="589" cy="171" r="3"/><circle cx="601" cy="179" r="3"/><circle cx="613" cy="155" r="3"/><circle cx="622" cy="145" r="3"/><circle cx="638" cy="135" r="3"/><circle cx="648" cy="127" r="3"/><circle cx="660" cy="117" r="3"/><circle cx="669" cy="95" r="3"/></g>
+            <path d="M566 183c51 0 65-45 106-85" fill="none" stroke="#e1e5e7" stroke-width="2"/>
+            <g fill="#dce1e4" font-family="Arial,sans-serif" font-size="23"><text x="118" y="47" text-anchor="middle">Data</text><text x="363" y="151" text-anchor="middle">Model</text><text x="617" y="47" text-anchor="middle">Predictions</text></g>
+          </svg>
+          <div class="preview-captions"><div class="preview-source" dir="auto">A model learns <button id="preview-word" type="button" aria-expanded="true" aria-controls="sample-lookup">patterns</button> from data.</div><div class="preview-target" dir="auto">Một mô hình học các mẫu từ dữ liệu.</div></div>
+          <div id="sample-lookup" class="sample-lookup" role="group" aria-label="Ví dụ tra từ"><button id="close-sample" type="button" aria-label="Đóng nghĩa mẫu"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m5 5 10 10M15 5 5 15"/></svg></button><strong>patterns</strong><span>mẫu</span><button id="save-sample" type="button"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 3h10v14l-5-3-5 3V3Z"/></svg>Lưu từ mẫu</button><span id="sample-status" role="status"></span></div>
+        </div>
+        <div class="preview-controls"><button id="preview-play" type="button" aria-label="Phát ví dụ"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 4 13 8-13 8V4Z"/></svg></button><span id="preview-time">0:00 / 0:12</span><input id="preview-progress" type="range" min="0" max="12" step="0.1" value="0" aria-label="Tiến độ ví dụ"><span class="preview-pair">EN · VI</span></div>
+        <div class="preview-footer"><p class="hint">Ví dụ Anh–Việt để thử kiểu hiển thị. Không phải video Udemy đang phát.</p><div class="pair-status" role="status"></div></div>
+      </section>
+    </section>
+    <section id="vocabulary-view" hidden>
+      <div class="notebook-tools"><div class="search"><label for="word-search">Tìm từ vựng</label><input id="word-search" type="search" placeholder="Từ, nghĩa hoặc câu gốc…"></div><button id="export" type="button" class="primary">Xuất CSV</button></div>
+      <div class="notebook-summary"><span id="word-count"></span><div id="undo-area" hidden><span>Đã xóa từ.</span> <button id="undo" type="button" class="text-button">Hoàn tác</button></div></div>
+      <p id="word-error" role="alert"></p><ul id="words" class="word-list"></ul><div id="empty" class="empty" hidden><h2></h2><p></p></div>
+    </section>
+    <section id="help-view" class="help" hidden><h2>Bắt đầu trên Udemy</h2><ol><li>Mở bài giảng và chọn ngôn ngữ phụ đề trong menu CC của Udemy.</li><li>Chọn cùng ngôn ngữ nguồn trong LectureSub.</li><li>Bấm <strong>Bật dịch miễn phí</strong> trên video. Chrome tải bộ ngôn ngữ lần đầu.</li><li>Bấm một từ trong bản gốc để tra nghĩa, rồi bấm <strong>Lưu từ</strong> nếu muốn ôn lại.</li></ol>
+      <h2>Những điều cần biết</h2><p>Ngôn ngữ có thể dùng phụ thuộc bộ dịch Chrome trên máy bạn. Đổi cặp ngôn ngữ có thể cần tải thêm bộ ngôn ngữ. Trang cài đặt kiểm tra khả dụng; bộ dịch được khởi tạo từ nút trên video.</p><p>Phím tắt <kbd>Alt</kbd> + <kbd>Shift</kbd> + <kbd>C</kbd> bật/tắt phụ đề và không chạy khi bạn đang nhập liệu. <kbd>Esc</kbd> đóng ô tra từ.</p><p>Nghĩa là bản dịch của từ đơn, chưa phải từ điển chuyên sâu theo ngữ cảnh. Dịch AI qua API sẽ được bổ sung sau.</p><p>LectureSub chỉ chạy trên www.udemy.com ở Chrome máy tính, không nhận diện giọng nói hoặc tải video. Từ vựng và tối đa 500 bản dịch được lưu cục bộ. Sổ từ tối đa 2.000 mục.</p><p>CSV có thể mở bằng Excel hoặc Google Sheets. Dữ liệu bắt đầu bằng ký tự công thức được thêm dấu nháy để giữ dưới dạng văn bản.</p>
+      <h2>Nếu chưa thấy phụ đề</h2><p>Kiểm tra phụ đề nguồn trong menu CC của Udemy, tải lại tab sau khi cập nhật extension và thử bật bộ dịch lại. Cặp không hỗ trợ sẽ có thông báo; extension không gửi văn bản sang dịch vụ bên ngoài để dịch thay.</p>
+      <h2>Liên hệ & Đóng góp</h2>
+      <p>LectureSub for Udemy là dự án mã nguồn mở phát hành theo giấy phép MIT bởi <strong>Cong Phan</strong> (<a href="https://congphan.dev" target="_blank" rel="noopener">congphan.dev</a>).</p>
+      <ul>
+        <li><strong>Trang chủ:</strong> <a href="https://lecturesub.congphan.dev" target="_blank" rel="noopener">lecturesub.congphan.dev</a></li>
+        <li><strong>Mã nguồn & Báo lỗi (GitHub):</strong> <a href="https://github.com/cong85010/lecturesub-for-udemy" target="_blank" rel="noopener">github.com/cong85010/lecturesub-for-udemy</a></li>
+        <li><strong>Email phản hồi:</strong> <a href="mailto:contact@congphan.dev?subject=[LectureSub%20Feedback]">contact@congphan.dev</a></li>
+        <li><strong>Chính sách quyền riêng tư:</strong> <a href="privacy.html" target="_blank">Xem cam kết bảo mật & quyền hạn →</a></li>
+      </ul>
+    </section>
+  </main>
+  <script src="languages.js"></script><script src="settings.js"></script><script src="library.js"></script><script src="client.js"></script><script src="controls.js"></script><script src="preview.js"></script><script src="options.js"></script>
+</body></html>

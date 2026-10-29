@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LectureSub for Udemy — Phụ đề song ngữ & Tra từ vựng thông minh</title>
+  <meta name="description" content="Tiện ích mở rộng Chrome miễn phí giúp học tiếng Anh chuyên ngành qua video Udemy: phụ đề song ngữ, bấm từ tra nghĩa ngay trên video và sổ từ vựng cá nhân.">
+  <link rel="icon" type="image/png" href="assets/icon-32.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="header-container">
+      <a class="brand" href="#">
+        <img src="assets/icon-48.png" alt="LectureSub Logo" width="32" height="32" class="brand-logo">
+        <span class="brand-text"><strong>Lecture</strong>Sub</span>
+      </a>
+      <nav class="nav-links">
+        <a href="#demo" class="nav-link" data-i18n="nav_demo">Demo tương tác</a>
+        <a href="#features" class="nav-link" data-i18n="nav_features">Tính năng</a>
+        <a href="#guide" class="nav-link" data-i18n="nav_guide">Hướng dẫn</a>
+        <a href="https://github.com/cong85010/lecturesub-for-udemy" target="_blank" rel="noopener" class="nav-link">GitHub ★</a>
+      </nav>
+      <div style="display:flex;align-items:center;">
+        <a href="#guide" class="header-cta" data-i18n="cta_header">Cài đặt miễn phí</a>
+        <div class="lang-switch" role="group" aria-label="Language selector">
+          <button type="button" class="lang-btn active" data-lang="vi">VI</button>
+          <span class="lang-sep">/</span>
+          <button type="button" class="lang-btn" data-lang="en">EN</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <main>
+    <section class="hero">
+      <div class="badge">
+        <span class="badge-dot"></span>
+        <span data-i18n="hero_badge">Bản 0.3.0 · 100% Miễn phí · Mã nguồn mở MIT</span>
+      </div>
+      <h1 data-i18n="hero_title">Biến mọi bài giảng Udemy thành <span class="highlight">lớp học ngoại ngữ</span> tương tác.</h1>
+      <p class="lead" data-i18n="hero_lead">
+        Phụ đề song ngữ thông minh, bấm từ tra nghĩa tức thì ngay trên video và sổ từ vựng cá nhân giúp bạn làm chủ mọi khóa học tiếng Anh chuyên ngành trên Udemy mà không bao giờ bị ngắt mạch học.
+      </p>
+      <div class="hero-actions">
+        <a href="#guide" class="btn-primary">
+          <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.5v-9l6 4.5-6 4.5z"/></svg>
+          <span data-i18n="cta_hero">Thêm vào Chrome — Miễn phí</span>
+        </a>
+        <a href="https://github.com/cong85010/lecturesub-for-udemy" target="_blank" rel="noopener" class="btn-secondary">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+          <span data-i18n="cta_github">Mã nguồn trên GitHub</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- Interactive Live Demo Canvas -->
+    <section id="demo" class="demo-wrapper">
+      <div class="demo-container">
+        <div class="demo-topbar">
+          <div class="demo-title-group">
+            <div class="demo-dots">
+              <span class="demo-dot red"></span>
+              <span class="demo-dot yellow"></span>
+              <span class="demo-dot green"></span>
+            </div>
+            <span class="demo-course-title">Machine Learning Fundamentals — Lecture 04: Data & Optimization</span>
+          </div>
+          <span class="demo-badge">Trải nghiệm tương tác trực tiếp</span>
+        </div>
+
+        <div class="demo-video-stage" style="background-image: linear-gradient(rgba(17,18,17,0.7), rgba(17,18,17,0.85)), url('assets/lesson-preview.png');">
+          <div class="demo-overlay-toolbar">
+            <span class="demo-pair">EN → VI</span>
+            <span class="demo-mode-tag">Song ngữ</span>
+            <span style="color:#788070;">|</span>
+            <span style="color:#c6ed61; font-weight:600;">Alt + Shift + C</span>
+          </div>
+
+          <div class="demo-caption-board">
+            <p class="demo-interactive-hint">💡 Bấm thử vào bất kỳ từ tiếng Anh nào dưới đây để xem tra nghĩa trực tiếp:</p>
+            
+            <!-- Contextual Card -->
+            <div id="demo-lookup-card" class="demo-lookup-card">
+              <div class="card-header">
+                <span id="card-word" class="card-word">algorithms</span>
+                <span id="card-tag" class="card-tag">Thuật ngữ cốt lõi</span>
+              </div>
+              <p id="card-meaning" class="card-meaning">
+                các thuật toán: tập hợp các quy tắc hoặc bước logic dùng để giải quyết một bài toán cụ thể.
+              </p>
+              <div class="card-actions">
+                <button type="button" id="card-close-btn" class="card-btn">Đóng (Esc)</button>
+                <button type="button" id="card-save-btn" class="card-btn primary">Lưu từ</button>
+              </div>
+            </div>
+
+            <!-- Subtitle Lines -->
+            <div class="caption-box">
+              <div class="demo-source-line">
+                Machine <span class="word-token" data-word="learning">learning</span> 
+                <span class="word-token selected" data-word="algorithms">algorithms</span> 
+                <span class="word-token" data-word="identify">identify</span> 
+                <span class="word-token" data-word="patterns">patterns</span> in 
+                <span class="word-token" data-word="complex">complex</span> data.
+              </div>
+              <div class="demo-target-line">
+                Các thuật toán học máy nhận diện các khuôn mẫu trong dữ liệu phức tạp.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features Grid -->
+    <section id="features" class="features-section">
+      <div class="section-head">
+        <h2 data-i18n="features_title">Thiết kế riêng cho trải nghiệm học tập</h2>
+        <p data-i18n="features_sub">Không chỉ là phụ đề, LectureSub là trợ thủ đắc lực giúp bạn hấp thụ kiến thức bài giảng trọn vẹn nhất.</p>
+      </div>
+
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon-box">
+            <svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h10M4 18h16"/></svg>
+          </div>
+          <h3 data-i18n="f1_title">Phụ đề song ngữ thông minh</h3>
+          <p data-i18n="f1_desc">Hiển thị đồng bộ phụ đề bản gốc và bản dịch tiếng Việt mượt mà. Hỗ trợ đảo vị trí trên/dưới hoặc chọn chế độ chỉ hiện bản dịch.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon-box">
+            <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          </div>
+          <h3 data-i18n="f2_title">Tra nghĩa từ theo ngữ cảnh</h3>
+          <p data-i18n="f2_desc">Bấm trực tiếp vào từ khó trong câu để xem nghĩa. Video tự động dừng khi tra từ và tự phát tiếp khi bạn sẵn sàng.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon-box">
+            <svg viewBox="0 0 24 24"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/><path d="M6 6h10M6 10h10"/></svg>
+          </div>
+          <h3 data-i18n="f3_title">Sổ từ vựng & Xuất CSV</h3>
+          <p data-i18n="f3_desc">Lưu lại thuật ngữ chuyên ngành kèm câu ví dụ gốc chỉ với 1 click. Tìm kiếm không dấu thông minh và xuất CSV chuẩn hóa cho Anki.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon-box">
+            <svg viewBox="0 0 24 24"><rect width="20" height="14" x="2" y="5" rx="2"/><path d="M2 10h20"/></svg>
+          </div>
+          <h3 data-i18n="f4_title">Giao diện "Reading Room"</h3>
+          <p data-i18n="f4_desc">Thẩm mỹ tối giản, tone giấy sáng với điểm nhấn xanh chanh chartreuse giúp dịu mắt và duy trì độ tập trung tối đa suốt bài học.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon-box">
+            <svg viewBox="0 0 24 24"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          </div>
+          <h3 data-i18n="f5_title">100% Cục bộ & Bảo mật</h3>
+          <p data-i18n="f5_desc">Dữ liệu và từ vựng lưu trữ hoàn toàn trên trình duyệt của bạn (Local Storage). Không có tracker, không thu thập tài khoản hay cookie.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon-box">
+            <svg viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+          </div>
+          <h3 data-i18n="f6_title">Mã nguồn mở MIT</h3>
+          <p data-i18n="f6_desc">Dự án mở hoàn toàn cho cộng đồng, minh bạch từng dòng lệnh, cam kết phát triển phi lợi nhuận phục vụ người học.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- How to Install Guide -->
+    <section id="guide" class="guide-section">
+      <div class="guide-container">
+        <div class="section-head">
+          <h2 data-i18n="guide_title">3 bước bắt đầu trong 1 phút</h2>
+          <p data-i18n="guide_sub">Không cần đăng ký tài khoản, không cần cấu hình API key phức tạp.</p>
+        </div>
+
+        <div class="steps-grid">
+          <div class="step-item">
+            <div class="step-num">01</div>
+            <h3 data-i18n="step1_title">Cài đặt tiện ích</h3>
+            <p data-i18n="step1_desc">Thêm LectureSub từ Chrome Web Store hoặc nạp bản giải nén trong <code>chrome://extensions</code> (Bật Developer Mode → Load unpacked).</p>
+          </div>
+
+          <div class="step-item">
+            <div class="step-num">02</div>
+            <h3 data-i18n="step2_title">Chọn phụ đề trên Udemy</h3>
+            <p data-i18n="step2_desc">Mở video bài giảng bất kỳ trên Udemy và bật phụ đề nguồn trong menu CC của trình phát (ví dụ: English).</p>
+          </div>
+
+          <div class="step-item">
+            <div class="step-num">03</div>
+            <h3 data-i18n="step3_title">Bật dịch & Học tập</h3>
+            <p data-i18n="step3_desc">Bấm nút <strong>Bật dịch miễn phí</strong> trên thanh công cụ của video. Phụ đề song ngữ sẽ xuất hiện ngay lập tức!</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="footer-container">
+      <div>
+        <p data-i18n="footer_author">Phát triển với sự tận tâm bởi <strong>Cong Phan</strong> (<a href="https://congphan.dev" target="_blank" rel="noopener">congphan.dev</a>).</p>
+        <p style="font-size:12px; margin-top:4px; color:var(--muted-light);" data-i18n="footer_disclaimer">LectureSub là dự án độc lập, không liên kết hay tài trợ bởi Udemy, Inc.</p>
+      </div>
+      <div class="footer-links">
+        <a href="privacy.html" data-i18n="footer_privacy">Chính sách quyền riêng tư</a>
+        <a href="https://github.com/cong85010/lecturesub-for-udemy" target="_blank" rel="noopener" data-i18n="footer_repo">Mã nguồn GitHub</a>
+        <a href="https://github.com/cong85010/lecturesub-for-udemy/issues" target="_blank" rel="noopener" data-i18n="footer_feedback">Báo lỗi & Góp ý</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

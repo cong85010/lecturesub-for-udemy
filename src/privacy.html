@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>LectureSub for Udemy — Quyền riêng tư & Bảo mật</title>
+  <link rel="icon" type="image/png" href="assets/icon-32.png">
+  <link rel="stylesheet" href="ui.css">
+  <link rel="stylesheet" href="options.css">
+  <style>
+    .privacy-shell {
+      max-width: 820px;
+      margin: 40px auto 80px;
+      padding: 0 24px;
+    }
+    .privacy-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 36px 32px;
+      line-height: 1.7;
+      color: #3b4234;
+    }
+    .privacy-card h1 {
+      font-size: 28px;
+      letter-spacing: -0.03em;
+      color: var(--ink);
+      margin-bottom: 8px;
+    }
+    .privacy-card h2 {
+      font-size: 19px;
+      color: var(--ink);
+      margin-top: 28px;
+      margin-bottom: 10px;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 6px;
+    }
+    .privacy-card p, .privacy-card li {
+      font-size: 14.5px;
+      margin-bottom: 10px;
+    }
+    .privacy-card ul {
+      padding-left: 22px;
+      margin-bottom: 18px;
+    }
+    .top-bar-nav {
+      margin-bottom: 24px;
+    }
+    .top-bar-nav a {
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--muted);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .top-bar-nav a:hover {
+      color: var(--ink);
+    }
+  </style>
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-inner">
+      <a class="logo" href="options.html#settings">
+        <img class="logo-mark" src="assets/icon-48.png" alt="" width="28" height="28" />
+        <strong>Lecture</strong><span>Sub</span>
+      </a>
+      <nav aria-label="Điều hướng">
+        <a href="options.html#settings" style="font-size:14px;color:var(--muted);text-decoration:none;padding:0 2px;">Phụ đề</a>
+        <a href="options.html#vocabulary" style="font-size:14px;color:var(--muted);text-decoration:none;padding:0 2px;">Từ vựng</a>
+        <a href="options.html#help" style="font-size:14px;color:var(--muted);text-decoration:none;padding:0 2px;">Hướng dẫn</a>
+      </nav>
+      <span class="version" style="margin-left:auto;">v0.3.0</span>
+    </div>
+  </header>
+
+  <main class="privacy-shell">
+    <div class="top-bar-nav">
+      <a href="options.html#settings">← Quay lại Cài đặt</a>
+    </div>
+
+    <div class="privacy-card">
+      <h1>Chính sách Quyền riêng tư & Bảo mật</h1>
+      <p style="color:var(--muted); font-size:13px; margin-bottom:24px;">Cập nhật lần cuối: 29 tháng 10, 2026 · Phiên bản 0.3.0</p>
+
+      <h2>1. Cam kết 100% Cục bộ (Local Storage)</h2>
+      <p>LectureSub for Udemy tôn trọng tuyệt đối quyền riêng tư và dữ liệu cá nhân của người học:</p>
+      <ul>
+        <li><strong>Không thu thập dữ liệu cá nhân:</strong> Tiện ích không thu thập, không theo dõi, không lưu trữ trên bất kỳ máy chủ bên ngoài nào tài khoản Udemy, cookie, mật khẩu hay lịch sử duyệt web của bạn.</li>
+        <li><strong>Lưu trữ trên máy bạn:</strong> Tất cả tùy chọn cài đặt hiển thị (cỡ chữ, màu sắc, chế độ phụ đề) và danh sách từ vựng cá nhân của bạn được lưu an toàn 100% trong bộ nhớ cục bộ trình duyệt (<code>chrome.storage.local</code>).</li>
+        <li><strong>Không chứa mã theo dõi (Zero Tracker):</strong> Mã nguồn tiện ích không chứa Google Analytics, Facebook Pixel, SDK quảng cáo hay bất kỳ công cụ thu thập hành vi nào.</li>
+      </ul>
+
+      <h2>2. Giải trình các quyền hạn của Extension</h2>
+      <ul>
+        <li><code>storage</code>: Dùng để lưu lại cấu hình hiển thị và sổ từ vựng cá nhân trực tiếp trên máy tính của bạn.</li>
+        <li><code>https://www.udemy.com/*</code>: Dùng để đọc dòng phụ đề từ video bài giảng và hiển thị khung phụ đề song ngữ cùng thẻ tra nghĩa từ trực tiếp trên trang bài học Udemy.</li>
+      </ul>
+
+      <h2>3. Dịch thuật & An toàn nội dung</h2>
+      <p>Tính năng dịch thuật sử dụng bộ dịch tích hợp sẵn trong trình duyệt Chrome (On-device Translator API). Nội dung bài học và từ vựng không bị gửi sang bất kỳ máy chủ bên thứ ba nào qua mạng Internet.</p>
+
+      <h2>4. Tuyên bố thương hiệu</h2>
+      <p>LectureSub for Udemy là dự án độc lập, mã nguồn mở theo giấy phép MIT. "Udemy" là nhãn hiệu đã được đăng ký của Udemy, Inc.</p>
+
+      <h2>5. Liên hệ & Mã nguồn</h2>
+      <p>Tác giả: <strong>Cong Phan</strong> (<a href="https://congphan.dev" target="_blank" rel="noopener">congphan.dev</a>)</p>
+      <p>Mã nguồn công khai: <a href="https://github.com/cong85010/lecturesub-for-udemy" target="_blank" rel="noopener">github.com/cong85010/lecturesub-for-udemy</a></p>
+      <p>Email hỗ trợ: <a href="mailto:contact@congphan.dev">contact@congphan.dev</a></p>
+    </div>
+  </main>
+</body>
+</html>

@@ -1,0 +1,20 @@
+{
+  "name": "cc-udemy",
+  "version": "0.3.0",
+  "private": true,
+  "description": "LectureSub: Configurable bilingual captions and local vocabulary notebook for Udemy lectures",
+  "license": "MIT",
+  "author": "Cong Phan <contact@congphan.dev> (https://congphan.dev)",
+  "homepage": "https://lecturesub.congphan.dev",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cong85010/lecturesub-for-udemy"
+  },
+  "scripts": {
+    "test": "node --test tests/*.test.cjs",
+    "test:browser": "node tests/browser.cjs && node tests/ui-races.cjs",
+    "package": "node scripts/package.mjs"
+  },
+  "engines": { "node": ">=20" },
+  "devDependencies": { "playwright": "1.62.1" }
+}
