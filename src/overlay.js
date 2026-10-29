@@ -2,6 +2,7 @@
   'use strict';
   const app = globalThis.CCUdemy ||= {};
   const gear = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="m9 3-.6 3-2 .9-2.7-1-2 3.5 2.2 2v2.2l-2.2 2 2 3.5 2.7-1 2 .9.6 3h4l.6-3 2-.9 2.7 1 2-3.5-2.2-2v-2.2l2.2-2-2-3.5-2.7 1-2-.9L13 3Z"/><circle cx="11" cy="12" r="3"/></svg>';
+  const speaker = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>';
   app.createOverlay = (container, handlers) => {
     const host = document.createElement('div'); host.id = 'cc-udemy-overlay';
     host.style.cssText = 'position:absolute;inset:0;z-index:40;pointer-events:none;';
@@ -23,8 +24,18 @@
       </div>
       <div class="lookup" id="cc-word-lookup" role="dialog" aria-modal="false" aria-label="Tra nghĩa" hidden>
         <div class="lookup-top"><span class="lookup-label"></span><button type="button" class="close icon-button" aria-label="Đóng tra từ"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button></div>
-        <h2 class="lookup-word" dir="auto"></h2><p class="meaning" role="status" dir="auto"></p>
-        <div class="lookup-actions"><button class="save-word" type="button" disabled>Lưu từ</button><button class="notebook" type="button">Sổ từ vựng</button><button class="copy-word" type="button">Sao chép</button><button class="retry-word" type="button" hidden>Thử tra lại</button></div>
+        <div class="lookup-word-row">
+          <h2 class="lookup-word" dir="auto"></h2>
+          <button type="button" class="speak-word icon-button" aria-label="Phát âm từ vựng" title="Phát âm">${speaker}</button>
+        </div>
+        <p class="meaning" role="status" dir="auto"></p>
+        <div class="lookup-actions">
+          <button class="save-word" type="button" disabled>Lưu từ</button>
+          <button class="notebook" type="button">Sổ từ vựng</button>
+          <button class="copy-word" type="button">Sao chép</button>
+          <button class="replay-cue" type="button" title="Nghe lại đoạn video này">↺ Nghe trong video</button>
+          <button class="retry-word" type="button" hidden>Thử tra lại</button>
+        </div>
         <span class="save-status" role="status"></span><span class="lookup-note">Nghĩa của từ đơn · Esc để đóng</span>
       </div>`;
     shadow.append(shell); container.append(host);
@@ -91,6 +102,32 @@
       const originalText = copyBtn.textContent;
       copyBtn.textContent = 'Đã sao chép! ✓';
       setTimeout(() => { if (copyBtn.isConnected) copyBtn.textContent = originalText; }, 1500);
+    });
+    function speakCurrentWord() {
+      if (!activeWord) return;
+      if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+        try {
+          window.speechSynthesis.cancel();
+          const utterance = new SpeechSynthesisUtterance(activeWord);
+          utterance.lang = settings.sourceLanguage || 'en-US';
+          utterance.rate = 0.92;
+          const btn = $('.speak-word');
+          if (btn) {
+            btn.classList.add('is-speaking');
+            utterance.onend = () => btn.classList.remove('is-speaking');
+            utterance.onerror = () => btn.classList.remove('is-speaking');
+          }
+          window.speechSynthesis.speak(utterance);
+        } catch {}
+      }
+    }
+    $('.speak-word')?.addEventListener('click', e => {
+      e.stopPropagation();
+      speakCurrentWord();
+    });
+    $('.replay-cue')?.addEventListener('click', e => {
+      e.stopPropagation();
+      handlers.replay?.();
     });
     source.addEventListener('click', event => {
       const button = event.target.closest('button[data-word]');

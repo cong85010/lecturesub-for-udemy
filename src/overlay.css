@@ -32,14 +32,18 @@ button:focus-visible,select:focus-visible { outline:2px solid #c6ed61; outline-o
 .lookup-label,.lookup-note { font-size:12px; color:#62675f; user-select:text; -webkit-user-select:text; cursor:text; }
 .close { background:transparent; color:#545d4b; }
 .close:hover { background:#edf0e8; }
-.lookup-word { font-size:24px; margin:2px 0 7px; font-weight:650; line-height:1.2; overflow-wrap:anywhere; user-select:text; -webkit-user-select:text; cursor:text; }
+.lookup-word-row { display:flex; align-items:center; gap:8px; margin:2px 0 7px; }
+.lookup-word { font-size:24px; margin:0; font-weight:650; line-height:1.2; overflow-wrap:anywhere; user-select:text; -webkit-user-select:text; cursor:text; }
+.speak-word { background:transparent; color:#545d4b; width:30px; height:30px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0; cursor:pointer; }
+.speak-word:hover { background:#edf0e8; color:#172109; }
+.speak-word.is-speaking { color:#72980d; background:#e8f4cd; transform:scale(1.1); }
 .meaning { font-size:18px; line-height:1.5; margin:0 0 14px; overflow-wrap:anywhere; user-select:text; -webkit-user-select:text; cursor:text; }
 .lookup-actions { display:flex; flex-wrap:wrap; gap:6px; font-size:12px; }
 .lookup-actions button { user-select:none; -webkit-user-select:none; cursor:pointer; }
 .lookup-actions .save-word { color:#1c290b; }
 .lookup-actions .retry-word { color:#fff; }
-.notebook,.copy-word { background:#edf0e8; color:#4a5342; padding:5px 9px; }
-.notebook:hover,.copy-word:hover { background:#e1e6d9; }
+.notebook,.copy-word,.replay-cue { background:#edf0e8; color:#4a5342; padding:5px 9px; }
+.notebook:hover,.copy-word:hover,.replay-cue:hover { background:#e1e6d9; }
 .save-status,.lookup-note { display:block; margin-top:10px; font-size:12px; color:#62675f; }
 .save-status:empty { display:none; }
 .lookup button:focus-visible { outline-color:#72980d; }

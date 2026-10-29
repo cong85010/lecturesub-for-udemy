@@ -95,6 +95,14 @@
   function dismiss() {
     lookupContext = undefined; lookupVersion++; ui?.closeLookup(); void playback?.close(); refreshStatus();
   }
+  function replayCue() {
+    if (!adapter?.video || lookupContext?.time === undefined) return;
+    const targetTime = Math.max(0, lookupContext.time - 0.2);
+    adapter.video.currentTime = targetTime;
+    if (adapter.video.paused) {
+      adapter.video.play().catch(() => {});
+    }
+  }
   async function patchSettings(patch) {
     const before = settingsEvents;
     try {
@@ -147,7 +155,7 @@
       ui = app.createOverlay(adapter.container, { enable: enableTranslation,
         toggle: value => patchSettings({ enabled: value }), patch: patchSettings,
         settings: () => openOptions(), notebook: () => openOptions('vocabulary'),
-        word: lookup, saveWord, dismiss,
+        word: lookup, saveWord, dismiss, replay: replayCue,
         retry() { if (provider.isEnabled()) renderCue(true); else enableTranslation(); },
       });
       adapter.setEnabled(settings.enabled); ui.settings(settings); ui.enabled(settings.enabled); ui.translatorState(translationState);

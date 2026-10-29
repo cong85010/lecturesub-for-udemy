@@ -78,10 +78,23 @@ const scripts = ['languages.js', 'settings.js', 'library.js', 'store.js', 'clien
       const host = document.querySelector('#cc-udemy-overlay');
       return host.shadowRoot.querySelector('.copy-word').textContent.includes('Đã sao chép');
     });
+
+    // Verify speaker pronounce button
+    const speakBtn = overlay.locator('.speak-word');
+    assert.equal(await speakBtn.count(), 1, 'lookup popup must contain pronunciation speak button');
+    await speakBtn.click();
+
     await page.getByRole('button', { name: 'Lưu từ', exact: true }).click();
     await page.getByRole('button', { name: 'Đã lưu từ', exact: true }).waitFor();
     assert.equal(await page.evaluate(() => window.__storage.ccUdemyVocabulary[0].sentence), 'A model learns patterns from data.');
     assert.equal(await page.locator('video').evaluate(v => v.paused), true);
+
+    // Verify replay video button plays the cue
+    const replayBtn = overlay.locator('.replay-cue');
+    assert.equal(await replayBtn.count(), 1, 'lookup popup must contain replay video button');
+    await replayBtn.click();
+    assert.equal(await page.locator('video').evaluate(v => !v.paused), true, 'replay button must play video');
+    await page.locator('video').evaluate(v => v.pause());
     await page.getByRole('button', { name: 'Đóng tra từ', exact: true }).press('Escape');
     assert.equal(await page.locator('video').evaluate(v => v.paused), false, 'dismiss resumes actual playable video');
     assert.equal(await page.getByRole('button', { name: 'Tra nghĩa: model', exact: true }).evaluate(e => e.matches(':focus')), true);
