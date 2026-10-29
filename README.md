@@ -2,11 +2,20 @@
 
 Extension Chrome hiện phụ đề song ngữ, tra từ và lưu từ vựng ngay trong video bài giảng Udemy. Miễn phí, không cần API key hoặc tài khoản riêng.
 
-## Cập nhật từ bản cũ
+[![Chrome Web Store](https://img.shields.io/badge/Chrome_Web_Store-LectureSub-blue?logo=googlechrome)](https://chromewebstore.google.com/detail/hobglnefedjphfojbkbelabhekcpiilp?utm_source=item-share-cb)
+[![Website](https://img.shields.io/badge/Website-lecturesub.congphan.dev-green)](https://lecturesub.congphan.dev)
 
-Nếu đã cài extension bằng Load unpacked, giữ nguyên thư mục đã chọn và bấm **Reload / Tải lại** trên thẻ LectureSub ở `chrome://extensions`, rồi tải lại tab Udemy. Không cần gỡ cài đặt. Cài đặt cũ và cache Anh–Việt được tự động chuyển sang bản mới; gỡ cài đặt sẽ xóa dữ liệu cục bộ.
+- 🚀 **Cài đặt trực tiếp từ Chrome Web Store:** [Thêm LectureSub vào Chrome (Miễn phí)](https://chromewebstore.google.com/detail/hobglnefedjphfojbkbelabhekcpiilp?utm_source=item-share-cb)
+- 🌐 **Trang chủ chính thức:** [lecturesub.congphan.dev](https://lecturesub.congphan.dev)
 
-## Cài lần đầu
+---
+
+## Cài đặt nhanh
+
+### Cách 1: Cài trực tiếp từ Chrome Web Store (Khuyên dùng)
+👉 Truy cập: [LectureSub on Chrome Web Store](https://chromewebstore.google.com/detail/hobglnefedjphfojbkbelabhekcpiilp?utm_source=item-share-cb) và bấm **Thêm vào Chrome (Add to Chrome)**.
+
+### Cách 2: Cài đặt từ mã nguồn (Developer Mode)
 
 1. Mở `chrome://extensions` trong Chrome máy tính 138 trở lên.
 2. Bật **Developer mode / Chế độ dành cho nhà phát triển**.

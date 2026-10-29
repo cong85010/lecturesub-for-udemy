@@ -1,5 +1,8 @@
 # Bộ tài liệu đăng tải Chrome Web Store · LectureSub for Udemy
 
+> 🔗 **Đường dẫn Chrome Web Store chính thức:**  
+> https://chromewebstore.google.com/detail/hobglnefedjphfojbkbelabhekcpiilp?utm_source=item-share-cb
+
 Tài liệu này chứa toàn bộ thông tin đã được chuẩn hóa để bạn chỉ cần copy - paste vào **Chrome Web Store Developer Dashboard** (https://chrome.google.com/webstore/devconsole).
 
 ---
