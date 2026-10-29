@@ -2,3 +2,8 @@ node_modules/
 dist/
 test-results/
 .DS_Store
+.env
+.env.*
+*.pem
+*.key
+*.log
