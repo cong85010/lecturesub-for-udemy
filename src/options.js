@@ -209,6 +209,13 @@
     });
   }
 
+  function playGoodSound() {
+    if (!gameSoundEnabled) return;
+    [587.33, 880].forEach((freq, idx) => {
+      setTimeout(() => playTone(freq, 'triangle', 0.22, 0.1), idx * 85);
+    });
+  }
+
   function playAgainSound() {
     playTone(220, 'sawtooth', 0.22, 0.09);
   }
@@ -251,6 +258,42 @@
     ], { duration: 900, easing: 'ease-out' });
 
     anim.onfinish = () => toast.remove();
+  }
+
+  function spawnGoodToast(originX, originY) {
+    const toast = document.createElement('div');
+    toast.className = 'game-recycle-toast game-good-toast';
+    toast.innerHTML = '<span>✨ Nhớ tốt (+15 XP)</span>';
+    document.body.appendChild(toast);
+    toast.style.left = `${originX}px`;
+    toast.style.top = `${originY - 30}px`;
+
+    const anim = toast.animate([
+      { transform: 'translate(-50%, 0) scale(0.85)', opacity: 0 },
+      { transform: 'translate(-50%, -28px) scale(1.05)', opacity: 1, offset: 0.35 },
+      { transform: 'translate(-50%, -50px) scale(0.95)', opacity: 0 }
+    ], { duration: 900, easing: 'ease-out' });
+
+    anim.onfinish = () => toast.remove();
+  }
+
+  function spawnGoodSparkles(originX, originY) {
+    const colors = ['#86efac', '#c6ed61', '#4ade80', '#ffffff', '#fae08a'];
+    for (let i = 0; i < 20; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      const velocity = 3 + Math.random() * 6;
+      confettiParticles.push({
+        x: originX,
+        y: originY,
+        vx: Math.cos(angle) * velocity,
+        vy: Math.sin(angle) * velocity - 2.5,
+        size: Math.random() * 6 + 3,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        rotation: Math.random() * 360,
+        rotSpeed: (Math.random() - 0.5) * 12,
+        alpha: 1
+      });
+    }
   }
 
   function setupConfettiCanvas() {
@@ -496,6 +539,8 @@
       try { await app.call('vocabulary.add', { item: updated }); } catch {}
     }
 
+    const baseRotate = isCardFlipped ? 180 : 0;
+
     if (rating === 3) {
       playVictorySound();
       spawnCoinBurst(originX, originY);
@@ -503,22 +548,32 @@
       gameXP += 25;
       saveGameSRSState();
       card.animate([
-        { transform: 'perspective(1200px) rotateY(180deg) translateX(0) scale(1)', opacity: 1 },
-        { transform: 'perspective(1200px) rotateY(180deg) translateX(300px) rotateZ(12deg) scale(0.8)', opacity: 0 }
+        { transform: `perspective(1200px) rotateY(${baseRotate}deg) translateX(0) scale(1)`, opacity: 1 },
+        { transform: `perspective(1200px) rotateY(${baseRotate}deg) translateX(320px) rotateZ(12deg) scale(0.8)`, opacity: 0 }
       ], { duration: 320, easing: 'ease-in' }).onfinish = () => {
         currentCardIndex++;
         renderCurrentGameCard();
+        card.animate([
+          { transform: 'perspective(1200px) rotateY(0deg) translateY(-25px) scale(0.95)', opacity: 0 },
+          { transform: 'perspective(1200px) rotateY(0deg) translateY(0) scale(1)', opacity: 1 }
+        ], { duration: 240, easing: 'cubic-bezier(0.2, 0.9, 0.3, 1)' });
       };
     } else if (rating === 2) {
-      playTone(587.33, 'triangle', 0.18, 0.08);
+      playGoodSound();
+      spawnGoodToast(originX, originY);
+      spawnGoodSparkles(originX, originY);
       gameXP += 15;
       saveGameSRSState();
       card.animate([
-        { transform: 'perspective(1200px) rotateY(180deg) translateX(0) scale(1)', opacity: 1 },
-        { transform: 'perspective(1200px) rotateY(180deg) translateX(260px) scale(0.85)', opacity: 0 }
+        { transform: `perspective(1200px) rotateY(${baseRotate}deg) translateX(0) scale(1)`, opacity: 1 },
+        { transform: `perspective(1200px) rotateY(${baseRotate}deg) translateX(280px) rotateZ(6deg) scale(0.85)`, opacity: 0 }
       ], { duration: 280, easing: 'ease-in' }).onfinish = () => {
         currentCardIndex++;
         renderCurrentGameCard();
+        card.animate([
+          { transform: 'perspective(1200px) rotateY(0deg) translateY(-25px) scale(0.95)', opacity: 0 },
+          { transform: 'perspective(1200px) rotateY(0deg) translateY(0) scale(1)', opacity: 1 }
+        ], { duration: 240, easing: 'cubic-bezier(0.2, 0.9, 0.3, 1)' });
       };
     } else {
       playShuffleSound();
@@ -527,7 +582,6 @@
       activeCards.push(current);
       spawnRecycleToast(originX, originY);
 
-      const baseRotate = isCardFlipped ? 180 : 0;
       card.animate([
         { transform: `perspective(1200px) rotateY(${baseRotate}deg) translateY(0) scale(1)`, opacity: 1 },
         { transform: `perspective(1200px) rotateY(${baseRotate}deg) translateY(190px) rotateZ(-7deg) scale(0.72)`, opacity: 0 }

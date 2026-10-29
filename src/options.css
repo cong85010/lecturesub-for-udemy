@@ -230,6 +230,7 @@ h2 { margin:0 0 7px; font-size:18px; line-height:1.35; font-weight:650; }
 #game-confetti-canvas { position:fixed; inset:0; pointer-events:none; z-index:999; width:100%; height:100%; }
 .gold-coin-3d { position:fixed; width:30px; height:30px; border-radius:50%; background:radial-gradient(circle at 35% 35%, #fff 0%, #ffd700 40%, #b8860b 80%, #5e4604 100%); box-shadow:0 4px 12px rgba(212,175,55,0.7), inset 0 0 4px #fff; pointer-events:none; z-index:1000; font-size:14px; display:flex; align-items:center; justify-content:center; color:#5e4604; font-weight:900; }
 .game-recycle-toast { position:fixed; pointer-events:none; z-index:1000; background:rgba(24, 29, 22, 0.92); backdrop-filter:blur(8px); color:#fae08a; border:1px solid rgba(212, 175, 55, 0.4); padding:6px 16px; border-radius:99px; font-size:13px; font-weight:700; box-shadow:0 8px 24px rgba(0,0,0,0.25); display:flex; align-items:center; gap:6px; }
+.game-good-toast { color:#86efac; border-color:rgba(134, 239, 172, 0.45); box-shadow:0 8px 24px rgba(74, 222, 128, 0.2); }
 
 @media (max-width:480px) {
   .card-stage { width:min(100%, 330px); height:500px; }

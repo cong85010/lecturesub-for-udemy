@@ -658,6 +658,11 @@
       setTimeout(() => playTone(200, 'triangle', 0.2, 0.06), 60);
     }
 
+    function playGoodSound() {
+      playTone(587.33, 'triangle', 0.18, 0.1);
+      setTimeout(() => playTone(880, 'triangle', 0.22, 0.1), 85);
+    }
+
     function spawnRecycleToast(originX, originY) {
       const toast = document.createElement('div');
       toast.style.cssText = 'position:fixed;pointer-events:none;z-index:1000;background:rgba(20,24,18,0.92);backdrop-filter:blur(8px);color:#fae08a;border:1px solid rgba(212,175,55,0.4);padding:8px 18px;border-radius:99px;font-size:13px;font-weight:700;box-shadow:0 8px 24px rgba(0,0,0,0.25);left:' + originX + 'px;top:' + (originY - 30) + 'px;';
@@ -673,6 +678,40 @@
       anim.onfinish = () => toast.remove();
     }
 
+    function spawnGoodToast(originX, originY) {
+      const toast = document.createElement('div');
+      toast.style.cssText = 'position:fixed;pointer-events:none;z-index:1000;background:rgba(20,24,18,0.92);backdrop-filter:blur(8px);color:#86efac;border:1px solid rgba(134,239,172,0.45);padding:8px 18px;border-radius:99px;font-size:13px;font-weight:700;box-shadow:0 8px 24px rgba(74,222,128,0.2);left:' + originX + 'px;top:' + (originY - 30) + 'px;';
+      toast.innerHTML = '<span>✨ Nhớ tốt (+15 XP)</span>';
+      document.body.appendChild(toast);
+
+      const anim = toast.animate([
+        { transform: 'translate(-50%, 0) scale(0.85)', opacity: 0 },
+        { transform: 'translate(-50%, -28px) scale(1.05)', opacity: 1, offset: 0.35 },
+        { transform: 'translate(-50%, -50px) scale(0.95)', opacity: 0 }
+      ], { duration: 900, easing: 'ease-out' });
+
+      anim.onfinish = () => toast.remove();
+    }
+
+    function spawnGoodSparkles(originX, originY) {
+      const colors = ['#86efac', '#c6ed61', '#4ade80', '#ffffff', '#fae08a'];
+      for (let i = 0; i < 20; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const velocity = 3 + Math.random() * 6;
+        confettiParticles.push({
+          x: originX,
+          y: originY,
+          vx: Math.cos(angle) * velocity,
+          vy: Math.sin(angle) * velocity - 2.5,
+          size: Math.random() * 6 + 3,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          rotation: Math.random() * 360,
+          rotSpeed: (Math.random() - 0.5) * 12,
+          alpha: 1
+        });
+      }
+    }
+
     document.getElementById('btn-sound-toggle').addEventListener('click', () => {
       soundEnabled = !soundEnabled;
       document.getElementById('btn-sound-toggle').textContent = soundEnabled ? '🔊' : '🔇';
@@ -683,27 +722,6 @@
     const card = document.getElementById('game-card');
     const holo = document.getElementById('holo-sheen');
     let isFlipped = false;
-
-    stage.addEventListener('pointermove', (e) => {
-      const rect = stage.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      const normX = (x / rect.width) * 2 - 1;
-      const normY = (y / rect.height) * 2 - 1;
-
-      // Update holo gradient position
-      card.style.setProperty('--mouse-x', `${(x / rect.width) * 100}%`);
-      card.style.setProperty('--mouse-y', `${(y / rect.height) * 100}%`);
-
-      // 3D Tilt calculation
-      const rotX = -normY * 14;
-      const rotY = (isFlipped ? 180 : 0) + normX * 14;
-      card.style.transform = `perspective(1200px) rotateX(${rotX}deg) rotateY(${rotY}deg) scale3d(1.02, 1.02, 1.02)`;
-    });
-
-    stage.addEventListener('pointerleave', () => {
-      card.style.transform = isFlipped ? 'perspective(1200px) rotateY(180deg)' : 'perspective(1200px) rotateY(0deg)';
-    });
 
     function toggleFlip() {
       isFlipped = !isFlipped;
@@ -874,6 +892,8 @@
       const originX = rect.left + rect.width / 2;
       const originY = rect.top + rect.height / 2;
 
+      const baseRotate = isFlipped ? 180 : 0;
+
       if (type === 'easy') {
         playSuccessSound();
         spawnCoinBurst(originX, originY);
@@ -885,19 +905,43 @@
 
         // Card swipe right animation
         card.animate([
-          { transform: 'perspective(1200px) rotateY(180deg) translateX(0) scale(1)', opacity: 1 },
-          { transform: 'perspective(1200px) rotateY(180deg) translateX(280px) rotateZ(12deg) scale(0.8)', opacity: 0 }
-        ], { duration: 350, easing: 'ease-in' }).onfinish = () => {
+          { transform: `perspective(1200px) rotateY(${baseRotate}deg) translateX(0) scale(1)`, opacity: 1 },
+          { transform: `perspective(1200px) rotateY(${baseRotate}deg) translateX(320px) rotateZ(12deg) scale(0.8)`, opacity: 0 }
+        ], { duration: 320, easing: 'ease-in' }).onfinish = () => {
           cardIndex++;
           loadCard(cardIndex);
+          card.animate([
+            { transform: 'perspective(1200px) rotateY(0deg) translateY(-25px) scale(0.95)', opacity: 0 },
+            { transform: 'perspective(1200px) rotateY(0deg) translateY(0) scale(1)', opacity: 1 }
+          ], { duration: 240, easing: 'cubic-bezier(0.2, 0.9, 0.3, 1)' });
+        };
+      } else if (type === 'good') {
+        playGoodSound();
+        spawnGoodToast(originX, originY);
+        spawnGoodSparkles(originX, originY);
+
+        currentXP = Math.min(100, currentXP + 15);
+        document.getElementById('xp-bar-fill').style.width = `${currentXP}%`;
+        document.getElementById('xp-label').textContent = `${currentXP} / 100 XP`;
+
+        card.animate([
+          { transform: `perspective(1200px) rotateY(${baseRotate}deg) translateX(0) scale(1)`, opacity: 1 },
+          { transform: `perspective(1200px) rotateY(${baseRotate}deg) translateX(280px) rotateZ(6deg) scale(0.85)`, opacity: 0 }
+        ], { duration: 280, easing: 'ease-in' }).onfinish = () => {
+          cardIndex++;
+          loadCard(cardIndex);
+          card.animate([
+            { transform: 'perspective(1200px) rotateY(0deg) translateY(-25px) scale(0.95)', opacity: 0 },
+            { transform: 'perspective(1200px) rotateY(0deg) translateY(0) scale(1)', opacity: 1 }
+          ], { duration: 240, easing: 'cubic-bezier(0.2, 0.9, 0.3, 1)' });
         };
       } else if (type === 'again') {
         playShuffleSound();
         spawnRecycleToast(originX, originY);
         // Card slides down into bottom of deck
         card.animate([
-          { transform: 'perspective(1200px) rotateY(180deg) translateY(0) scale(1)', opacity: 1 },
-          { transform: 'perspective(1200px) rotateY(180deg) translateY(190px) rotateZ(-7deg) scale(0.72)', opacity: 0 }
+          { transform: `perspective(1200px) rotateY(${baseRotate}deg) translateY(0) scale(1)`, opacity: 1 },
+          { transform: `perspective(1200px) rotateY(${baseRotate}deg) translateY(190px) rotateZ(-7deg) scale(0.72)`, opacity: 0 }
         ], { duration: 280, easing: 'cubic-bezier(0.32, 0, 0.67, 0)' }).onfinish = () => {
           cardIndex++;
           loadCard(cardIndex);
@@ -906,10 +950,6 @@
             { transform: 'perspective(1200px) rotateY(0deg) translateY(0) scale(1)', opacity: 1 }
           ], { duration: 260, easing: 'cubic-bezier(0.2, 0.9, 0.3, 1)' });
         };
-      } else {
-        playFlipSound();
-        cardIndex++;
-        loadCard(cardIndex);
       }
     }
 
