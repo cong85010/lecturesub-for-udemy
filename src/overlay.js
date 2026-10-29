@@ -2,7 +2,10 @@
   'use strict';
   const app = globalThis.CCUdemy ||= {};
   const gear = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="m9 3-.6 3-2 .9-2.7-1-2 3.5 2.2 2v2.2l-2.2 2 2 3.5 2.7-1 2 .9.6 3h4l.6-3 2-.9 2.7 1 2-3.5-2.2-2v-2.2l2.2-2-2-3.5-2.7 1-2-.9L13 3Z"/><circle cx="11" cy="12" r="3"/></svg>';
-  const speaker = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>';
+  const speaker = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>';
+  const replayIcon = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>';
+  const copyIcon = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="13" height="13" x="9" y="9" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+  const checkIcon = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#2e7d32" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>';
   app.createOverlay = (container, handlers) => {
     const host = document.createElement('div'); host.id = 'cc-udemy-overlay';
     host.style.cssText = 'position:absolute;inset:0;z-index:40;pointer-events:none;';
@@ -26,14 +29,16 @@
         <div class="lookup-top"><span class="lookup-label"></span><button type="button" class="close icon-button" aria-label="Đóng tra từ"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button></div>
         <div class="lookup-word-row">
           <h2 class="lookup-word" dir="auto"></h2>
-          <button type="button" class="speak-word icon-button" aria-label="Phát âm từ vựng" title="Phát âm">${speaker}</button>
+          <div class="lookup-tools">
+            <button type="button" class="speak-word icon-btn" aria-label="Phát âm" title="Phát âm">${speaker}</button>
+            <button type="button" class="replay-cue icon-btn" aria-label="Nghe lại trong video" title="Nghe lại trong video">${replayIcon}</button>
+            <button type="button" class="copy-word icon-btn" aria-label="Sao chép" title="Sao chép">${copyIcon}</button>
+          </div>
         </div>
         <p class="meaning" role="status" dir="auto"></p>
         <div class="lookup-actions">
           <button class="save-word" type="button" disabled>Lưu từ</button>
           <button class="notebook" type="button">Sổ từ vựng</button>
-          <button class="copy-word" type="button">Sao chép</button>
-          <button class="replay-cue" type="button" title="Nghe lại đoạn video này">↺ Nghe trong video</button>
           <button class="retry-word" type="button" hidden>Thử tra lại</button>
         </div>
         <span class="save-status" role="status"></span><span class="lookup-note">Nghĩa của từ đơn · Esc để đóng</span>
@@ -99,9 +104,20 @@
         area.remove();
       }
       const copyBtn = $('.copy-word');
-      const originalText = copyBtn.textContent;
-      copyBtn.textContent = 'Đã sao chép! ✓';
-      setTimeout(() => { if (copyBtn.isConnected) copyBtn.textContent = originalText; }, 1500);
+      if (copyBtn) {
+        copyBtn.innerHTML = checkIcon;
+        copyBtn.classList.add('copied');
+        copyBtn.title = 'Đã sao chép! ✓';
+        $('.save-status').textContent = 'Đã sao chép! ✓';
+        setTimeout(() => {
+          if (copyBtn.isConnected) {
+            copyBtn.innerHTML = copyIcon;
+            copyBtn.classList.remove('copied');
+            copyBtn.title = 'Sao chép';
+            if ($('.save-status').textContent === 'Đã sao chép! ✓') $('.save-status').textContent = '';
+          }
+        }, 1500);
+      }
     });
     function speakCurrentWord() {
       if (!activeWord) return;

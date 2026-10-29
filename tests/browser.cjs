@@ -76,7 +76,7 @@ const scripts = ['languages.js', 'settings.js', 'library.js', 'store.js', 'clien
     await copyButton.click();
     await page.waitForFunction(() => {
       const host = document.querySelector('#cc-udemy-overlay');
-      return host.shadowRoot.querySelector('.copy-word').textContent.includes('Đã sao chép');
+      return host.shadowRoot.querySelector('.copy-word').classList.contains('copied');
     });
 
     // Verify speaker pronounce button
