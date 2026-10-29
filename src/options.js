@@ -217,6 +217,42 @@
     playTone(480, 'sine', 0.08, 0.05);
   }
 
+  function playShuffleSound() {
+    if (!gameSoundEnabled) return;
+    try {
+      initAudio();
+      if (!gameAudioCtx) return;
+      const osc = gameAudioCtx.createOscillator();
+      const gain = gameAudioCtx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(340, gameAudioCtx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(160, gameAudioCtx.currentTime + 0.22);
+      gain.gain.setValueAtTime(0.08, gameAudioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.0001, gameAudioCtx.currentTime + 0.22);
+      osc.connect(gain);
+      gain.connect(gameAudioCtx.destination);
+      osc.start();
+      osc.stop(gameAudioCtx.currentTime + 0.22);
+    } catch {}
+  }
+
+  function spawnRecycleToast(originX, originY) {
+    const toast = document.createElement('div');
+    toast.className = 'game-recycle-toast';
+    toast.innerHTML = '<span>🔄 Đã xếp vào cuối cọc bài</span>';
+    document.body.appendChild(toast);
+    toast.style.left = `${originX}px`;
+    toast.style.top = `${originY - 30}px`;
+
+    const anim = toast.animate([
+      { transform: 'translate(-50%, 0) scale(0.85)', opacity: 0 },
+      { transform: 'translate(-50%, -24px) scale(1)', opacity: 1, offset: 0.3 },
+      { transform: 'translate(-50%, -46px) scale(0.96)', opacity: 0 }
+    ], { duration: 900, easing: 'ease-out' });
+
+    anim.onfinish = () => toast.remove();
+  }
+
   function setupConfettiCanvas() {
     const canvas = $('#game-confetti-canvas');
     if (!canvas) return;
@@ -459,19 +495,23 @@
         renderCurrentGameCard();
       };
     } else {
-      playAgainSound();
+      playShuffleSound();
       gameXP += 5;
       saveGameSRSState();
       activeCards.push(current);
+      spawnRecycleToast(originX, originY);
+
+      const baseRotate = isCardFlipped ? 180 : 0;
       card.animate([
-        { transform: 'translateX(0)' },
-        { transform: 'translateX(-14px) rotateZ(-3deg)' },
-        { transform: 'translateX(14px) rotateZ(3deg)' },
-        { transform: 'translateX(-8px)' },
-        { transform: 'translateX(0)' }
-      ], { duration: 320 }).onfinish = () => {
+        { transform: `perspective(1200px) rotateY(${baseRotate}deg) translateY(0) scale(1)`, opacity: 1 },
+        { transform: `perspective(1200px) rotateY(${baseRotate}deg) translateY(190px) rotateZ(-7deg) scale(0.72)`, opacity: 0 }
+      ], { duration: 280, easing: 'cubic-bezier(0.32, 0, 0.67, 0)' }).onfinish = () => {
         currentCardIndex++;
         renderCurrentGameCard();
+        card.animate([
+          { transform: 'perspective(1200px) rotateY(0deg) translateY(-50px) scale(0.92)', opacity: 0 },
+          { transform: 'perspective(1200px) rotateY(0deg) translateY(0) scale(1)', opacity: 1 }
+        ], { duration: 260, easing: 'cubic-bezier(0.2, 0.9, 0.3, 1)' });
       };
     }
   }

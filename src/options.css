@@ -130,8 +130,11 @@ h2 { margin:0 0 7px; font-size:18px; line-height:1.35; font-weight:650; }
 .game-card { width:100%; height:100%; position:relative; transform-style:preserve-3d; transition:transform 0.6s cubic-bezier(0.23, 1, 0.32, 1); cursor:pointer; border-radius:24px; outline:none; }
 .game-card.is-flipped { transform:rotateY(180deg); }
 .card-face { position:absolute; inset:0; width:100%; height:100%; backface-visibility:hidden; -webkit-backface-visibility:hidden; border-radius:24px; overflow:hidden; display:flex; flex-direction:column; box-shadow:0 30px 60px -15px rgba(20, 24, 18, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1); }
-.card-front { background:linear-gradient(150deg, #181d16 0%, #10130e 55%, #1f271c 100%); border:2px solid #3c4933; }
-.card-back { background:linear-gradient(150deg, #151a14 0%, #0d100d 50%, #1e261a 100%); border:2px solid #4d5c41; transform:rotateY(180deg); }
+.card-front { background:linear-gradient(150deg, #181d16 0%, #10130e 55%, #1f271c 100%); border:2px solid #3c4933; transform:translateZ(1px); z-index:2; }
+.card-back { background:linear-gradient(150deg, #151a14 0%, #0d100d 50%, #1e261a 100%); border:2px solid #4d5c41; transform:rotateY(180deg) translateZ(1px); z-index:1; }
+.game-card:not(.is-flipped) .card-back { visibility:hidden; pointer-events:none; }
+.game-card.is-flipped .card-front { visibility:hidden; pointer-events:none; }
+.game-card.is-flipped .card-back { visibility:visible; pointer-events:auto; z-index:2; }
 .holo-sheen { position:absolute; inset:0; pointer-events:none; border-radius:22px; opacity:0; transition:opacity 0.25s ease; mix-blend-mode:overlay; z-index:2; background:radial-gradient(circle at 50% 50%, rgba(255,255,255,0.7) 0%, rgba(254,240,138,0.3) 30%, rgba(134,239,172,0.15) 55%, transparent 80%); }
 .game-card:hover .holo-sheen { opacity:1; }
 
@@ -188,6 +191,7 @@ h2 { margin:0 0 7px; font-size:18px; line-height:1.35; font-weight:650; }
 
 #game-confetti-canvas { position:fixed; inset:0; pointer-events:none; z-index:999; width:100%; height:100%; }
 .gold-coin-3d { position:fixed; width:30px; height:30px; border-radius:50%; background:radial-gradient(circle at 35% 35%, #fff 0%, #ffd700 40%, #b8860b 80%, #5e4604 100%); box-shadow:0 4px 12px rgba(212,175,55,0.7), inset 0 0 4px #fff; pointer-events:none; z-index:1000; font-size:14px; display:flex; align-items:center; justify-content:center; color:#5e4604; font-weight:900; }
+.game-recycle-toast { position:fixed; pointer-events:none; z-index:1000; background:rgba(24, 29, 22, 0.92); backdrop-filter:blur(8px); color:#fae08a; border:1px solid rgba(212, 175, 55, 0.4); padding:6px 16px; border-radius:99px; font-size:13px; font-weight:700; box-shadow:0 8px 24px rgba(0,0,0,0.25); display:flex; align-items:center; gap:6px; }
 
 @media (max-width:480px) {
   .card-stage { width:min(100%, 330px); height:500px; }

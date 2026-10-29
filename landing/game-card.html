@@ -165,6 +165,7 @@
       border: 3px solid #2e3a28;
       color: #ffffff;
       padding: 26px 24px;
+      transform: translateZ(1px);
     }
 
     .card-front::before {
@@ -309,7 +310,7 @@
       border: 3px solid #7aa119;
       color: #141713;
       padding: 26px 24px;
-      transform: rotateY(180deg);
+      transform: rotateY(180deg) translateZ(1px);
     }
 
     .card-back::before {
@@ -652,9 +653,24 @@
       setTimeout(() => playTone(1046.50, 'sine', 0.25, 0.18), 240);    // C6
     }
 
-    function playAgainSound() {
-      playTone(280, 'sine', 0.15, 0.08);
-      setTimeout(() => playTone(220, 'sine', 0.2, 0.08), 100);
+    function playShuffleSound() {
+      playTone(340, 'triangle', 0.15, 0.08);
+      setTimeout(() => playTone(200, 'triangle', 0.2, 0.06), 60);
+    }
+
+    function spawnRecycleToast(originX, originY) {
+      const toast = document.createElement('div');
+      toast.style.cssText = 'position:fixed;pointer-events:none;z-index:1000;background:rgba(20,24,18,0.92);backdrop-filter:blur(8px);color:#fae08a;border:1px solid rgba(212,175,55,0.4);padding:8px 18px;border-radius:99px;font-size:13px;font-weight:700;box-shadow:0 8px 24px rgba(0,0,0,0.25);left:' + originX + 'px;top:' + (originY - 30) + 'px;';
+      toast.innerHTML = '<span>🔄 Đã xếp vào cuối cọc bài</span>';
+      document.body.appendChild(toast);
+
+      const anim = toast.animate([
+        { transform: 'translate(-50%, 0) scale(0.85)', opacity: 0 },
+        { transform: 'translate(-50%, -24px) scale(1)', opacity: 1, offset: 0.3 },
+        { transform: 'translate(-50%, -46px) scale(0.96)', opacity: 0 }
+      ], { duration: 900, easing: 'ease-out' });
+
+      anim.onfinish = () => toast.remove();
     }
 
     document.getElementById('btn-sound-toggle').addEventListener('click', () => {
@@ -876,15 +892,20 @@
           loadCard(cardIndex);
         };
       } else if (type === 'again') {
-        playAgainSound();
-        // Card shake red animation
+        playShuffleSound();
+        spawnRecycleToast(originX, originY);
+        // Card slides down into bottom of deck
         card.animate([
-          { transform: 'translateX(0)' },
-          { transform: 'translateX(-12px) rotateZ(-3deg)' },
-          { transform: 'translateX(12px) rotateZ(3deg)' },
-          { transform: 'translateX(-8px)' },
-          { transform: 'translateX(0)' }
-        ], { duration: 320 });
+          { transform: 'perspective(1200px) rotateY(180deg) translateY(0) scale(1)', opacity: 1 },
+          { transform: 'perspective(1200px) rotateY(180deg) translateY(190px) rotateZ(-7deg) scale(0.72)', opacity: 0 }
+        ], { duration: 280, easing: 'cubic-bezier(0.32, 0, 0.67, 0)' }).onfinish = () => {
+          cardIndex++;
+          loadCard(cardIndex);
+          card.animate([
+            { transform: 'perspective(1200px) rotateY(0deg) translateY(-50px) scale(0.92)', opacity: 0 },
+            { transform: 'perspective(1200px) rotateY(0deg) translateY(0) scale(1)', opacity: 1 }
+          ], { duration: 260, easing: 'cubic-bezier(0.2, 0.9, 0.3, 1)' });
+        };
       } else {
         playFlipSound();
         cardIndex++;
