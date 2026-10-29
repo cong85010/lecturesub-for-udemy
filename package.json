@@ -15,6 +15,13 @@
     "test:browser": "node tests/browser.cjs && node tests/ui-races.cjs",
     "package": "node scripts/package.mjs"
   },
-  "engines": { "node": ">=20" },
-  "devDependencies": { "playwright": "1.62.1" }
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "playwright": "1.62.1"
+  },
+  "dependencies": {
+    "three": "^0.186.1"
+  }
 }

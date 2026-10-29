@@ -1,0 +1,604 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bookie 3D Mascot — LectureSub Magic Tome</title>
+  <link rel="icon" type="image/png" href="assets/icon-32.png">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      background: radial-gradient(circle at 50% 30%, #fbf9f5 0%, #ece8dd 100%);
+      color: var(--ink);
+      min-height: 100vh;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .mascot-hero {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 24px;
+      text-align: center;
+      position: relative;
+      z-index: 10;
+    }
+    .mascot-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      background: #ffffff;
+      border: 1px solid var(--line);
+      border-radius: 99px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #384230;
+      margin-bottom: 16px;
+      box-shadow: var(--shadow-sm);
+    }
+    .mascot-title {
+      font-size: clamp(32px, 4vw, 44px);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: 8px;
+    }
+    .mascot-subtitle {
+      font-size: 16px;
+      color: var(--muted);
+      max-width: 580px;
+      margin-bottom: 24px;
+      line-height: 1.5;
+    }
+    .canvas-container {
+      width: min(100%, 640px);
+      height: 440px;
+      position: relative;
+      background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.85) 0%, rgba(245,242,234,0.4) 70%, transparent 100%);
+      border-radius: 28px;
+      border: 1px solid rgba(229, 225, 215, 0.8);
+      box-shadow: 0 20px 60px rgba(20, 20, 19, 0.08), inset 0 2px 10px rgba(255,255,255,0.8);
+      overflow: hidden;
+      touch-action: none;
+      margin-bottom: 24px;
+    }
+    #three-canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+    .canvas-hint {
+      position: absolute;
+      bottom: 14px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(20, 20, 19, 0.75);
+      color: #ffffff;
+      font-size: 12px;
+      font-weight: 500;
+      padding: 6px 14px;
+      border-radius: 99px;
+      backdrop-filter: blur(8px);
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .controls-panel {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      max-width: 680px;
+    }
+    .ctrl-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #ffffff;
+      color: var(--ink);
+      border: 1px solid var(--line);
+      padding: 12px 20px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: var(--shadow-sm);
+      transition: all 120ms cubic-bezier(0.34, 1.56, 0.64, 1);
+      user-select: none;
+    }
+    .ctrl-btn:hover {
+      border-color: #c0baa8;
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+    .ctrl-btn:active {
+      transform: translateY(1px) scale(0.97);
+    }
+    .ctrl-btn.primary {
+      background: var(--ink);
+      color: #ffffff;
+      border-color: var(--ink);
+    }
+    .ctrl-btn.primary:hover {
+      background: #2a2e26;
+    }
+    .ctrl-btn.accent {
+      background: var(--accent);
+      color: var(--accent-text);
+      border-color: #aed93d;
+    }
+    .mascot-dialog {
+      margin-top: 20px;
+      background: #ffffff;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 14px 24px;
+      font-size: 15px;
+      font-weight: 500;
+      color: #2b3225;
+      box-shadow: var(--shadow-sm);
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      max-width: 480px;
+      animation: dialogPop 250ms ease;
+    }
+    @keyframes dialogPop {
+      0% { transform: scale(0.9); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="header-container">
+      <a class="brand" href="index.html">
+        <img src="assets/icon-48.png" alt="LectureSub Logo" width="32" height="32" class="brand-logo">
+        <span class="brand-text"><strong>Lecture</strong>Sub · 3D Lab</span>
+      </a>
+      <a href="index.html" class="nav-link">← Về Landing Page</a>
+    </div>
+  </header>
+
+  <main class="mascot-hero">
+    <div class="mascot-badge">✨ Linh vật 3D tương tác · Concept B</div>
+    <h1 class="mascot-title">Gặp gỡ Bookie — Cuốn Sách Thông Thái 3D</h1>
+    <p class="mascot-subtitle">
+      Bạn đồng hành ma thuật của bạn trên mọi bài giảng Udemy. Di chuyển chuột để Bookie nhìn theo bạn, hoặc bấm các nút bên dưới để thử các biểu cảm Game!
+    </p>
+
+    <!-- 3D Canvas Stage -->
+    <div class="canvas-container" id="canvas-container">
+      <canvas id="three-canvas"></canvas>
+      <div class="canvas-hint">
+        <span>✨ Rê chuột / vuốt tay để Bookie tương tác theo bạn</span>
+      </div>
+    </div>
+
+    <!-- Emotion Triggers -->
+    <div class="controls-panel">
+      <button type="button" class="ctrl-btn accent" id="btn-celebrate">
+        🎉 Thuộc từ (+1 Streak)
+      </button>
+      <button type="button" class="ctrl-btn primary" id="btn-flip">
+        📖 Lật trang sách
+      </button>
+      <button type="button" class="ctrl-btn" id="btn-encourage">
+        🌱 Quên xíu (Cố lên nào!)
+      </button>
+      <button type="button" class="ctrl-btn" id="btn-wink">
+        😉 Nháy mắt thân thiện
+      </button>
+      <button type="button" class="ctrl-btn" id="btn-reset">
+        🔄 Nhìn thẳng
+      </button>
+    </div>
+
+    <!-- Speech bubble -->
+    <div class="mascot-dialog" id="mascot-dialog">
+      <span style="font-size:20px;">🪄</span>
+      <span id="dialog-text">"Chào bạn! Mình là Bookie, sẵn sàng cùng bạn chinh phục mọi từ vựng Udemy!"</span>
+    </div>
+  </main>
+
+  <script src="assets/three.min.js"></script>
+  <script>
+    const container = document.getElementById('canvas-container');
+    const canvas = document.getElementById('three-canvas');
+    const dialogText = document.getElementById('dialog-text');
+
+    // 1. Scene, Camera, Renderer
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(40, container.clientWidth / container.clientHeight, 0.1, 100);
+    // Camera angle: slightly isometric to show book depth & pages
+    camera.position.set(0.6, 0.4, 4.8);
+    camera.lookAt(0, 0, 0);
+
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+    renderer.setSize(container.clientWidth, container.clientHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+    // 2. Lighting Setup (Soft Studio Warm Light)
+    const ambientLight = new THREE.AmbientLight(0xfff8ee, 1.4);
+    scene.add(ambientLight);
+
+    const keyLight = new THREE.DirectionalLight(0xffffff, 1.8);
+    keyLight.position.set(3, 5, 4);
+    keyLight.castShadow = true;
+    keyLight.shadow.mapSize.width = 1024;
+    keyLight.shadow.mapSize.height = 1024;
+    keyLight.shadow.bias = -0.001;
+    scene.add(keyLight);
+
+    const rimLight = new THREE.DirectionalLight(0xc6ed61, 1.6); // Chartreuse rim glow
+    rimLight.position.set(-3, 2, -2);
+    scene.add(rimLight);
+
+    const fillLight = new THREE.PointLight(0xf9d877, 1.2, 10); // Warm amber fill
+    fillLight.position.set(0, -2, 2);
+    scene.add(fillLight);
+
+    // 3. Create Bookie Model Group
+    const bookie = new THREE.Group();
+    scene.add(bookie);
+
+    // Materials
+    const leatherCoverMat = new THREE.MeshStandardMaterial({
+      color: 0x1f2e22, // Deep forest leather
+      roughness: 0.35,
+      metalness: 0.15
+    });
+    const goldTrimMat = new THREE.MeshStandardMaterial({
+      color: 0xd6b247, // Rich antique gold
+      roughness: 0.25,
+      metalness: 0.8
+    });
+    const pageBlockMat = new THREE.MeshStandardMaterial({
+      color: 0xfdfbf4, // Warm parchment cream
+      roughness: 0.7,
+      metalness: 0.05
+    });
+    const eyeWhiteMat = new THREE.MeshStandardMaterial({
+      color: 0xffffff,
+      roughness: 0.1,
+      metalness: 0.05
+    });
+    const eyeIrisMat = new THREE.MeshStandardMaterial({
+      color: 0x9ecb18, // Chartreuse pupil
+      emissive: 0x486b05,
+      roughness: 0.2,
+      metalness: 0.1
+    });
+    const pupilBlackMat = new THREE.MeshBasicMaterial({ color: 0x121411 });
+    const sparkleWhiteMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+    const ribbonMat = new THREE.MeshStandardMaterial({
+      color: 0xc6ed61, // Chartreuse silk ribbon
+      roughness: 0.4,
+      metalness: 0.2
+    });
+
+    // --- Book Body ---
+    // Pages block (main volume)
+    const pagesGeo = new THREE.BoxGeometry(1.7, 2.2, 0.42);
+    const pagesMesh = new THREE.Mesh(pagesGeo, pageBlockMat);
+    pagesMesh.castShadow = true;
+    pagesMesh.receiveShadow = true;
+    pagesMesh.position.set(0.04, 0, 0);
+    bookie.add(pagesMesh);
+
+    // Back Cover
+    const backCoverGeo = new THREE.BoxGeometry(1.82, 2.36, 0.06);
+    const backCoverMesh = new THREE.Mesh(backCoverGeo, leatherCoverMat);
+    backCoverMesh.position.set(0, 0, -0.23);
+    backCoverMesh.castShadow = true;
+    bookie.add(backCoverMesh);
+
+    // Spine (Spine rounded cylinder)
+    const spineGeo = new THREE.CylinderGeometry(0.24, 0.24, 2.36, 24, 1, false, Math.PI / 2, Math.PI);
+    const spineMesh = new THREE.Mesh(spineGeo, leatherCoverMat);
+    spineMesh.rotation.y = Math.PI / 2;
+    spineMesh.position.set(-0.91, 0, 0);
+    spineMesh.castShadow = true;
+    bookie.add(spineMesh);
+
+    // Front Cover (Hinged Group for opening)
+    const frontCoverPivot = new THREE.Group();
+    frontCoverPivot.position.set(-0.91, 0, 0.23); // Hinge at spine
+    bookie.add(frontCoverPivot);
+
+    const frontCoverGeo = new THREE.BoxGeometry(1.82, 2.36, 0.06);
+    const frontCoverMesh = new THREE.Mesh(frontCoverGeo, leatherCoverMat);
+    frontCoverMesh.position.set(0.91, 0, 0);
+    frontCoverMesh.castShadow = true;
+    frontCoverPivot.add(frontCoverMesh);
+
+    // Gold Corner Protectors
+    function makeCorner(x, y) {
+      const cornerGeo = new THREE.BoxGeometry(0.25, 0.25, 0.075);
+      const corner = new THREE.Mesh(cornerGeo, goldTrimMat);
+      corner.position.set(x, y, 0.005);
+      return corner;
+    }
+    frontCoverMesh.add(makeCorner(0.78, 1.05));
+    frontCoverMesh.add(makeCorner(0.78, -1.05));
+    frontCoverMesh.add(makeCorner(-0.78, 1.05));
+    frontCoverMesh.add(makeCorner(-0.78, -1.05));
+
+    // Gold Magic Seal on Forehead (Crown Insignia)
+    const sealGeo = new THREE.TorusGeometry(0.18, 0.02, 16, 32);
+    const sealMesh = new THREE.Mesh(sealGeo, goldTrimMat);
+    sealMesh.position.set(0, 0.72, 0.035);
+    frontCoverMesh.add(sealMesh);
+
+    const innerStarGeo = new THREE.OctahedronGeometry(0.09, 0);
+    const innerStar = new THREE.Mesh(innerStarGeo, goldTrimMat);
+    innerStar.position.set(0, 0.72, 0.04);
+    innerStar.rotation.z = Math.PI / 4;
+    frontCoverMesh.add(innerStar);
+
+    // --- Hanging Satin Bookmark Ribbon ---
+    const ribbonGroup = new THREE.Group();
+    ribbonGroup.position.set(-0.3, -1.18, 0);
+    bookie.add(ribbonGroup);
+
+    const ribbonGeo = new THREE.BoxGeometry(0.12, 0.7, 0.02);
+    const ribbonMesh = new THREE.Mesh(ribbonGeo, ribbonMat);
+    ribbonMesh.position.set(0, -0.35, 0);
+    ribbonGroup.add(ribbonMesh);
+
+    // --- Expressive 3D Eyes Group ---
+    const eyesGroup = new THREE.Group();
+    eyesGroup.position.set(0, 0.16, 0.04); // Front face of cover
+    frontCoverMesh.add(eyesGroup);
+
+    function createEye(posX) {
+      const eyePivot = new THREE.Group();
+      eyePivot.position.set(posX, 0, 0);
+
+      // Sclera (White dome)
+      const scleraGeo = new THREE.SphereGeometry(0.20, 32, 16);
+      scleraGeo.scale(1, 1, 0.45);
+      const sclera = new THREE.Mesh(scleraGeo, eyeWhiteMat);
+      eyePivot.add(sclera);
+
+      // Iris & Pupil (Trackable)
+      const irisGroup = new THREE.Group();
+      irisGroup.position.set(0, 0, 0.07);
+
+      const irisGeo = new THREE.CircleGeometry(0.125, 24);
+      const iris = new THREE.Mesh(irisGeo, eyeIrisMat);
+      irisGroup.add(iris);
+
+      const pupilGeo = new THREE.CircleGeometry(0.075, 24);
+      const pupil = new THREE.Mesh(pupilGeo, pupilBlackMat);
+      pupil.position.z = 0.002;
+      irisGroup.add(pupil);
+
+      // Cute anime highlight sparkles ✨
+      const shine1Geo = new THREE.CircleGeometry(0.038, 16);
+      const shine1 = new THREE.Mesh(shine1Geo, sparkleWhiteMat);
+      shine1.position.set(0.04, 0.04, 0.004);
+      irisGroup.add(shine1);
+
+      const shine2Geo = new THREE.CircleGeometry(0.018, 12);
+      const shine2 = new THREE.Mesh(shine2Geo, sparkleWhiteMat);
+      shine2.position.set(-0.035, -0.035, 0.004);
+      irisGroup.add(shine2);
+
+      eyePivot.add(irisGroup);
+
+      return { pivot: eyePivot, irisGroup, sclera };
+    }
+
+    const leftEye = createEye(-0.36);
+    const rightEye = createEye(0.36);
+    eyesGroup.add(leftEye.pivot);
+    eyesGroup.add(rightEye.pivot);
+
+    // Cute Smile Mouth
+    const mouthGeo = new THREE.TorusGeometry(0.10, 0.018, 12, 24, Math.PI);
+    const mouthMat = new THREE.MeshBasicMaterial({ color: 0xd6b247 }); // Golden smile
+    const mouth = new THREE.Mesh(mouthGeo, mouthMat);
+    mouth.position.set(0, -0.22, 0.04);
+    mouth.rotation.z = Math.PI; // Curved upward smile
+    frontCoverMesh.add(mouth);
+
+    // Blushing Cheeks (Kawaii / Friendly touch)
+    const blushMat = new THREE.MeshBasicMaterial({ color: 0xff8c69, transparent: true, opacity: 0.55 });
+    const blushGeo = new THREE.CircleGeometry(0.08, 16);
+    const leftBlush = new THREE.Mesh(blushGeo, blushMat);
+    leftBlush.position.set(-0.50, -0.08, 0.04);
+    frontCoverMesh.add(leftBlush);
+    const rightBlush = new THREE.Mesh(blushGeo, blushMat);
+    rightBlush.position.set(0.50, -0.08, 0.04);
+    frontCoverMesh.add(rightBlush);
+
+    // --- Floating Magic Particles (Sparkles around Bookie) ---
+    const particleCount = 28;
+    const particleGeo = new THREE.SphereGeometry(0.03, 8, 8);
+    const particleMat = new THREE.MeshBasicMaterial({
+      color: 0xc6ed61,
+      transparent: true,
+      opacity: 0.8
+    });
+    const particlesGroup = new THREE.Group();
+    scene.add(particlesGroup);
+
+    const sparkles = [];
+    for (let i = 0; i < particleCount; i++) {
+      const sparkle = new THREE.Mesh(particleGeo, particleMat.clone());
+      sparkle.material.color.set(i % 2 === 0 ? 0xc6ed61 : 0xf9d877);
+      const radius = 1.6 + Math.random() * 0.8;
+      const theta = Math.random() * Math.PI * 2;
+      const y = (Math.random() - 0.5) * 2.5;
+      sparkle.position.set(Math.cos(theta) * radius, y, Math.sin(theta) * radius);
+      sparkles.push({
+        mesh: sparkle,
+        speed: 0.5 + Math.random() * 0.8,
+        theta,
+        radius,
+        baseY: y
+      });
+      particlesGroup.add(sparkle);
+    }
+
+    // 4. Mouse Tracking & Interaction Logic
+    const mouse = { x: 0, y: 0, targetX: 0, targetY: 0 };
+    let isBlinking = false;
+    let isHappy = false;
+    let isFlipping = false;
+    let flipProgress = 0;
+    let spinVelocity = 0;
+
+    container.addEventListener('pointermove', (e) => {
+      const rect = container.getBoundingClientRect();
+      const x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+      const y = -(((e.clientY - rect.top) / rect.height) * 2 - 1);
+      mouse.targetX = x;
+      mouse.targetY = y;
+    });
+
+    container.addEventListener('pointerleave', () => {
+      mouse.targetX = 0;
+      mouse.targetY = 0;
+    });
+
+    // Auto Blinking
+    function triggerBlink() {
+      if (isBlinking || isHappy) return;
+      isBlinking = true;
+      let blinkTime = 0;
+      const blinkInterval = setInterval(() => {
+        blinkTime += 0.2;
+        const scaleY = Math.abs(Math.cos(blinkTime * Math.PI));
+        leftEye.sclera.scale.y = scaleY;
+        rightEye.sclera.scale.y = scaleY;
+        if (blinkTime >= 1) {
+          clearInterval(blinkInterval);
+          leftEye.sclera.scale.y = 1;
+          rightEye.sclera.scale.y = 1;
+          isBlinking = false;
+        }
+      }, 20);
+    }
+    setInterval(triggerBlink, 3800);
+
+    // 5. Actions / Animations
+    // Flip Pages
+    window.triggerFlip = function() {
+      isFlipping = true;
+      flipProgress = 0;
+      dialogText.textContent = '"Đang mở trang từ vựng mới... Tự động lưu ngữ cảnh bài giảng!"';
+    };
+
+    // Celebrate Win
+    window.triggerCelebrate = function() {
+      isHappy = true;
+      spinVelocity = Math.PI * 4; // 2 full spins
+      dialogText.textContent = '"Tuyệt đỉnh! Bạn đã thuộc từ này rồi. +1 Streak rực lửa 🔥"';
+      leftEye.sclera.scale.y = 0.2;
+      rightEye.sclera.scale.y = 0.2; // Happy eye arches
+      setTimeout(() => {
+        isHappy = false;
+        leftEye.sclera.scale.y = 1;
+        rightEye.sclera.scale.y = 1;
+      }, 1400);
+    };
+
+    // Encourage
+    window.triggerEncourage = function() {
+      dialogText.textContent = '"Đừng nản nhé! Não bộ cần 3 lần tiếp xúc để tạo liên kết bền vững. Thử lại nào!"';
+      bookie.rotation.z = 0.15;
+      setTimeout(() => { bookie.rotation.z = 0; }, 800);
+    };
+
+    // Wink
+    window.triggerWink = function() {
+      leftEye.sclera.scale.y = 0.05;
+      dialogText.textContent = '"Bookie luôn đồng hành cùng bạn trên Udemy nè 😉"';
+      setTimeout(() => { leftEye.sclera.scale.y = 1; }, 600);
+    };
+
+    document.getElementById('btn-flip').addEventListener('click', window.triggerFlip);
+    document.getElementById('btn-celebrate').addEventListener('click', window.triggerCelebrate);
+    document.getElementById('btn-encourage').addEventListener('click', window.triggerEncourage);
+    document.getElementById('btn-wink').addEventListener('click', window.triggerWink);
+    document.getElementById('btn-reset').addEventListener('click', () => {
+      mouse.targetX = 0;
+      mouse.targetY = 0;
+      bookie.rotation.set(0, 0, 0);
+      dialogText.textContent = '"Sẵn sàng cho bài học tiếp theo!"';
+    });
+
+    // 6. Main Render Loop
+    let clock = new THREE.Clock();
+
+    function animate() {
+      requestAnimationFrame(animate);
+      const time = clock.getElapsedTime();
+
+      // Smooth mouse interpolate
+      mouse.x += (mouse.targetX - mouse.x) * 0.08;
+      mouse.y += (mouse.targetY - mouse.y) * 0.08;
+
+      // Gentle Levitation Bobbing
+      bookie.position.y = Math.sin(time * 2.2) * 0.09;
+      ribbonGroup.rotation.z = Math.sin(time * 2.2) * 0.12;
+
+      // Eye Tracking
+      leftEye.irisGroup.position.x = mouse.x * 0.04;
+      leftEye.irisGroup.position.y = mouse.y * 0.04;
+      rightEye.irisGroup.position.x = mouse.x * 0.04;
+      rightEye.irisGroup.position.y = mouse.y * 0.04;
+
+      // Body Tracking
+      if (spinVelocity > 0) {
+        bookie.rotation.y += spinVelocity * 0.08;
+        spinVelocity *= 0.94;
+        if (spinVelocity < 0.05) {
+          spinVelocity = 0;
+          bookie.rotation.y = 0;
+        }
+      } else {
+        bookie.rotation.y = mouse.x * 0.45;
+        bookie.rotation.x = -mouse.y * 0.28;
+      }
+
+      // Page Flipping animation
+      if (isFlipping) {
+        flipProgress += 0.05;
+        frontCoverPivot.rotation.y = -Math.sin(flipProgress * Math.PI) * 0.8;
+        if (flipProgress >= 1) {
+          isFlipping = false;
+          frontCoverPivot.rotation.y = 0;
+        }
+      }
+
+      // Animate Magical Sparkles Orbiting
+      sparkles.forEach((s, idx) => {
+        s.theta += 0.015 * s.speed;
+        s.mesh.position.x = Math.cos(s.theta) * s.radius;
+        s.mesh.position.z = Math.sin(s.theta) * s.radius;
+        s.mesh.position.y = s.baseY + Math.sin(time * 2 + idx) * 0.15;
+      });
+
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    // Resize handler
+    window.addEventListener('resize', () => {
+      camera.aspect = container.clientWidth / container.clientHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(container.clientWidth, container.clientHeight);
+    });
+  </script>
+</body>
+</html>
