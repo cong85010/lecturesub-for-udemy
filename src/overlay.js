@@ -24,7 +24,7 @@
       <div class="lookup" id="cc-word-lookup" role="dialog" aria-modal="false" aria-label="Tra nghĩa" hidden>
         <div class="lookup-top"><span class="lookup-label"></span><button type="button" class="close icon-button" aria-label="Đóng tra từ"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button></div>
         <h2 class="lookup-word" dir="auto"></h2><p class="meaning" role="status" dir="auto"></p>
-        <div class="lookup-actions"><button class="save-word" type="button" disabled>Lưu từ</button><button class="notebook" type="button">Sổ từ vựng</button><button class="retry-word" type="button" hidden>Thử tra lại</button></div>
+        <div class="lookup-actions"><button class="save-word" type="button" disabled>Lưu từ</button><button class="notebook" type="button">Sổ từ vựng</button><button class="copy-word" type="button">Sao chép</button><button class="retry-word" type="button" hidden>Thử tra lại</button></div>
         <span class="save-status" role="status"></span><span class="lookup-note">Nghĩa của từ đơn · Esc để đóng</span>
       </div>`;
     shadow.append(shell); container.append(host);
@@ -68,6 +68,30 @@
     $('.retry').addEventListener('click', () => handlers.retry());
     $('.retry-word').addEventListener('click', () => handlers.word(activeWord, true));
     $('.close').addEventListener('click', () => handlers.dismiss());
+    $('.copy-word')?.addEventListener('click', async () => {
+      const selection = shadow.getSelection ? shadow.getSelection()?.toString() : window.getSelection()?.toString();
+      const word = $('.lookup-word').textContent.trim();
+      const meaning = $('.meaning').textContent.trim();
+      const textToCopy = selection && selection.trim().length > 0
+        ? selection.trim()
+        : (meaning ? `${word} - ${meaning}` : word);
+      try {
+        await navigator.clipboard.writeText(textToCopy);
+      } catch {
+        const area = document.createElement('textarea');
+        area.value = textToCopy;
+        area.style.position = 'fixed';
+        area.style.opacity = '0';
+        document.body.appendChild(area);
+        area.select();
+        document.execCommand('copy');
+        area.remove();
+      }
+      const copyBtn = $('.copy-word');
+      const originalText = copyBtn.textContent;
+      copyBtn.textContent = 'Đã sao chép! ✓';
+      setTimeout(() => { if (copyBtn.isConnected) copyBtn.textContent = originalText; }, 1500);
+    });
     source.addEventListener('click', event => {
       const button = event.target.closest('button[data-word]');
       if (button) {
@@ -76,7 +100,10 @@
         origin = button; activeWord = button.dataset.word; handlers.word(activeWord);
       }
     });
-    for (const name of ['click', 'pointerdown']) host.addEventListener(name, event => event.stopPropagation());
+    for (const name of ['click', 'dblclick', 'pointerdown', 'mousedown']) {
+      host.addEventListener(name, event => event.stopPropagation());
+      popup.addEventListener(name, event => event.stopPropagation());
+    }
     host.addEventListener('keydown', event => {
       if (event.code === 'KeyC' && event.altKey && event.shiftKey && !event.ctrlKey && !event.metaKey) return;
       event.stopPropagation();

@@ -58,6 +58,26 @@ const scripts = ['languages.js', 'settings.js', 'library.js', 'store.js', 'clien
     assert.equal(await page.locator('video').evaluate(v => v.paused), false);
     await page.getByRole('button', { name: 'Tra nghĩa: model', exact: true }).click();
     await page.getByText('mô hình', { exact: true }).waitFor();
+
+    // Verify double-clicking inside lookup dialog does NOT bubble dblclick to Udemy video player
+    await page.evaluate(() => {
+      window.__udemyDblClicked = false;
+      document.querySelector('[data-purpose="video-player"]').addEventListener('dblclick', () => {
+        window.__udemyDblClicked = true;
+      });
+    });
+    const lookupWord = overlay.locator('.lookup-word');
+    await lookupWord.dblclick();
+    const bubbled = await page.evaluate(() => window.__udemyDblClicked);
+    assert.equal(bubbled, false, 'double clicking inside lookup dialog must not bubble to Udemy video player');
+
+    // Verify copy button in lookup popup
+    const copyButton = overlay.locator('.copy-word');
+    await copyButton.click();
+    await page.waitForFunction(() => {
+      const host = document.querySelector('#cc-udemy-overlay');
+      return host.shadowRoot.querySelector('.copy-word').textContent.includes('Đã sao chép');
+    });
     await page.getByRole('button', { name: 'Lưu từ', exact: true }).click();
     await page.getByRole('button', { name: 'Đã lưu từ', exact: true }).waitFor();
     assert.equal(await page.evaluate(() => window.__storage.ccUdemyVocabulary[0].sentence), 'A model learns patterns from data.');
