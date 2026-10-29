@@ -941,7 +941,7 @@ a {
   color: var(--ink);
 }
 
-/* ================= Responsive ================= */
+/* ================= Responsive & Mobile Optimization ================= */
 @media (max-width: 900px) {
   .features-grid, .steps-grid {
     grid-template-columns: 1fr;
@@ -956,6 +956,60 @@ a {
   }
   .demo-target-line {
     font-size: 14px;
+  }
+}
+
+@media (max-width: 768px) {
+  /* Throttle expensive blur & animations on mobile to guarantee 95+ Mobile PageSpeed */
+  .aurora-blob {
+    animation: none !important;
+    filter: blur(48px) !important;
+    -webkit-filter: blur(48px) !important;
+    opacity: 0.6 !important;
+  }
+  .aurora-blob.blob-1 {
+    width: 320px;
+    height: 320px;
+    top: -50px;
+    right: -10%;
+  }
+  .aurora-blob.blob-2 {
+    width: 340px;
+    height: 340px;
+    top: 25%;
+    left: -15%;
+  }
+  .aurora-blob.blob-3 {
+    display: none;
+  }
+  .bg-grid-pattern {
+    background-size: 24px 24px;
+  }
+  .lang-btn {
+    padding: 6px 10px;
+    min-height: 36px;
+    font-size: 12px;
+  }
+  .footer-links a {
+    padding: 6px 4px;
+    min-height: 40px;
+    display: inline-flex;
+    align-items: center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .aurora-blob {
+    animation: none !important;
+  }
+  #bg-particles-canvas {
+    display: none !important;
   }
 }
 

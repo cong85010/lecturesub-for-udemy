@@ -257,8 +257,9 @@ document.addEventListener('DOMContentLoaded', () => {
       mouse.y = -1000;
     }, { passive: true });
 
-    // Particle pool
-    const particleCount = Math.min(Math.floor(window.innerWidth / 30), 45);
+    // Particle pool: responsive count to guarantee 60fps on mobile
+    const isMobile = window.innerWidth < 768;
+    const particleCount = isMobile ? 12 : Math.min(Math.floor(window.innerWidth / 30), 40);
     const colors = [
       'rgba(198, 237, 97, 0.45)',  // Lime
       'rgba(248, 218, 120, 0.40)', // Amber
