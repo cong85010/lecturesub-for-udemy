@@ -174,8 +174,7 @@ h2 { margin:0 0 7px; font-size:18px; line-height:1.35; font-weight:650; }
 .game-card:not(.is-flipped) .card-back { visibility:hidden; pointer-events:none; }
 .game-card.is-flipped .card-front { visibility:hidden; pointer-events:none; }
 .game-card.is-flipped .card-back { visibility:visible; pointer-events:auto; z-index:2; }
-.holo-sheen { position:absolute; inset:0; pointer-events:none; border-radius:22px; opacity:0; transition:opacity 0.25s ease; mix-blend-mode:overlay; z-index:2; background:radial-gradient(circle at 50% 50%, rgba(255,255,255,0.7) 0%, rgba(254,240,138,0.3) 30%, rgba(134,239,172,0.15) 55%, transparent 80%); }
-.game-card:hover .holo-sheen { opacity:1; }
+.holo-sheen { display:none; }
 
 .card-inner-frame { position:relative; z-index:3; display:flex; flex-direction:column; justify-content:space-between; height:100%; padding:22px; border:1px solid rgba(212, 175, 55, 0.28); border-radius:20px; margin:4px; box-sizing:border-box; }
 .card-top-bar { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }

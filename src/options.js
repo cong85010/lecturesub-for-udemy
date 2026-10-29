@@ -551,32 +551,8 @@
 
   function bindGameEvents() {
     const card = $('#active-card');
-    const stage = $('#card-stage');
-    const sheenFront = $('#sheen-front');
-    const sheenBack = $('#sheen-back');
 
-    if (stage && card) {
-      stage.addEventListener('mousemove', e => {
-        const rect = stage.getBoundingClientRect();
-        const x = e.clientX - rect.left - rect.width / 2;
-        const y = e.clientY - rect.top - rect.height / 2;
-        const rotY = (x / (rect.width / 2)) * 14;
-        const rotX = -(y / (rect.height / 2)) * 14;
-
-        const baseRotate = isCardFlipped ? 180 : 0;
-        card.style.transform = `perspective(1200px) rotateX(${rotX}deg) rotateY(${baseRotate + (isCardFlipped ? -rotY : rotY)}deg)`;
-
-        const pctX = ((e.clientX - rect.left) / rect.width) * 100;
-        const pctY = ((e.clientY - rect.top) / rect.height) * 100;
-        const sheenBg = `radial-gradient(circle at ${pctX}% ${pctY}%, rgba(255,255,255,0.7) 0%, rgba(254,240,138,0.3) 30%, rgba(134,239,172,0.15) 55%, transparent 80%)`;
-        if (sheenFront) sheenFront.style.background = sheenBg;
-        if (sheenBack) sheenBack.style.background = sheenBg;
-      });
-
-      stage.addEventListener('mouseleave', () => {
-        card.style.transform = `perspective(1200px) rotateY(${isCardFlipped ? 180 : 0}deg)`;
-      });
-
+    if (card) {
       card.addEventListener('click', e => {
         if (e.target.closest('button') || e.target.closest('a')) return;
         toggleCardFlip();
