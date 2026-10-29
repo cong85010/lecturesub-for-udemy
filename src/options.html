@@ -45,107 +45,195 @@
       <div class="notebook-summary"><span id="word-count"></span><div id="undo-area" hidden><span>Đã xóa từ.</span> <button id="undo" type="button" class="text-button">Hoàn tác</button></div></div>
       <p id="word-error" role="alert"></p><ul id="words" class="word-list"></ul><div id="empty" class="empty" hidden><h2></h2><p></p></div>
     </section>
-    <section id="game-view" class="game-view" hidden>
-      <div class="game-hud">
-        <div class="hud-item hud-streak">
-          <span class="hud-streak-fire">🔥</span>
-          <span id="game-streak-label">1 ngày</span>
-        </div>
-        <div class="hud-item hud-xp">
-          <div class="xp-bar-bg"><div id="game-xp-fill" class="xp-bar-fill"></div></div>
-          <span id="game-xp-label">0 / 100 XP</span>
-        </div>
-        <div class="hud-item hud-controls">
-          <span id="game-card-counter" class="card-counter">0 / 0</span>
-          <button id="game-sound-btn" class="hud-sound-btn" type="button" aria-label="Bật/Tắt âm thanh" title="Âm thanh game">🔊</button>
-        </div>
-      </div>
+    <section id="game-view" class="game-studio-layout" hidden>
+      <!-- LEFT DASHBOARD: STATS & DECK SELECTOR -->
+      <aside class="game-sidebar">
+        <div class="sidebar-block">
+          <div class="dash-user-row">
+            <h2>Tiến độ học tập</h2>
+            <span class="user-level-badge" id="dash-level-badge">Cấp 1</span>
+          </div>
 
-      <div class="arena-deck-wrapper">
-        <div class="card-stage" id="card-stage">
-          <div class="game-card" id="active-card" tabindex="0" role="region" aria-label="Thẻ bài học tập 3D">
-            <!-- FRONT FACE -->
-            <div class="card-face card-front">
-              <div class="holo-sheen" id="sheen-front"></div>
-              <div class="card-inner-frame">
-                <div class="card-top-bar">
-                  <span class="rarity-badge" id="card-rarity">CORE CONCEPT</span>
-                  <button id="btn-audio-pronounce" class="speaker-btn" type="button" aria-label="Phát âm tiếng Anh" title="Nghe phát âm">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
-                  </button>
-                </div>
-                <div class="card-body">
-                  <div class="card-word-title" id="front-word">...</div>
-                  <div class="card-ipa" id="front-ipa"></div>
-                  <div class="challenge-box">
-                    <span class="challenge-label">THỬ THÁCH ĐIỀN TỪ:</span>
-                    <p id="front-challenge-sentence" class="challenge-text"></p>
-                  </div>
-                </div>
-                <div class="card-footer-hint">
-                  <span>Chạm thẻ hoặc bấm <kbd>Space</kbd> để lật xem nghĩa</span>
-                </div>
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-icon">🔥</div>
+              <div class="stat-meta">
+                <span class="stat-number" id="dash-streak">1 ngày</span>
+                <span class="stat-label">Chuỗi học</span>
               </div>
             </div>
-
-            <!-- BACK FACE -->
-            <div class="card-face card-back">
-              <div class="holo-sheen" id="sheen-back"></div>
-              <div class="card-inner-frame">
-                <div class="card-top-bar">
-                  <span class="card-origin-pill" id="back-origin">Bài học</span>
-                  <span class="card-pair-badge" id="back-pair">EN → VI</span>
-                </div>
-                <div class="card-body">
-                  <div class="card-word-title back-title" id="back-word-title">...</div>
-                  <div class="meaning-box">
-                    <div class="meaning-label">Ý NGHĨA CHUYÊN NGÀNH:</div>
-                    <p id="back-meaning" class="meaning-text"></p>
-                  </div>
-                  <div class="context-box">
-                    <div class="context-label">NGỮ CẢNH BÀI HỌC:</div>
-                    <p id="back-context-sentence" class="context-text"></p>
-                  </div>
-                </div>
-                <div class="card-srs-actions">
-                  <button id="btn-srs-again" class="srs-btn srs-again" type="button">
-                    <span class="srs-btn-num">[1]</span>
-                    <span class="srs-btn-label">Quên</span>
-                    <span class="srs-btn-time">&lt; 5p</span>
-                  </button>
-                  <button id="btn-srs-good" class="srs-btn srs-good" type="button">
-                    <span class="srs-btn-num">[2]</span>
-                    <span class="srs-btn-label">Tạm nhớ</span>
-                    <span class="srs-btn-time">1 ngày</span>
-                  </button>
-                  <button id="btn-srs-easy" class="srs-btn srs-easy" type="button">
-                    <span class="srs-btn-num">[3]</span>
-                    <span class="srs-btn-label">Đã thuộc</span>
-                    <span class="srs-btn-time">+25 XP</span>
-                  </button>
-                </div>
+            <div class="stat-card">
+              <div class="stat-icon">⚡</div>
+              <div class="stat-meta">
+                <span class="stat-number" id="dash-xp">25 XP</span>
+                <span class="stat-label">Kinh nghiệm</span>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">⏰</div>
+              <div class="stat-meta">
+                <span class="stat-number" id="dash-due-count">0 từ</span>
+                <span class="stat-label">Cần ôn</span>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">🏆</div>
+              <div class="stat-meta">
+                <span class="stat-number" id="dash-mastered-count">0 từ</span>
+                <span class="stat-label">Đã thuộc</span>
               </div>
             </div>
           </div>
         </div>
 
-        <div id="deck-finished-view" class="deck-finished" hidden>
-          <div class="finished-icon">🏆</div>
-          <h2>Tuyệt vời! Bạn đã hoàn thành các thẻ hôm nay!</h2>
-          <p id="finished-stats">Đã ôn tập xong toàn bộ từ đến hạn. Hãy tiếp tục duy trì chuỗi học để củng cố trí nhớ dài hạn!</p>
-          <div class="finished-actions">
-            <button id="btn-restart-deck" type="button" class="primary">Luyện tập lại bộ từ này</button>
-            <button id="btn-practice-samples" type="button" class="text-button">Thử thách bộ từ Tech mở rộng</button>
+        <div class="sidebar-block deck-select-block">
+          <h3>Chọn cọc bài</h3>
+          <div class="mode-options" role="radiogroup" aria-label="Chọn cọc bài ôn tập">
+            <label class="mode-card active" id="mode-due-card">
+              <input type="radio" name="deckMode" value="due" checked>
+              <div class="mode-info">
+                <strong>Từ đến hạn hôm nay</strong>
+                <span>Theo thuật toán SM-2</span>
+              </div>
+              <span class="mode-badge" id="mode-due-badge">0</span>
+            </label>
+            <label class="mode-card" id="mode-all-card">
+              <input type="radio" name="deckMode" value="all">
+              <div class="mode-info">
+                <strong>Tất cả từ đã lưu</strong>
+                <span>Ôn tập toàn bộ sổ từ</span>
+              </div>
+              <span class="mode-badge" id="mode-all-badge">0</span>
+            </label>
+            <label class="mode-card" id="mode-sample-card">
+              <input type="radio" name="deckMode" value="sample">
+              <div class="mode-info">
+                <strong>Bộ từ Tech & AI mẫu</strong>
+                <span>Khái niệm chuyên sâu</span>
+              </div>
+              <span class="mode-badge">5</span>
+            </label>
+          </div>
+          <button id="btn-restart-session" type="button" class="deck-restart-btn">🔄 Bắt đầu phiên mới</button>
+        </div>
+
+        <div class="sidebar-block srs-info-box">
+          <p>💡 <strong>Thuật toán SM-2</strong> tính toán chu kỳ lặp lại ngắt quãng để tối ưu hóa việc chuyển từ vựng từ bộ nhớ ngắn hạn sang dài hạn.</p>
+        </div>
+      </aside>
+
+      <!-- RIGHT COLUMN: 3D CARD ARENA MAT -->
+      <section class="game-arena-column" aria-label="Sân đấu thẻ bài 3D">
+        <div class="arena-board">
+          <div class="arena-ambient-glow" aria-hidden="true"></div>
+
+          <!-- Top HUD inside arena -->
+          <div class="game-hud">
+            <div class="hud-item hud-streak">
+              <span class="hud-streak-fire">🔥</span>
+              <span id="game-streak-label">1 ngày</span>
+            </div>
+            <div class="hud-item hud-xp">
+              <div class="xp-bar-bg"><div id="game-xp-fill" class="xp-bar-fill"></div></div>
+              <span id="game-xp-label">0 / 100 XP</span>
+            </div>
+            <div class="hud-item hud-controls">
+              <span id="game-card-counter" class="card-counter">0 / 0</span>
+              <button id="game-sound-btn" class="hud-sound-btn" type="button" aria-label="Bật/Tắt âm thanh" title="Âm thanh game">🔊</button>
+            </div>
+          </div>
+
+          <!-- 3D Card Stage with physical deck layers underneath -->
+          <div class="arena-stage-container">
+            <div class="deck-stack-layer stack-under-2" aria-hidden="true"></div>
+            <div class="deck-stack-layer stack-under-1" aria-hidden="true"></div>
+
+            <div class="card-stage" id="card-stage">
+              <div class="game-card" id="active-card" tabindex="0" role="region" aria-label="Thẻ bài học tập 3D">
+                <!-- FRONT FACE -->
+                <div class="card-face card-front">
+                  <div class="holo-sheen" id="sheen-front"></div>
+                  <div class="card-inner-frame">
+                    <div class="card-top-bar">
+                      <span class="rarity-badge" id="card-rarity">CORE CONCEPT</span>
+                      <button id="btn-audio-pronounce" class="speaker-btn" type="button" aria-label="Phát âm tiếng Anh" title="Nghe phát âm">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+                      </button>
+                    </div>
+                    <div class="card-body">
+                      <div class="card-word-title" id="front-word">...</div>
+                      <div class="card-ipa" id="front-ipa"></div>
+                      <div class="challenge-box">
+                        <span class="challenge-label">THỬ THÁCH ĐIỀN TỪ:</span>
+                        <p id="front-challenge-sentence" class="challenge-text"></p>
+                      </div>
+                    </div>
+                    <div class="card-footer-hint">
+                      <span>Chạm thẻ hoặc bấm <kbd>Space</kbd> để lật xem nghĩa</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- BACK FACE -->
+                <div class="card-face card-back">
+                  <div class="holo-sheen" id="sheen-back"></div>
+                  <div class="card-inner-frame">
+                    <div class="card-top-bar">
+                      <span class="card-origin-pill" id="back-origin">Bài học</span>
+                      <span class="card-pair-badge" id="back-pair">EN → VI</span>
+                    </div>
+                    <div class="card-body">
+                      <div class="card-word-title back-title" id="back-word-title">...</div>
+                      <div class="meaning-box">
+                        <div class="meaning-label">Ý NGHĨA CHUYÊN NGÀNH:</div>
+                        <p id="back-meaning" class="meaning-text"></p>
+                      </div>
+                      <div class="context-box">
+                        <div class="context-label">NGỮ CẢNH BÀI HỌC:</div>
+                        <p id="back-context-sentence" class="context-text"></p>
+                      </div>
+                    </div>
+                    <div class="card-srs-actions">
+                      <button id="btn-srs-again" class="srs-btn srs-again" type="button">
+                        <span class="srs-btn-num">[1]</span>
+                        <span class="srs-btn-label">Quên</span>
+                        <span class="srs-btn-time">&lt; 5p</span>
+                      </button>
+                      <button id="btn-srs-good" class="srs-btn srs-good" type="button">
+                        <span class="srs-btn-num">[2]</span>
+                        <span class="srs-btn-label">Tạm nhớ</span>
+                        <span class="srs-btn-time">1 ngày</span>
+                      </button>
+                      <button id="btn-srs-easy" class="srs-btn srs-easy" type="button">
+                        <span class="srs-btn-num">[3]</span>
+                        <span class="srs-btn-label">Đã thuộc</span>
+                        <span class="srs-btn-time">+25 XP</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div id="deck-finished-view" class="deck-finished" hidden>
+              <div class="finished-icon">🏆</div>
+              <h2>Tuyệt vời! Bạn đã hoàn thành các thẻ hôm nay!</h2>
+              <p id="finished-stats">Đã ôn tập xong toàn bộ từ đến hạn. Hãy tiếp tục duy trì chuỗi học để củng cố trí nhớ dài hạn!</p>
+              <div class="finished-actions">
+                <button id="btn-restart-deck" type="button" class="primary">Luyện tập lại bộ từ này</button>
+                <button id="btn-practice-samples" type="button" class="text-button">Thử thách bộ từ Tech mở rộng</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="game-keyboard-legend">
+            <span><kbd>Space</kbd> Lật thẻ</span>
+            <span><kbd>1</kbd> Quên</span>
+            <span><kbd>2</kbd> Tạm nhớ</span>
+            <span><kbd>3</kbd> Đã thuộc</span>
           </div>
         </div>
-      </div>
-
-      <div class="game-keyboard-legend">
-        <span><kbd>Space</kbd> Lật thẻ</span>
-        <span><kbd>1</kbd> Quên</span>
-        <span><kbd>2</kbd> Tạm nhớ</span>
-        <span><kbd>3</kbd> Đã thuộc</span>
-      </div>
+      </section>
 
       <canvas id="game-confetti-canvas"></canvas>
     </section>

@@ -3,7 +3,7 @@
   const app = globalThis.CCUdemy;
   const $ = selector => document.querySelector(selector);
   let settings = app.normalizeSettings({}), words = [], filtered = [], lastDeleted;
-  let activeCards = [], currentCardIndex = 0, isCardFlipped = false, gameStreak = 1, gameXP = 0;
+  let activeCards = [], currentCardIndex = 0, isCardFlipped = false, gameStreak = 1, gameXP = 0, selectedDeckMode = 'due';
   let gameAudioCtx = null, gameSoundEnabled = true, gameListenersBound = false;
   let confettiParticles = [];
   let pending = 0, saveRevision = 0, availabilityRevision = 0, lastPair = '';
@@ -344,13 +344,33 @@
   }
 
   function setupGameDeck(forceReload = true) {
+    const now = Date.now();
+    const userDue = words.filter(w => !w.srsDueDate || w.srsDueDate <= now);
+    const mastered = words.filter(w => (w.srsRepetitions || 0) >= 3);
+
+    // Update left sidebar dashboard stats
+    const dashStreak = $('#dash-streak');
+    if (dashStreak) dashStreak.textContent = `${gameStreak} ngày`;
+    const dashXP = $('#dash-xp');
+    if (dashXP) dashXP.textContent = `${gameXP} XP`;
+    const dashLevel = $('#dash-level-badge');
+    if (dashLevel) dashLevel.textContent = `Cấp ${Math.floor(gameXP / 100) + 1}`;
+    const dashDue = $('#dash-due-count');
+    if (dashDue) dashDue.textContent = `${userDue.length} từ`;
+    const dashMastered = $('#dash-mastered-count');
+    if (dashMastered) dashMastered.textContent = `${mastered.length} từ`;
+
+    // Update mode badges
+    const dueBadge = $('#mode-due-badge');
+    if (dueBadge) dueBadge.textContent = userDue.length;
+    const allBadge = $('#mode-all-badge');
+    if (allBadge) allBadge.textContent = words.length;
+
     if (forceReload || !activeCards.length) {
-      const now = Date.now();
-      const userDue = words.filter(w => !w.srsDueDate || w.srsDueDate <= now);
-      if (userDue.length > 0) {
-        activeCards = [...userDue];
-      } else if (words.length > 0) {
-        activeCards = [...words];
+      if (selectedDeckMode === 'due') {
+        activeCards = userDue.length > 0 ? [...userDue] : (words.length > 0 ? [...words] : [...(app.SAMPLE_TECH_CARDS || [])]);
+      } else if (selectedDeckMode === 'all') {
+        activeCards = words.length > 0 ? [...words] : [...(app.SAMPLE_TECH_CARDS || [])];
       } else {
         activeCards = [...(app.SAMPLE_TECH_CARDS || [])];
       }
@@ -378,11 +398,17 @@
   function updateGameHUD() {
     const streakLabel = $('#game-streak-label');
     if (streakLabel) streakLabel.textContent = `${gameStreak} ngày`;
+    const dashStreak = $('#dash-streak');
+    if (dashStreak) dashStreak.textContent = `${gameStreak} ngày`;
     const xpMod = gameXP % 100;
     const xpFill = $('#game-xp-fill');
     if (xpFill) xpFill.style.width = `${xpMod}%`;
     const xpLabel = $('#game-xp-label');
     if (xpLabel) xpLabel.textContent = `${xpMod} / 100 XP (Cấp ${Math.floor(gameXP / 100) + 1})`;
+    const dashXP = $('#dash-xp');
+    if (dashXP) dashXP.textContent = `${gameXP} XP`;
+    const dashLevel = $('#dash-level-badge');
+    if (dashLevel) dashLevel.textContent = `Cấp ${Math.floor(gameXP / 100) + 1}`;
     const counter = $('#game-card-counter');
     if (counter) counter.textContent = `${Math.min(currentCardIndex + 1, activeCards.length)} / ${activeCards.length}`;
   }
@@ -581,10 +607,23 @@
     });
 
     $('#btn-restart-deck')?.addEventListener('click', () => setupGameDeck(true));
+    $('#btn-restart-session')?.addEventListener('click', () => setupGameDeck(true));
     $('#btn-practice-samples')?.addEventListener('click', () => {
-      activeCards = [...(app.SAMPLE_TECH_CARDS || [])];
-      currentCardIndex = 0;
-      renderCurrentGameCard();
+      selectedDeckMode = 'sample';
+      const sampleRadio = document.querySelector('input[name="deckMode"][value="sample"]');
+      if (sampleRadio) sampleRadio.checked = true;
+      document.querySelectorAll('.mode-card').forEach(c => c.classList.remove('active'));
+      $('#mode-sample-card')?.classList.add('active');
+      setupGameDeck(true);
+    });
+
+    document.querySelectorAll('input[name="deckMode"]').forEach(radio => {
+      radio.addEventListener('change', () => {
+        selectedDeckMode = radio.value;
+        document.querySelectorAll('.mode-card').forEach(c => c.classList.remove('active'));
+        radio.closest('.mode-card')?.classList.add('active');
+        setupGameDeck(true);
+      });
     });
 
     window.addEventListener('keydown', e => {
