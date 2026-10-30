@@ -1,4 +1,4 @@
-# LectureSub for Udemy — Song ngữ & Từ vựng · v0.3.0
+# LectureSub for Udemy — Song ngữ & Từ vựng · v0.3.1
 
 Extension Chrome hiện phụ đề song ngữ, tra từ và lưu từ vựng ngay trong video bài giảng Udemy. Miễn phí, không cần API key hoặc tài khoản riêng.
 
@@ -26,7 +26,7 @@ Extension Chrome hiện phụ đề song ngữ, tra từ và lưu từ vựng ng
 
 Không cần `npm install` hay build để sử dụng.
 
-## Reading Room · 0.3.0
+## Reading Room · 0.3.1
 
 Giao diện theo concept Reading Room đã duyệt: nền giấy sáng, chữ đen, nhấn xanh chanh. Ngôn ngữ và chế độ hiển thị luôn nằm bên trái; ba nhóm Kiểu chữ / Bố cục / Tra từ ở bên dưới. Vùng xem trước bên phải lớn hơn, có bài học minh họa và ô nghĩa từ. Các giá trị cấu hình đã lưu được giữ nguyên.
 
@@ -76,7 +76,7 @@ npm run package
 
 Node.js 20+. Browser tests dùng Chrome cài sẵn và Chrome for Testing trong **profile tạm riêng**, không đọc profile người dùng. Runtime không có dependency ngoài; Playwright chỉ phục vụ kiểm thử.
 
-`npm run package` tạo `dist/cc-udemy/` cho Load unpacked và `dist/cc-udemy-0.3.0.zip`. Kiểm thử bao gồm unit logic, UI player bằng fixture, trang options/popup thật của extension, đồng bộ cấu hình qua tab, CSV và playback bằng video stream kiểm thử có thể phát/dừng. Ảnh nằm ở `test-results/`.
+`npm run package` tạo `dist/cc-udemy/` cho Load unpacked và `dist/cc-udemy-0.3.1.zip` (hoặc `dist/lecturesub-for-udemy-0.3.1.zip`). Kiểm thử bao gồm unit logic, UI player bằng fixture, trang options/popup thật của extension, đồng bộ cấu hình qua tab, CSV và playback bằng video stream kiểm thử có thể phát/dừng. Ảnh nằm ở `test-results/`.
 
 Bản dịch fixture là dữ liệu kiểm thử. Probe bộ dịch Chrome thật trong profile mới vẫn đang tải ngôn ngữ sau 12 giây; chưa có bằng chứng tải xong/dịch thành công từ probe đó. Nguồn DOM của player Udemy đã được đối chiếu trên tab đăng nhập, nhưng bản 0.2 chưa được kiểm chứng toàn bộ trên khóa học Udemy thật. Các bằng chứng này được ghi riêng, không suy từ fixture thành live E2E.
 

@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "LectureSub for Udemy — Song ngữ & Từ vựng",
   "short_name": "LectureSub",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Phụ đề song ngữ, tra và lưu từ vựng bài giảng Udemy. Miễn phí, không cần API key.",
   "minimum_chrome_version": "138",
   "permissions": ["storage"],

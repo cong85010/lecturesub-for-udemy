@@ -1,4 +1,4 @@
-# CC Udemy · Reading Room · 0.3.0
+# CC Udemy · Reading Room · 0.3.1
 
 The user selected generated concept B (Reading Room) after rejecting the earlier generic form and neutral utility treatments. The approved image is the visual authority: `/Users/thanhcong/.codex/generated_images/01a1830e-6e3f-7402-9539-241f1742183f/exec-b0145c85-8945-416e-97e3-ca0e1c3a93aa.png`.
 

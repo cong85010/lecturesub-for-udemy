@@ -8,7 +8,7 @@ Tài liệu này chứa toàn bộ thông tin đã được chuẩn hóa để b
 ---
 
 ## 1. Tệp đóng gói (Package)
-- File tải lên: `dist/lecturesub-for-udemy-0.3.0.zip`
+- File tải lên: `dist/lecturesub-for-udemy-0.3.1.zip`
 - Đã được nén chuẩn root `manifest.json`, không chứa file rác hay thư mục lồng thừa.
 
 ---

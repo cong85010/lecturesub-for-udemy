@@ -1,6 +1,6 @@
 {
   "name": "cc-udemy",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "private": true,
   "description": "LectureSub: Configurable bilingual captions and local vocabulary notebook for Udemy lectures",
   "license": "MIT",
