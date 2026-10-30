@@ -683,18 +683,24 @@ a {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 12px;
   border-bottom: 1px solid #282a25;
+  min-width: 0;
 }
 
 .demo-title-group {
   display: flex;
   align-items: center;
   gap: 12px;
+  min-width: 0;
+  flex: 1 1 auto;
+  overflow: hidden;
 }
 
 .demo-dots {
   display: flex;
   gap: 6px;
+  flex-shrink: 0;
 }
 
 .demo-dot {
@@ -710,6 +716,10 @@ a {
   font-size: 13px;
   color: #adb3a4;
   font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
 }
 
 .demo-badge {
@@ -717,13 +727,16 @@ a {
   font-weight: 600;
   color: var(--accent);
   background: rgba(198, 237, 97, 0.12);
-  padding: 4px 10px;
+  padding: 4px 12px;
   border-radius: 99px;
   border: 1px solid rgba(198, 237, 97, 0.25);
+  white-space: nowrap !important;
+  flex-shrink: 0 !important;
+  line-height: 1.2;
 }
 
 .demo-video-stage {
-  height: 480px;
+  min-height: 480px;
   position: relative;
   background-size: cover;
   background-position: center;
@@ -747,6 +760,8 @@ a {
   gap: 12px;
   font-size: 12px;
   color: #f8f6f0;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .demo-pair {
@@ -767,13 +782,17 @@ a {
   max-width: 780px;
   text-align: center;
   position: relative;
-  margin-bottom: 20px;
+  margin-bottom: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
 }
 
 .demo-interactive-hint {
   font-size: 12px;
   color: var(--accent);
-  margin-bottom: 8px;
+  margin-bottom: 4px;
   font-weight: 500;
   letter-spacing: 0.02em;
 }
@@ -786,6 +805,7 @@ a {
   padding: 16px 24px;
   display: inline-block;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  max-width: 100%;
 }
 
 .demo-source-line {
@@ -802,6 +822,8 @@ a {
   border-radius: 4px;
   transition: all 140ms ease;
   position: relative;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .word-token:hover {
@@ -822,13 +844,12 @@ a {
   line-height: 1.4;
 }
 
-/* Demo Context Card */
+/* Demo Context Card — Positioned in-flow naturally above caption box */
 .demo-lookup-card {
-  position: absolute;
-  top: -140px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 320px;
+  position: relative;
+  margin: 0 auto 10px;
+  width: 100%;
+  max-width: 350px;
   background: #ffffff;
   color: var(--ink);
   border-radius: var(--radius-sm);
@@ -841,8 +862,8 @@ a {
 }
 
 @keyframes cardFadeIn {
-  from { opacity: 0; transform: translate(-50%, 8px); }
-  to { opacity: 1; transform: translate(-50%, 0); }
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .card-header {
@@ -1072,33 +1093,41 @@ a {
 }
 
 /* ================= Responsive & Mobile Optimization ================= */
-@media (max-width: 900px) {
-  .features-grid, .steps-grid {
+@media (max-width: 960px) {
+  /* Header navigation converts to mobile drawer trigger on tablets & below */
+  .nav-links {
+    display: none !important;
+  }
+  .mobile-menu-btn {
+    display: flex !important;
+  }
+  .header-cta {
+    display: none !important; /* Hide in compact header; prominent in drawer & hero */
+  }
+
+  /* Grids */
+  .features-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+  .steps-grid {
     grid-template-columns: 1fr;
     gap: 16px;
   }
+
   .demo-video-stage {
-    height: auto;
-    min-height: 420px;
-    padding: 16px;
+    min-height: 440px;
+    padding: 18px;
   }
   .demo-source-line {
     font-size: 18px;
   }
   .demo-target-line {
-    font-size: 14px;
+    font-size: 14.5px;
   }
 }
 
 @media (max-width: 768px) {
-  /* Header navigation converts to mobile drawer trigger */
-  .nav-links {
-    display: none !important;
-  }
-  .mobile-menu-btn {
-    display: flex;
-  }
-
   /* Throttle expensive blur & animations on mobile to guarantee 95+ Mobile PageSpeed */
   .aurora-blob {
     animation: none !important;
@@ -1125,9 +1154,9 @@ a {
     background-size: 22px 22px;
   }
   .lang-btn {
-    padding: 6px 10px;
-    min-height: 34px;
-    font-size: 12px;
+    padding: 5px 9px;
+    min-height: 32px;
+    font-size: 11.5px;
   }
   .footer-links a {
     padding: 6px 4px;
@@ -1139,49 +1168,38 @@ a {
 
 @media (max-width: 640px) {
   /* Header */
-  .site-header {
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-    background: rgba(251, 249, 245, 0.94);
-  }
   .header-container {
-    padding: 10px 16px;
-  }
-  .header-cta {
-    display: none; /* Moved to mobile drawer & hero for cleaner header */
+    padding: 10px 14px;
   }
 
   /* Hero Section */
   .hero {
-    padding: 36px 16px 28px;
+    padding: 36px 14px 28px;
   }
   .badge {
-    font-size: 11.5px;
+    font-size: 11px;
     padding: 5px 12px;
-    margin-bottom: 18px;
+    margin-bottom: 16px;
     max-width: 100%;
     white-space: normal;
     text-align: center;
     line-height: 1.4;
   }
   .hero h1 {
-    font-size: clamp(26px, 7.5vw, 36px);
+    font-size: clamp(25px, 7.2vw, 36px);
     line-height: 1.22;
     margin-bottom: 14px;
     letter-spacing: -0.035em;
   }
   .hero p.lead {
-    font-size: 15px;
+    font-size: 14.5px;
     line-height: 1.55;
-    margin-bottom: 24px;
+    margin-bottom: 22px;
   }
   .hero-actions {
     flex-direction: column;
     gap: 10px;
-    margin-bottom: 26px;
+    margin-bottom: 24px;
     width: 100%;
   }
   .btn-primary, .btn-secondary {
@@ -1193,20 +1211,20 @@ a {
   }
   .hero-mobile-pill-wrapper {
     margin-top: 0;
-    margin-bottom: 24px;
+    margin-bottom: 20px;
   }
   .hero-mobile-pill {
     width: 100%;
     justify-content: center;
     padding: 8px 12px;
-    font-size: 12.5px;
+    font-size: 12px;
     text-align: center;
   }
 
   /* Interactive Demo */
   .demo-wrapper {
-    padding: 0 14px;
-    margin-bottom: 60px;
+    padding: 0 12px;
+    margin-bottom: 56px;
   }
   .demo-topbar {
     padding: 10px 12px;
@@ -1224,16 +1242,12 @@ a {
   .demo-badge {
     font-size: 10.5px;
     padding: 3px 8px;
-    white-space: nowrap;
-    flex-shrink: 0;
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
   }
   .demo-video-stage {
-    height: auto;
     min-height: 420px;
-    padding: 14px 12px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+    padding: 14px 10px;
     gap: 12px;
   }
   .demo-overlay-toolbar {
@@ -1246,31 +1260,19 @@ a {
     display: none;
   }
   .demo-caption-board {
-    position: relative;
-    width: 100%;
     margin-bottom: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
     gap: 8px;
   }
   .demo-interactive-hint {
     font-size: 11.5px;
-    margin-bottom: 6px;
+    margin-bottom: 4px;
     line-height: 1.35;
   }
 
-  /* Fix Context Card Mobile Position: in-flow above caption box, NO OVERLAP */
   .demo-lookup-card {
-    position: relative !important;
-    top: auto !important;
-    left: auto !important;
-    transform: none !important;
-    width: 100% !important;
-    max-width: 320px !important;
-    margin: 0 auto 10px !important;
-    padding: 12px 14px !important;
-    z-index: 10;
+    max-width: 320px;
+    margin: 0 auto 8px;
+    padding: 12px 14px;
   }
   .card-word {
     font-size: 15px;
@@ -1303,8 +1305,6 @@ a {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    touch-action: manipulation;
-    -webkit-tap-highlight-color: transparent;
   }
   .demo-target-line {
     font-size: 13.5px;
@@ -1313,14 +1313,14 @@ a {
 
   /* Features Grid */
   .features-section {
-    padding: 0 16px;
-    margin-bottom: 64px;
+    padding: 0 14px;
+    margin-bottom: 56px;
   }
   .section-head {
-    margin-bottom: 28px;
+    margin-bottom: 24px;
   }
   .section-head h2 {
-    font-size: 25px;
+    font-size: 24px;
     line-height: 1.25;
     margin-bottom: 8px;
   }
@@ -1328,6 +1328,7 @@ a {
     font-size: 14.5px;
   }
   .features-grid {
+    grid-template-columns: 1fr;
     gap: 12px;
   }
   .feature-card {
@@ -1351,16 +1352,16 @@ a {
 
   /* Steps Guide */
   .guide-section {
-    padding: 44px 16px;
-    margin-bottom: 64px;
+    padding: 40px 14px;
+    margin-bottom: 56px;
   }
   .steps-grid {
     gap: 12px;
   }
   .step-item {
     background: var(--surface-alt);
-    padding: 18px 16px;
-    border-radius: 14px;
+    padding: 16px 14px;
+    border-radius: 12px;
     border: 1px solid var(--line);
   }
   .step-num {
@@ -1380,12 +1381,12 @@ a {
 
   /* Footer */
   .site-footer {
-    padding: 32px 16px 36px;
+    padding: 30px 14px 36px;
   }
   .footer-container {
     flex-direction: column;
     text-align: center;
-    gap: 18px;
+    gap: 16px;
   }
   .footer-links {
     flex-direction: column;
@@ -1408,32 +1409,36 @@ a {
     padding: 8px 12px;
   }
   .brand {
-    font-size: 18px;
-    gap: 8px;
+    font-size: 17px;
+    gap: 6px;
   }
   .brand-logo {
-    width: 26px;
-    height: 26px;
+    width: 24px;
+    height: 24px;
+  }
+  .lang-btn {
+    padding: 3px 6px;
+    font-size: 11px;
   }
   .badge {
-    font-size: 10.5px;
-    padding: 4px 10px;
+    font-size: 10px;
+    padding: 4px 8px;
   }
   .hero h1 {
-    font-size: 23px;
+    font-size: 22px;
   }
   .hero p.lead {
     font-size: 13.5px;
   }
   .demo-wrapper {
-    padding: 0 10px;
+    padding: 0 8px;
   }
   .demo-lookup-card {
     padding: 10px 12px !important;
   }
   .word-token {
-    font-size: 14.5px;
-    padding: 3px 6px;
+    font-size: 14px;
+    padding: 3px 5px;
   }
   .demo-target-line {
     font-size: 12.5px;
