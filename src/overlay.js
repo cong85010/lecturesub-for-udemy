@@ -60,7 +60,7 @@
     function fitCaptions() {
       const compact = host.clientWidth < 600;
       shell.classList.toggle('compact', compact);
-      const bottom = Math.min(settings.bottomOffset, Math.max(32, host.clientHeight * (compact ? .23 : .32)));
+      const bottom = Math.min(settings.bottomOffset, Math.max(0, host.clientHeight * (compact ? .23 : .32)));
       $('.caption-area').style.bottom = `${bottom}px`;
       $('.caption-area').style.maxHeight = `${Math.max(48, host.clientHeight - bottom - $('.toolbar').offsetHeight - 28)}px`;
       const overflow = () => [source, target].some(row => !row.hidden && row.scrollHeight > row.clientHeight + 1);

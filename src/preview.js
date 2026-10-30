@@ -21,7 +21,7 @@
       save.innerHTML = bookmark + (saving ? 'Đang lưu…' : saved ? 'Đã lưu từ mẫu' : 'Lưu từ mẫu');
     }
     function reflow() {
-      const bottom = Math.min(offset, Math.max(24, frame.clientHeight * .3));
+      const bottom = Math.min(offset, Math.max(0, frame.clientHeight * .3));
       captions.style.bottom = `${bottom}px`;
       captions.style.maxHeight = `${Math.max(48, frame.clientHeight - bottom - 24)}px`;
       if (card.hidden) return;

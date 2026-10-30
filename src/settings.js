@@ -12,7 +12,7 @@
     const defaults = app.DEFAULT_SETTINGS;
     const result = { ...defaults };
     const numeric = { sourceFontSize: [14, 40], targetFontSize: [12, 40], backgroundOpacity: [0, 1],
-      lineHeight: [1.2, 2], lineGap: [0, 20], captionWidth: [50, 100], bottomOffset: [32, 240] };
+      lineHeight: [1.2, 2], lineGap: [0, 20], captionWidth: [50, 100], bottomOffset: [0, 240] };
     const migrated = { ...input };
     if (!('sourceFontSize' in input) && typeof input.fontSize === 'number') migrated.sourceFontSize = input.fontSize;
     if (!('targetFontSize' in input) && typeof input.fontSize === 'number') migrated.targetFontSize = Math.round(input.fontSize * .84);

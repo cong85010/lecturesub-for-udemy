@@ -6,15 +6,36 @@
     .sort((a, b) => b.getBoundingClientRect().width - a.getBoundingClientRect().width)[0];
 
   app.createUdemyAdapter = (video, getLanguages = () => ({ sourceLanguage: 'en', targetLanguage: 'vi' })) => {
-    const container = video.closest('[id^="shaka-video-container-"], [class*="video-container"], [data-purpose="video-player"]') || video.parentElement;
+    const container = video.closest('[data-purpose="video-player"], [class*="video-player--video-player"], [class*="video-viewer"], [class*="video-container"]')
+      || video.closest('[id^="shaka-video-container-"]')
+      || video.parentElement;
     let enabled = false;
     const oldPosition = container.style.position;
     const changedPosition = getComputedStyle(container).position === 'static';
     if (changedPosition) container.style.position = 'relative';
     const oldModes = new Map();
     const style = document.createElement('style');
-    style.textContent = '[data-cc-udemy-active] [class*="captions-display"][class*="captions-container"], [data-cc-udemy-active] [data-purpose="captions-display"] { visibility: hidden !important; }';
-    container.append(style);
+    style.id = 'cc-udemy-native-caption-style';
+    style.textContent = `
+      html[data-cc-udemy-active] [class*="captions-display"],
+      html[data-cc-udemy-active] [class*="captions-container"],
+      html[data-cc-udemy-active] [data-purpose*="captions-display"],
+      html[data-cc-udemy-active] [data-purpose*="caption-cue"],
+      html[data-cc-udemy-active] [data-purpose*="captions-cue-text"],
+      html[data-cc-udemy-active] [class*="shaka-text-container"],
+      html[data-cc-udemy-active] [class*="well--text"],
+      html[data-cc-udemy-active] [class*="well--container"] [class*="text"],
+      html[data-cc-udemy-active] [class*="well--container"] span,
+      [data-cc-udemy-active] [class*="captions-display"],
+      [data-cc-udemy-active] [class*="captions-container"],
+      [data-cc-udemy-active] [data-purpose*="captions-display"],
+      [data-cc-udemy-active] [data-purpose*="caption-cue"],
+      [data-cc-udemy-active] [class*="shaka-text-container"] {
+        visibility: hidden !important;
+        opacity: 0 !important;
+      }
+    `;
+    (document.head || container).append(style);
 
     const language = track => {
       const lang = (track.language || '').toLowerCase();
@@ -48,6 +69,7 @@
       if (enabled && !value) prepareTracks();
       enabled = value;
       container.toggleAttribute('data-cc-udemy-active', value);
+      document.documentElement?.toggleAttribute('data-cc-udemy-active', value);
       if (value) prepareTracks();
       else {
         for (const [track, mode] of oldModes) track.mode = mode;
@@ -62,11 +84,30 @@
       const sourceCues = tracks.find(track => language(track) === sourceLanguage)?.cues;
       const targetCues = tracks.find(track => language(track) === targetLanguage)?.cues;
       let source = app.cueAt(sourceCues, video.currentTime);
-      // Shaka on current Udemy uses a custom DOM renderer instead of native TextTracks.
+      // Shaka and modern Udemy player use a custom DOM renderer instead of native TextTracks.
       if (!sourceCues?.length) {
-        const cues = container.querySelectorAll('[class*="captions-cue-text"], [data-purpose="caption-cue"]');
-        source = [...cues].map(cue => cue.textContent.trim()).filter(Boolean).join(' ');
+        const cueSelector = '[class*="captions-cue-text"], [data-purpose="captions-cue-text"], [data-purpose="caption-cue"], [data-purpose*="caption-cue"], [class*="well--text"]';
+        let cues = container.querySelectorAll(cueSelector);
+        if (!cues.length) {
+          cues = document.querySelectorAll(cueSelector);
+        }
+        if (!cues.length) {
+          cues = container.querySelectorAll('[class*="captions-display"] [class*="cue"], [class*="shaka-text-container"] span');
+          if (!cues.length) {
+            cues = document.querySelectorAll('[class*="captions-display"] [class*="cue"], [class*="shaka-text-container"] span, [class*="well--container"] [class*="text"], [class*="well--container"] span');
+          }
+        }
+        if (cues.length) {
+          source = [...cues].map(cue => cue.textContent.trim()).filter(Boolean).join(' ');
+        } else {
+          // Direct fallback for Udemy "Display under video" container
+          const well = document.querySelector('[class*="well--container"], [data-purpose*="captions-under-video"]');
+          if (well) {
+            source = well.textContent.trim();
+          }
+        }
       }
+      source = app.cleanCaption(source);
       const translated = app.cueAt(targetCues, video.currentTime);
       const upcoming = Array.from(sourceCues || []).filter(cue => cue.startTime > video.currentTime).slice(0, 1).map(cue => app.cleanCaption(cue.text));
       return { source, translated, upcoming,
@@ -76,6 +117,7 @@
     return { video, container, read, setEnabled,
       destroy() {
         setEnabled(false);
+        document.documentElement?.removeAttribute('data-cc-udemy-active');
         style.remove();
         if (changedPosition) container.style.position = oldPosition;
       },

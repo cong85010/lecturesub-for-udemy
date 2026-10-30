@@ -110,3 +110,65 @@ test('replacing the lecture cancels resume of the old video', async () => {
   session.open(); session.cancel(); await session.close();
   assert.equal(video.paused, true);
 });
+
+test('udemy-adapter prioritizes video-player container and captures cues inside or outside in well--container', () => {
+  const context = vm.createContext({ console, setTimeout, clearTimeout, Map, Promise, location: { pathname: '/test' } });
+  context.globalThis = context;
+  for (const file of ['captions.js', 'udemy-adapter.js']) {
+    vm.runInContext(fs.readFileSync(path.join(__dirname, '../src', file), 'utf8'), context);
+  }
+  const { createUdemyAdapter } = context.CCUdemy;
+
+  const styleEl = { remove() {} };
+  const doc = {
+    head: { append() {} },
+    documentElement: { toggleAttribute(name, val) { this[name] = val; }, removeAttribute(name) { delete this[name]; } },
+    createElement: () => styleEl,
+    querySelector: () => null,
+    querySelectorAll: () => [],
+  };
+  context.document = doc;
+  context.getComputedStyle = () => ({ position: 'relative' });
+
+  const videoPlayer = {
+    dataset: {},
+    style: {},
+    toggleAttribute(name, val) { this[name] = val; },
+    querySelectorAll: () => [],
+    closest: () => null,
+  };
+  const shakaContainer = {
+    parentElement: videoPlayer,
+    closest(selector) {
+      if (selector.includes('video-player')) return videoPlayer;
+      if (selector.includes('shaka')) return shakaContainer;
+      return null;
+    },
+  };
+  const video = {
+    parentElement: shakaContainer,
+    textTracks: [],
+    currentTime: 10,
+    id: 'vid',
+    currentSrc: 'src',
+    closest(selector) {
+      if (selector.includes('video-player')) return videoPlayer;
+      if (selector.includes('shaka')) return shakaContainer;
+      return null;
+    },
+  };
+
+  const adapter = createUdemyAdapter(video);
+  assert.equal(adapter.container, videoPlayer, 'adapter chooses video-player over inner shaka-container');
+
+  adapter.setEnabled(true);
+  assert.equal(doc.documentElement['data-cc-udemy-active'], true);
+  assert.equal(videoPlayer['data-cc-udemy-active'], true);
+
+  doc.querySelector = sel => sel.includes('well--container') ? { textContent: 'Under video caption.' } : null;
+  const cue = adapter.read();
+  assert.equal(cue.source, 'Under video caption.', 'captures cues placed in under-video container');
+
+  adapter.destroy();
+  assert.equal('data-cc-udemy-active' in doc.documentElement, false);
+});

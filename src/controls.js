@@ -22,7 +22,7 @@
     lineHeight: { label: 'Giãn dòng', type: 'number', min: 1.2, max: 2, step: .1 },
     lineGap: { label: 'Khoảng cách hai bản', type: 'number', min: 0, max: 20, step: 1, unit: 'px' },
     captionWidth: { label: 'Chiều rộng phụ đề', type: 'number', min: 50, max: 100, step: 1, unit: '%' },
-    bottomOffset: { label: 'Khoảng cách tới đáy', type: 'number', min: 32, max: 240, step: 1, unit: 'px' },
+    bottomOffset: { label: 'Khoảng cách tới đáy', type: 'number', min: 0, max: 240, step: 1, unit: 'px' },
     textAlign: { label: 'Căn chữ', type: 'select', options: [['left', 'Trái'], ['center', 'Giữa'], ['right', 'Phải']] },
     pauseOnLookup: { label: 'Tạm dừng khi tra từ', type: 'checkbox' },
     resumeOnClose: { label: 'Phát tiếp khi đóng tra từ', type: 'checkbox' },
