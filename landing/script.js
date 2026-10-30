@@ -14,7 +14,10 @@ document.addEventListener('DOMContentLoaded', () => {
       hero_lead: 'Phụ đề song ngữ thông minh, bấm từ tra nghĩa tức thì ngay trên video và sổ từ vựng cá nhân giúp bạn làm chủ mọi khóa học tiếng Anh chuyên ngành trên Udemy mà không bao giờ bị ngắt mạch học.',
       cta_hero: 'Thêm vào Chrome — Miễn phí',
       cta_github: 'Mã nguồn trên GitHub',
-      demo_badge: 'Trải nghiệm tương tác trực tiếp',
+      hero_mobile_pill: 'Duyệt trên di động? Luyện tập từ vựng 3D ngay',
+      mobile_nav_game: 'Thẻ bài 3D (Luyện từ vựng)',
+      mobile_nav_game_desc: 'Flashcard 3D & thuật toán lặp SRS',
+      demo_badge: 'Trải nghiệm tương tác',
       demo_hint: '💡 Bấm thử vào bất kỳ từ tiếng Anh nào dưới đây để xem tra nghĩa trực tiếp:',
       demo_target: 'Các thuật toán học máy nhận diện các khuôn mẫu trong dữ liệu phức tạp.',
       demo_save_btn: 'Lưu từ',
@@ -58,7 +61,10 @@ document.addEventListener('DOMContentLoaded', () => {
       hero_lead: 'Smart bilingual captions, instant contextual word lookup, and a personal vocabulary notebook to master any technical course on Udemy without losing focus.',
       cta_hero: 'Add to Chrome — Free',
       cta_github: 'Source Code on GitHub',
-      demo_badge: 'Live Interactive Sandbox',
+      hero_mobile_pill: 'On mobile? Experience 3D Vocabulary Cards now',
+      mobile_nav_game: '3D Cards (Vocabulary Training)',
+      mobile_nav_game_desc: '3D Flashcards & SRS repetition algorithm',
+      demo_badge: 'Interactive Sandbox',
       demo_hint: '💡 Click any highlighted English word below to test instant dictionary lookup:',
       demo_target: 'Machine learning algorithms identify patterns in complex data.',
       demo_save_btn: 'Save word',
@@ -191,7 +197,71 @@ document.addEventListener('DOMContentLoaded', () => {
   // Initialize language
   applyLanguage(currentLang);
 
-  // ================= 3. React Bits Background Effects =================
+  // ================= 3. Mobile Navigation Drawer Controller =================
+  const mobileToggle = document.getElementById('mobile-menu-toggle');
+  const mobileDrawer = document.getElementById('mobile-nav-drawer');
+  const mobileBackdrop = document.getElementById('mobile-nav-backdrop');
+  const mobileCloseBtn = document.getElementById('mobile-drawer-close');
+  const mobileLinks = document.querySelectorAll('.mobile-nav-link, .mobile-drawer-cta');
+
+  function openMobileMenu() {
+    if (!mobileDrawer) return;
+    mobileDrawer.classList.add('is-open');
+    mobileBackdrop?.classList.add('is-open');
+    mobileToggle?.classList.add('is-active');
+    mobileToggle?.setAttribute('aria-expanded', 'true');
+    mobileDrawer.setAttribute('aria-hidden', 'false');
+    mobileBackdrop?.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeMobileMenu() {
+    if (!mobileDrawer) return;
+    mobileDrawer.classList.remove('is-open');
+    mobileBackdrop?.classList.remove('is-open');
+    mobileToggle?.classList.remove('is-active');
+    mobileToggle?.setAttribute('aria-expanded', 'false');
+    mobileDrawer.setAttribute('aria-hidden', 'true');
+    mobileBackdrop?.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+
+  if (mobileToggle) {
+    mobileToggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isOpen = mobileDrawer?.classList.contains('is-open');
+      if (isOpen) closeMobileMenu();
+      else openMobileMenu();
+    });
+  }
+
+  if (mobileCloseBtn) {
+    mobileCloseBtn.addEventListener('click', closeMobileMenu);
+  }
+
+  if (mobileBackdrop) {
+    mobileBackdrop.addEventListener('click', closeMobileMenu);
+  }
+
+  mobileLinks.forEach(link => {
+    link.addEventListener('click', () => {
+      closeMobileMenu();
+    });
+  });
+
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && mobileDrawer?.classList.contains('is-open')) {
+      closeMobileMenu();
+    }
+  });
+
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 768 && mobileDrawer?.classList.contains('is-open')) {
+      closeMobileMenu();
+    }
+  }, { passive: true });
+
+  // ================= 4. React Bits Background Effects =================
   // Mouse Spotlight Follower
   let hasMouse = false;
   window.addEventListener('pointermove', (e) => {
@@ -213,9 +283,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }, { passive: true });
   });
 
-  // Floating Ambient Particles Canvas (React Bits Particles style)
+  // Floating Ambient Particles Canvas (React Bits Particles style, desktop only for performance)
   const canvas = document.getElementById('bg-particles-canvas');
-  if (canvas && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  if (canvas && window.innerWidth >= 768 && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     const ctx = canvas.getContext('2d');
     let width = 0;
     let height = 0;

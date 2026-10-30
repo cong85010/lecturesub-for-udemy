@@ -49,20 +49,80 @@
       <nav class="nav-links">
         <a href="#demo" class="nav-link" data-i18n="nav_demo">Demo tương tác</a>
         <a href="#features" class="nav-link" data-i18n="nav_features">Tính năng</a>
-        <a href="game-card.html" class="nav-link" style="color:var(--accent);font-weight:700;">🎮 Thẻ bài 3D</a>
+        <a href="game-card.html" class="nav-link nav-link-game">🎮 Thẻ bài 3D</a>
         <a href="#guide" class="nav-link" data-i18n="nav_guide">Hướng dẫn</a>
         <a href="https://github.com/cong85010/lecturesub-for-udemy" target="_blank" rel="noopener" class="nav-link">GitHub ★</a>
       </nav>
-      <div style="display:flex;align-items:center;">
+      <div class="header-actions">
         <a href="https://chromewebstore.google.com/detail/hobglnefedjphfojbkbelabhekcpiilp?utm_source=item-share-cb" target="_blank" rel="noopener" class="header-cta" data-i18n="cta_header">Cài đặt miễn phí</a>
         <div class="lang-switch" role="group" aria-label="Language selector">
           <button type="button" class="lang-btn active" data-lang="vi">VI</button>
           <span class="lang-sep">/</span>
           <button type="button" class="lang-btn" data-lang="en">EN</button>
         </div>
+        <!-- Mobile Menu Toggle Button -->
+        <button type="button" class="mobile-menu-btn" id="mobile-menu-toggle" aria-label="Mở menu điều hướng" aria-expanded="false" aria-controls="mobile-nav-drawer">
+          <span class="menu-bar"></span>
+          <span class="menu-bar"></span>
+          <span class="menu-bar"></span>
+        </button>
       </div>
     </div>
   </header>
+
+  <!-- Mobile Navigation Drawer -->
+  <div class="mobile-nav-backdrop" id="mobile-nav-backdrop" aria-hidden="true"></div>
+  <div class="mobile-nav-drawer" id="mobile-nav-drawer" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Menu điều hướng">
+    <div class="mobile-drawer-header">
+      <div class="mobile-drawer-brand">
+        <img src="assets/icon-48.png" alt="LectureSub Logo" width="28" height="28">
+        <span><strong>Lecture</strong>Sub</span>
+      </div>
+      <button type="button" class="mobile-drawer-close" id="mobile-drawer-close" aria-label="Đóng menu">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="mobile-drawer-links">
+      <a href="game-card.html" class="mobile-nav-link featured-game-link">
+        <span class="mobile-link-icon">🎮</span>
+        <div class="mobile-link-text">
+          <strong data-i18n="mobile_nav_game">Thẻ bài 3D (Luyện từ vựng)</strong>
+          <span data-i18n="mobile_nav_game_desc">Flashcard 3D & thuật toán lặp SRS</span>
+        </div>
+        <span class="mobile-link-badge">HOT</span>
+      </a>
+      <a href="#demo" class="mobile-nav-link">
+        <span class="mobile-link-icon">📺</span>
+        <div class="mobile-link-text">
+          <span data-i18n="nav_demo">Demo tương tác</span>
+        </div>
+      </a>
+      <a href="#features" class="mobile-nav-link">
+        <span class="mobile-link-icon">✨</span>
+        <div class="mobile-link-text">
+          <span data-i18n="nav_features">Tính năng nổi bật</span>
+        </div>
+      </a>
+      <a href="#guide" class="mobile-nav-link">
+        <span class="mobile-link-icon">📖</span>
+        <div class="mobile-link-text">
+          <span data-i18n="nav_guide">Hướng dẫn cài đặt</span>
+        </div>
+      </a>
+      <a href="https://github.com/cong85010/lecturesub-for-udemy" target="_blank" rel="noopener" class="mobile-nav-link">
+        <span class="mobile-link-icon">⭐️</span>
+        <div class="mobile-link-text">
+          <span>GitHub (Mã nguồn)</span>
+        </div>
+      </a>
+    </div>
+    <div class="mobile-drawer-footer">
+      <a href="https://chromewebstore.google.com/detail/hobglnefedjphfojbkbelabhekcpiilp?utm_source=item-share-cb" target="_blank" rel="noopener" class="mobile-drawer-cta">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.5v-9l6 4.5-6 4.5z"/></svg>
+        <span data-i18n="cta_hero">Thêm vào Chrome — Miễn phí</span>
+      </a>
+    </div>
+  </div>
 
   <!-- Hero Section -->
   <main>
@@ -85,6 +145,13 @@
           <span data-i18n="cta_github">Mã nguồn trên GitHub</span>
         </a>
       </div>
+      <div class="hero-mobile-pill-wrapper">
+        <a href="game-card.html" class="hero-mobile-pill">
+          <span class="pill-badge">🎮 3D Flashcard</span>
+          <span class="pill-text" data-i18n="hero_mobile_pill">Duyệt trên di động? Luyện tập từ vựng 3D ngay</span>
+          <span class="pill-arrow">→</span>
+        </a>
+      </div>
     </section>
 
     <!-- Interactive Live Demo Canvas -->
@@ -97,21 +164,24 @@
               <span class="demo-dot yellow"></span>
               <span class="demo-dot green"></span>
             </div>
-            <span class="demo-course-title">Machine Learning Fundamentals — Lecture 04: Data & Optimization</span>
+            <span class="demo-course-title">
+              <span class="title-full">Machine Learning Fundamentals — Lecture 04: Data & Optimization</span>
+              <span class="title-short">Machine Learning · Bài 04</span>
+            </span>
           </div>
-          <span class="demo-badge">Trải nghiệm tương tác trực tiếp</span>
+          <span class="demo-badge" data-i18n="demo_badge">Trải nghiệm tương tác</span>
         </div>
 
         <div class="demo-video-stage" style="background-image: linear-gradient(rgba(17,18,17,0.7), rgba(17,18,17,0.85)), url('assets/lesson-preview.webp');">
           <div class="demo-overlay-toolbar">
             <span class="demo-pair">EN → VI</span>
             <span class="demo-mode-tag">Song ngữ</span>
-            <span style="color:#788070;">|</span>
-            <span style="color:#c6ed61; font-weight:600;">Alt + Shift + C</span>
+            <span class="demo-shortcut-sep" style="color:#788070;">|</span>
+            <span class="demo-shortcut-tag" style="color:#c6ed61; font-weight:600;">Alt + Shift + C</span>
           </div>
 
           <div class="demo-caption-board">
-            <p class="demo-interactive-hint">💡 Bấm thử vào bất kỳ từ tiếng Anh nào dưới đây để xem tra nghĩa trực tiếp:</p>
+            <p class="demo-interactive-hint" data-i18n="demo_hint">💡 Bấm thử vào bất kỳ từ tiếng Anh nào dưới đây để xem tra nghĩa trực tiếp:</p>
             
             <!-- Contextual Card -->
             <div id="demo-lookup-card" class="demo-lookup-card">
