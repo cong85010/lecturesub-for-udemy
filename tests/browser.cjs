@@ -103,9 +103,27 @@ const scripts = ['languages.js', 'settings.js', 'library.js', 'store.js', 'clien
     await page.getByRole('button', { name: 'Bật phụ đề song ngữ', exact: true }).press('Alt+Shift+C');
     await page.getByRole('button', { name: 'Tra nghĩa: model', exact: true }).waitFor();
     await page.evaluate(() => CCUdemy.call('settings.patch', { patch: { pauseOnLookup: false } }));
-    await page.getByRole('button', { name: 'Tra nghĩa: model', exact: true }).click();
+    await page.getByRole('button', { name: 'Tra nghĩa: data', exact: true }).click();
+    await overlay.locator('.meaning').filter({ hasText: 'Nghĩa: data' }).waitFor();
     assert.equal(await page.locator('video').evaluate(v => v.paused), false);
+    const lookupBeforeCueChange = await overlay.locator('.lookup').boundingBox();
+    await page.locator('[data-test-cue]').evaluate(e => { e.textContent = 'New sentence.'; });
+    await page.getByText('Câu mới.', { exact: true }).waitFor();
+    const lookupAfterCueChange = await overlay.locator('.lookup').boundingBox();
+    assert.ok(Math.abs(lookupAfterCueChange.x - lookupBeforeCueChange.x) <= 1,
+      'an open lookup must retain its horizontal position when its word leaves the captions');
+    assert.equal(await overlay.locator('.lookup-word').textContent(), 'data');
+    await page.setViewportSize({ width: 460, height: 700 });
+    await page.waitForFunction(() => {
+      const host = document.querySelector('#cc-udemy-overlay');
+      const bounds = host.getBoundingClientRect();
+      const popup = host.shadowRoot.querySelector('.lookup').getBoundingClientRect();
+      return popup.left >= bounds.left && popup.right <= bounds.right;
+    });
+    await page.setViewportSize({ width: 1280, height: 800 });
     await page.getByRole('button', { name: 'Đóng tra từ', exact: true }).click();
+    await page.locator('[data-test-cue]').evaluate(e => { e.textContent = 'A model learns patterns from data.'; });
+    await page.getByText('Một mô hình học các mẫu từ dữ liệu.', { exact: true }).waitFor();
     await page.evaluate(() => CCUdemy.call('settings.patch', { patch: { pauseOnLookup: true, resumeOnClose: false } }));
     await page.getByRole('button', { name: 'Tra nghĩa: model', exact: true }).click();
     assert.equal(await page.locator('video').evaluate(v => v.paused), true);

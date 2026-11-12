@@ -46,14 +46,17 @@
     shadow.append(shell); container.append(host);
     const $ = selector => shadow.querySelector(selector);
     const source = $('.english'), target = $('.vietnamese'), popup = $('.lookup');
-    let settings = app.normalizeSettings({}), origin, activeWord = '', lastSource = '', enabled = true;
+    let settings = app.normalizeSettings({}), origin, anchorCenter, activeWord = '', lastSource = '', enabled = true;
     function positionLookup() {
       if (popup.hidden) return;
       const bounds = host.getBoundingClientRect();
       popup.style.maxHeight = `${Math.max(60, bounds.height - 70)}px`;
       const top = $('.caption-area').getBoundingClientRect().top - bounds.top;
       const anchor = origin?.isConnected ? origin.getBoundingClientRect() : undefined;
-      const left = anchor ? anchor.left - bounds.left + anchor.width / 2 - popup.offsetWidth / 2 : bounds.width * .05;
+      // Caption updates replace the word buttons. Keep the last anchor relative to
+      // the player so the open lookup stays in place and follows player resizing.
+      if (anchor && bounds.width > 0) anchorCenter = (anchor.left - bounds.left + anchor.width / 2) / bounds.width;
+      const left = anchorCenter !== undefined ? anchorCenter * bounds.width - popup.offsetWidth / 2 : bounds.width * .05;
       popup.style.left = `${Math.max(8, Math.min(left, bounds.width - popup.offsetWidth - 8))}px`;
       popup.style.top = `${Math.max(58, Math.min(top - popup.offsetHeight - 10, bounds.height - popup.offsetHeight - 8))}px`;
     }
@@ -225,7 +228,7 @@
       closeLookup() {
         popup.hidden = true;
         source.querySelectorAll('[data-selected]').forEach(item => { item.removeAttribute('data-selected'); item.setAttribute('aria-expanded', 'false'); });
-        if (origin?.isConnected) origin.focus({ preventScroll: true }); origin = null;
+        if (origin?.isConnected) origin.focus({ preventScroll: true }); origin = null; anchorCenter = undefined;
       },
       destroy() { resize.disconnect(); host.remove(); },
     };
