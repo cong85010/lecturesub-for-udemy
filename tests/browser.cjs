@@ -48,7 +48,8 @@ const scripts = ['languages.js', 'settings.js', 'library.js', 'store.js', 'clien
     for (const script of scripts) await page.addScriptTag({ path: path.join(root, 'src', script) });
     const overlay = page.locator('#cc-udemy-overlay');
     await overlay.waitFor();
-    await page.getByRole('button', { name: 'Bật dịch miễn phí', exact: true }).click();
+    const enableBtn = page.getByRole('button', { name: 'Bật dịch miễn phí', exact: true });
+    if (await enableBtn.isVisible()) await enableBtn.click();
     await page.getByText('Một mô hình học các mẫu từ dữ liệu.', { exact: true }).waitFor();
     await page.locator('video').evaluate(async video => {
       const canvas = document.createElement('canvas'); canvas.width = 640; canvas.height = 360;
@@ -138,11 +139,13 @@ const scripts = ['languages.js', 'settings.js', 'library.js', 'store.js', 'clien
     await page.getByLabel('Chế độ phụ đề').selectOption('bilingual');
     await page.evaluate(() => CCUdemy.call('settings.patch', { patch: { targetLanguage: 'fr' } }));
     await page.getByText('EN → FR', { exact: true }).waitFor();
-    await page.getByRole('button', { name: 'Bật dịch miễn phí', exact: true }).click();
+    const btnFr = page.getByRole('button', { name: 'Bật dịch miễn phí', exact: true });
+    if (await btnFr.isVisible()) await btnFr.click();
     await page.getByText('Un modèle apprend à partir des données.', { exact: true }).waitFor();
     assert.equal(await page.getByText('Một mô hình học các mẫu từ dữ liệu.', { exact: true }).count(), 0);
     await page.evaluate(() => CCUdemy.call('settings.patch', { patch: { targetLanguage: 'vi' } }));
-    await page.getByRole('button', { name: 'Bật dịch miễn phí', exact: true }).click();
+    const btnVi = page.getByRole('button', { name: 'Bật dịch miễn phí', exact: true });
+    if (await btnVi.isVisible()) await btnVi.click();
 
     // A late translation must not overwrite a newer cue.
     await page.locator('[data-test-cue]').evaluate(e => { e.textContent = 'Old sentence.'; });

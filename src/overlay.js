@@ -18,6 +18,7 @@
         <span class="brand">EN → VI</span>
         <button class="enable primary" type="button">Bật dịch miễn phí</button>
         <select class="mode" aria-label="Chế độ phụ đề"><option value="bilingual">Song ngữ</option><option value="source">Chỉ bản gốc</option><option value="translation">Chỉ bản dịch</option></select>
+        <button class="study" type="button">Ôn bài</button>
         <button class="settings icon-button" type="button" aria-label="Mở cài đặt đầy đủ" title="Cài đặt">${gear}</button>
         <button class="toggle" type="button" aria-pressed="true" aria-label="Tắt phụ đề song ngữ">Tắt</button>
       </div>
@@ -78,6 +79,12 @@
       positionLookup();
     }
     const resize = new ResizeObserver(fitCaptions); resize.observe(host); css.addEventListener('load', fitCaptions);
+    $('.study').addEventListener('click', async () => {
+      const button=$('.study'); button.disabled=true;
+      try { await handlers.study?.(); }
+      catch(error) { $('.status').textContent=error.message; }
+      finally { button.disabled=false; }
+    });
     $('.enable').addEventListener('click', () => handlers.enable());
     $('.toggle').addEventListener('click', () => handlers.toggle(!enabled));
     $('.mode').addEventListener('change', event => handlers.patch({ displayMode: event.target.value }));

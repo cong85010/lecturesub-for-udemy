@@ -60,7 +60,7 @@ Chỉ hỗ trợ `www.udemy.com` trên Chrome máy tính; Udemy Business, di đ�
 
 ## Dữ liệu và quyền
 
-Chỉ xin quyền `storage`; content scripts chạy trên `https://www.udemy.com/*`. Không thu thập tài khoản/cookie, không tải video, không analytics và không gửi văn bản sang dịch vụ dịch bên ngoài. Chrome có thể tải bộ ngôn ngữ từ nhà cung cấp.
+Bản thử xin quyền `storage` và truy cập server cục bộ `http://127.0.0.1:8787/*`; content scripts chạy trên `https://www.udemy.com/*`. Không thu thập tài khoản/cookie, không tải video, không analytics. Phụ đề dịch bằng Chrome không gửi văn bản sang dịch vụ dịch bên ngoài. Tính năng bộ ôn AI thử nghiệm chỉ gửi transcript và tên bài qua server tới DeepSeek sau khi người dùng đồng ý và bấm tạo. Chrome có thể tải bộ ngôn ngữ từ nhà cung cấp.
 
 Cài đặt, tối đa 500 bản dịch và sổ từ tối đa 2.000 mục được lưu cục bộ. Dữ liệu không đồng bộ sang máy khác. Các bản dịch cache được tách theo cặp ngôn ngữ; dữ liệu cũ chỉ được nhập vào cặp Anh–Việt. Ghi cấu hình/từ vựng qua một hàng đợi của extension để nhiều tab không ghi đè thay đổi của nhau.
 
@@ -90,3 +90,16 @@ Bản dịch fixture là dữ liệu kiểm thử. Probe bộ dịch Chrome th�
 ## Giấy phép (License)
 
 Dự án phát hành theo [Giấy phép MIT](LICENSE) © 2026 Cong Phan.
+
+
+## Bộ ôn AI · bản thử cục bộ (DeepSeek)
+
+Mở bài giảng và bấm **Ôn bài** trên thanh LectureSub. Extension mở Phiên âm của Udemy nếu cần, đọc các câu transcript, rồi mở màn hình ôn riêng. Đồng ý gửi transcript và bấm **Tạo bộ ôn với DeepSeek** để tạo câu hỏi/flashcard bằng server. Chưa đồng ý thì không gọi AI. Câu hỏi có ô tự trả lời (bản nháp không lưu), đáp án ẩn và dẫn chứng. Flashcard có hiện đáp án, Đã nhớ/Chưa nhớ và ngày ôn lại cơ bản (1, 3, 7, 14 ngày); chưa có thông báo nhắc ôn hoặc chấm tự luận bằng AI.
+
+Bộ đã tạo được lưu theo URL bài, mở lại không gọi AI. Popup có nút **Câu hỏi & flashcard bài học** để mở thư viện. Bản thử giữ tối đa 100 bộ; transcript tạm giữ trên máy tối đa 5 bản, hết hiệu lực sau 30 phút (các bản hết hạn được dọn khi nhận bản mới). Transcript không được lưu cùng bộ ôn. Bài không có transcript chưa hỗ trợ; bản thử giới hạn 60.000 ký tự, chưa đọc code/slide trên video, chưa chia bài dài thành nhiều phần. AI vẫn có thể diễn giải sai dù dẫn chứng khớp.
+
+### Server riêng
+
+Mã server và cấu hình DeepSeek được quản lý trong repository riêng, không đóng gói cùng extension. Người vận hành cung cấp server; người học không cần tài khoản AI hoặc API key riêng. Bản thử gọi server cục bộ tại `http://127.0.0.1:8787/study`. Chạy server theo hướng dẫn trong repo server, load unpacked extension rồi bấm **Ôn bài**. Chưa có dịch vụ AI public trong bản này.
+
+Kiểm tra extension: `npm test`, `npm run test:browser`, `npm run package`. Kiểm thử tích hợp server nằm ở repo server riêng.

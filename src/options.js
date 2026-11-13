@@ -98,8 +98,8 @@
   $('#reset').addEventListener('click', () => mutate('settings.reset'));
   const views = {
     settings: ['Phụ đề', 'Chọn ngôn ngữ và chỉnh cách hiển thị.'],
-    vocabulary: ['Từ vựng', 'Từ đã lưu cùng ngữ cảnh trong bài học.'],
-    game: ['Đấu trường Thẻ bài 3D', 'Luyện tập từ vựng bằng phương pháp Lặp lại ngắt quãng (Spaced Repetition SM-2).'],
+    vocabulary: ['Từ vựng', 'Từ bạn đã tra và lưu, kèm câu gốc trong bài giảng.'],
+    game: ['Ôn tập', 'Lật thẻ từ đã lưu, lịch ôn theo lặp lại ngắt quãng SM-2.'],
     help: ['Hướng dẫn', 'Các thao tác chính và cách khắc phục sự cố.']
   };
   function showView() {
@@ -126,6 +126,12 @@
     demo.setVocabulary(words);
     const query = folded($('#word-search').value);
     filtered = words.filter(item => folded(`${item.word} ${item.meaning} ${item.sentence}`).includes(query));
+    const now = Date.now();
+    $('#stat-total').textContent = words.length.toLocaleString('vi-VN');
+    $('#stat-week').textContent = words.filter(item => now - (item.createdAt || 0) < 7 * 864e5).length.toLocaleString('vi-VN');
+    $('#stat-lessons').textContent = new Set(words.map(item => item.url || item.title).filter(Boolean)).size.toLocaleString('vi-VN');
+    $('#stat-due').textContent = words.filter(item => !item.srsDueDate || item.srsDueDate <= now).length.toLocaleString('vi-VN');
+    $('#nav-word-count').textContent = words.length ? String(words.length) : '';
     $('#word-count').textContent = query ? `${filtered.length} / ${words.length} từ` : `${words.length} / 2.000 từ đã lưu`;
     $('#export').textContent = `Xuất CSV (${filtered.length})`; $('#export').disabled = !filtered.length;
     $('#empty').hidden = filtered.length > 0;
@@ -145,7 +151,15 @@
         } catch (error) { $('#word-error').textContent = error.message; remove.disabled = false; }
       });
       top.append(copy, remove); entry.append(top);
-      if (item.sentence) { const context = document.createElement('p'); context.className = 'word-context'; context.textContent = item.sentence; context.dir = 'auto'; entry.append(context); }
+      if (item.sentence) {
+        const context = document.createElement('p'); context.className = 'word-context'; context.dir = 'auto';
+        const at = item.sentence.toLowerCase().indexOf(item.word.toLowerCase());
+        if (at >= 0) {
+          const mark = document.createElement('mark'); mark.textContent = item.sentence.slice(at, at + item.word.length);
+          context.append(item.sentence.slice(0, at), mark, item.sentence.slice(at + item.word.length));
+        } else context.textContent = item.sentence;
+        entry.append(context);
+      }
       const meta = document.createElement('div'); meta.className = 'word-meta';
       const language = document.createElement('span'); language.textContent = `${app.languageName(item.sourceLanguage)} → ${app.languageName(item.targetLanguage)}`; meta.append(language);
       if (item.url) {
@@ -178,7 +192,7 @@
   const initialSettingsEvents = settingsEvents, initialVocabularyEvents = vocabularyEvents, initialSaveRevision = saveRevision;
   Promise.all([app.call('settings.get'), app.call('vocabulary.list')]).then(([value, items]) => {
     if (initialSettingsEvents === settingsEvents && initialSaveRevision === saveRevision) renderSettings(value);
-    if (initialVocabularyEvents === vocabularyEvents) { words = app.readVocabulary(items); renderWords(); }
+    if (initialVocabularyEvents === vocabularyEvents) { words = app.readVocabulary(items); renderWords(); if (document.body.dataset.view === 'game') setupGameDeck(); }
     if (!pending && initialSaveRevision === saveRevision) setStatus('Tự lưu thay đổi');
   }).catch(error => setStatus(error.message, true));
 
@@ -252,7 +266,7 @@
   function spawnRecycleToast(originX, originY) {
     const toast = document.createElement('div');
     toast.className = 'game-recycle-toast';
-    toast.innerHTML = '<span>🔄 Đã xếp vào cuối cọc bài</span>';
+    toast.innerHTML = '<span>Đưa về cuối bộ thẻ</span>';
     document.body.appendChild(toast);
     toast.style.left = `${originX}px`;
     toast.style.top = `${originY - 30}px`;
@@ -269,7 +283,7 @@
   function spawnGoodToast(originX, originY) {
     const toast = document.createElement('div');
     toast.className = 'game-recycle-toast game-good-toast';
-    toast.innerHTML = '<span>✨ Nhớ tốt (+15 XP)</span>';
+    toast.innerHTML = '<span>Nhớ tốt, +15 XP</span>';
     document.body.appendChild(toast);
     toast.style.left = `${originX}px`;
     toast.style.top = `${originY - 30}px`;
@@ -482,21 +496,23 @@
     const isSample = !words.some(w => w.word.toLowerCase() === data.word.toLowerCase());
 
     const rarity = $('#card-rarity');
-    if (rarity) rarity.textContent = isSample ? 'CORE TECH' : 'UDEMY CARD';
+    if (rarity) rarity.textContent = isSample ? 'Bộ mẫu' : 'Từ của bạn';
     const frontWord = $('#front-word');
     if (frontWord) frontWord.textContent = data.word;
     const frontIpa = $('#front-ipa');
-    if (frontIpa) frontIpa.textContent = data.sourceLanguage ? `${app.languageName(data.sourceLanguage).toUpperCase()} VOCABULARY` : 'TECHNICAL TERM';
+    if (frontIpa) frontIpa.textContent = data.sourceLanguage ? app.languageName(data.sourceLanguage) : 'Thuật ngữ';
 
     let sentence = data.sentence || '';
     const challengeText = $('#front-challenge-sentence');
     if (challengeText) {
       if (sentence) {
         const regex = new RegExp(`\\b${data.word.replace(/[.*+?^${}()|[\\]\\]/g, '\\$&')}\\b`, 'gi');
-        const blanked = sentence.replace(regex, '<span class="blank-placeholder">[ ????? ]</span>');
-        challengeText.innerHTML = blanked !== sentence ? blanked : `Trong ngữ cảnh: "${sentence}"`;
+        const escapeHtml = value => value.replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[ch]);
+        const safe = escapeHtml(sentence);
+        const blanked = safe.replace(regex, '<span class="blank-placeholder">_____</span>');
+        challengeText.innerHTML = blanked !== safe ? blanked : `Trong ngữ cảnh: "${safe}"`;
       } else {
-        challengeText.innerHTML = `Hãy giải nghĩa và ghi nhớ thuật ngữ <span class="blank-placeholder">[ ????? ]</span> trong ngữ cảnh chuyên ngành.`;
+        challengeText.innerHTML = `Nhớ lại nghĩa của thuật ngữ <span class="blank-placeholder">_____</span> trong ngữ cảnh chuyên ngành.`;
       }
     }
 
@@ -639,7 +655,7 @@
 
     $('#game-sound-btn')?.addEventListener('click', () => {
       gameSoundEnabled = !gameSoundEnabled;
-      $('#game-sound-btn').textContent = gameSoundEnabled ? '🔊' : '🔇';
+      $('#game-sound-btn').innerHTML = gameSoundEnabled ? '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4V5Z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg>' : '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4V5Z"/><path d="m16 9.5 5 5M21 9.5l-5 5"/></svg>'; $('#game-sound-btn').setAttribute('aria-pressed', String(gameSoundEnabled));
     });
 
     $('#btn-restart-deck')?.addEventListener('click', () => setupGameDeck(true));

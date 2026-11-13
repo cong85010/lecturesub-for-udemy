@@ -5,8 +5,12 @@
   "version": "0.3.3",
   "description": "Phụ đề song ngữ, tra và lưu từ vựng bài giảng Udemy. Miễn phí, không cần API key.",
   "minimum_chrome_version": "138",
-  "permissions": ["storage"],
-  "background": { "service_worker": "src/background.js" },
+  "permissions": [
+    "storage"
+  ],
+  "background": {
+    "service_worker": "src/background.js"
+  },
   "options_page": "src/options.html",
   "icons": {
     "16": "src/assets/icon-16.png",
@@ -24,10 +28,38 @@
       "128": "src/assets/icon-128.png"
     }
   },
-  "content_scripts": [{
-    "matches": ["https://www.udemy.com/*"],
-    "js": ["src/languages.js", "src/settings.js", "src/client.js", "src/captions.js", "src/translator.js", "src/playback.js", "src/udemy-adapter.js", "src/overlay.js", "src/content.js"],
-    "run_at": "document_idle"
-  }],
-  "web_accessible_resources": [{ "resources": ["src/overlay.css"], "matches": ["https://www.udemy.com/*"] }]
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.udemy.com/*"
+      ],
+      "js": [
+        "src/languages.js",
+        "src/settings.js",
+        "src/client.js",
+        "src/captions.js",
+        "src/translator.js",
+        "src/playback.js",
+        "src/udemy-adapter.js",
+        "src/study-core.js",
+        "src/study-capture.js",
+        "src/overlay.js",
+        "src/content.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "src/overlay.css"
+      ],
+      "matches": [
+        "https://www.udemy.com/*"
+      ]
+    }
+  ],
+  "host_permissions": [
+    "http://127.0.0.1:8787/*"
+  ]
 }

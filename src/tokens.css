@@ -1,0 +1,81 @@
+/* Shared LectureSub tokens + control overrides (options page and popup). Load after ui.css. */
+
+/* ───────── Tokens ─────────
+   Teal = actions & navigation. Amber = a word you looked up (only).  */
+:root {
+  color-scheme: light;
+  --canvas: #f3f4f7; --surface: #ffffff; --surface-2: #f8f9fb; --sunken: #eceef2;
+  --ink: #151821; --muted: #5b6172; --subtle: #7a8091; --line: #e2e4ea; --line-strong: #cfd3dc;
+  --control-border: #c3c8d2;
+  --accent: #0f766e; --accent-ink: #ffffff; --accent-soft: #e3f3f1; --accent-strong: #0b5c56;
+  --highlight: #ffc93c; --mark: #ffc93c; --mark-ink: #2a1f00; --mark-soft: #fff3cf;
+  --action: #151821; --danger: #b42318; --danger-soft: #fdecea;
+  --hover: #eef0f4; --press: #e4e7ed;
+  --shadow: 0 1px 2px rgb(21 24 33 / 6%), 0 8px 24px -12px rgb(21 24 33 / 18%);
+  --radius: 8px; --radius-lg: 14px;
+  --sidebar: 232px;
+  --font: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable", "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --canvas: #12151c; --surface: #1a1e27; --surface-2: #1f2430; --sunken: #0e1117;
+  --ink: #e9ebf1; --muted: #a1a7b6; --subtle: #858c9c; --line: #2a303c; --line-strong: #3a4150;
+  --control-border: #454d5e;
+  --accent: #2dd4bf; --accent-ink: #062b27; --accent-soft: #123a37; --accent-strong: #5eead4;
+  --mark-soft: #3a3014; --mark-ink: #2a1f00;
+  --action: #e9ebf1; --danger: #f97066; --danger-soft: #3a1d1d;
+  --hover: #252b37; --press: #2d3442;
+  --shadow: 0 1px 2px rgb(0 0 0 / 30%), 0 12px 32px -14px rgb(0 0 0 / 60%);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --canvas: #12151c; --surface: #1a1e27; --surface-2: #1f2430; --sunken: #0e1117;
+    --ink: #e9ebf1; --muted: #a1a7b6; --subtle: #858c9c; --line: #2a303c; --line-strong: #3a4150;
+    --control-border: #454d5e;
+    --accent: #2dd4bf; --accent-ink: #062b27; --accent-soft: #123a37; --accent-strong: #5eead4;
+    --mark-soft: #3a3014; --mark-ink: #2a1f00;
+    --action: #e9ebf1; --danger: #f97066; --danger-soft: #3a1d1d;
+    --hover: #252b37; --press: #2d3442;
+    --shadow: 0 1px 2px rgb(0 0 0 / 30%), 0 12px 32px -14px rgb(0 0 0 / 60%);
+  }
+}
+
+/* ───────── Base & shared controls (overrides ui.css) ───────── */
+html { scrollbar-color: var(--line-strong) var(--canvas); }
+body { background: var(--canvas); color: var(--ink); font: 14px/1.5 var(--font); -webkit-font-smoothing: antialiased; }
+h1, h2, h3 { color: var(--ink); }
+h2 { margin: 0 0 8px; font-size: 17px; line-height: 1.35; font-weight: 650; letter-spacing: -.01em; }
+a { color: var(--accent); }
+::selection { background: var(--mark); color: var(--mark-ink); }
+button { color: var(--ink); }
+button:hover { background: var(--hover); }
+button:active { background: var(--press); }
+button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, [tabindex]:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+button.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); font-weight: 600; }
+button.primary:hover { background: var(--accent-strong); border-color: var(--accent-strong); }
+button.primary:disabled { background: var(--sunken); border-color: var(--line); color: var(--subtle); opacity: 1; }
+button.text-button { color: var(--accent); }
+select, input[type="search"], input[type="number"] { background: var(--surface); color: var(--ink); border-color: var(--control-border); border-radius: var(--radius); }
+select:hover, input[type="search"]:hover, input[type="number"]:hover { border-color: var(--subtle); }
+input[type="range"]::-webkit-slider-runnable-track { background: linear-gradient(to right, var(--accent) var(--range-percent,0%), var(--line-strong) var(--range-percent,0%)); }
+input[type="range"]::-webkit-slider-thumb { border: 2px solid var(--accent); background: var(--surface); box-shadow: 0 1px 3px rgb(0 0 0 / 20%); }
+input[type="checkbox"] { width: 38px; min-width: 38px; height: 22px; border-color: var(--control-border); background: var(--sunken); }
+input[type="checkbox"]::before { width: 16px; height: 16px; background: #fff; }
+input[type="checkbox"]:checked { background: var(--accent); border-color: var(--accent); }
+input[type="checkbox"]:checked::before { transform: translateX(16px); background: var(--surface); }
+:root[data-theme="dark"] input[type="checkbox"]:checked::before { background: #0d1f1d; }
+input[type="color"]::-webkit-color-swatch { border-color: var(--control-border); }
+.field { border-bottom-color: var(--line); }
+.field label { color: var(--ink); }
+.unit { color: var(--muted); }
+.segmented { border-color: var(--control-border); background: var(--surface); border-radius: var(--radius); }
+.segmented button + button { border-left-color: var(--line); }
+.segmented button { color: var(--muted); font-weight: 500; }
+.segmented button[aria-checked="true"] { background: var(--ink); color: var(--surface); font-weight: 600; }
+.swatch { border-color: var(--control-border); }
+.swatch[aria-pressed="true"] { outline: 2px solid var(--accent); outline-offset: 3px; }
+kbd { display: inline-block; min-width: 20px; padding: 1px 6px; border: 1px solid var(--line-strong); border-bottom-width: 2px; border-radius: 5px; background: var(--surface); color: var(--ink); font: 600 11px/1.5 var(--font); text-align: center; }
+
+.skip-link { position: fixed; left: 16px; top: -80px; background: var(--surface); color: var(--ink); padding: 10px 14px; border-radius: var(--radius); box-shadow: var(--shadow); z-index: 100; }
+.skip-link:focus { top: 12px; }

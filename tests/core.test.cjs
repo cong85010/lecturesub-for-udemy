@@ -169,6 +169,72 @@ test('udemy-adapter prioritizes video-player container and captures cues inside 
   const cue = adapter.read();
   assert.equal(cue.source, 'Under video caption.', 'captures cues placed in under-video container');
 
+  // Test modern under-video captions container outside video player
+  doc.querySelector = sel => sel.includes('captions-display') ? {
+    textContent: 'So why do we need chunking?',
+    setAttribute(name, val) { this[name] = val; },
+  } : null;
+  const underCue = adapter.read();
+  assert.equal(underCue.source, 'So why do we need chunking?', 'captures under-video caption from captions-display');
+
+  // Test sibling element fallback right under video player
+  doc.querySelector = () => null;
+  videoPlayer.nextElementSibling = {
+    textContent: 'Sibling under video caption.',
+    setAttribute(name, val) { this[name] = val; },
+    closest: () => null,
+    matches: () => false,
+  };
+  const siblingCue = adapter.read();
+  assert.equal(siblingCue.source, 'Sibling under video caption.', 'captures under-video caption from sibling element');
+  assert.equal(videoPlayer.nextElementSibling['data-cc-udemy-native-cue'], 'true');
+
   adapter.destroy();
   assert.equal('data-cc-udemy-active' in doc.documentElement, false);
+});
+
+test('udemy-adapter triggers caption selection when captions are off', () => {
+  const context = vm.createContext({ console, setTimeout, clearTimeout, Map, Promise, location: { pathname: '/test' } });
+  context.globalThis = context;
+  for (const file of ['captions.js', 'udemy-adapter.js']) {
+    vm.runInContext(fs.readFileSync(path.join(__dirname, '../src', file), 'utf8'), context);
+  }
+  const { createUdemyAdapter } = context.CCUdemy;
+
+  let ccClicked = false;
+  const ccBtn = {
+    getAttribute(name) { return name === 'aria-label' ? 'Captions (Off)' : null; },
+    dataset: { purpose: 'captions-dropdown-button' },
+    click() { ccClicked = true; },
+  };
+  const videoPlayer = {
+    style: {},
+    toggleAttribute() {},
+    querySelector(sel) {
+      if (sel.includes('captions-dropdown-button')) return ccBtn;
+      return null;
+    },
+    querySelectorAll: () => [],
+  };
+  const doc = {
+    head: { append() {} },
+    documentElement: { toggleAttribute() {}, removeAttribute() {} },
+    createElement: () => ({ remove() {} }),
+    querySelector: () => null,
+    querySelectorAll: () => [],
+  };
+  context.document = doc;
+  context.getComputedStyle = () => ({ position: 'relative' });
+
+  const video = {
+    textTracks: [],
+    currentTime: 1,
+    id: 'vid2',
+    currentSrc: 'src2',
+    closest() { return videoPlayer; },
+  };
+  const adapter = createUdemyAdapter(video, () => ({ sourceLanguage: 'en', targetLanguage: 'vi' }));
+  adapter.setEnabled(true);
+  assert.equal(ccClicked, true, 'automatically clicked CC button to enable captions');
+  adapter.destroy();
 });

@@ -73,7 +73,7 @@
         <a href="options.html#game">🎮 Thẻ bài 3D</a>
         <a href="options.html#help">Hướng dẫn</a>
       </nav>
-      <span class="version" style="margin-left:auto;">v0.3.1</span>
+      <span class="version" style="margin-left:auto;">v0.3.2</span>
     </div>
   </header>
 
@@ -84,9 +84,9 @@
 
     <div class="privacy-card">
       <h1>Chính sách Quyền riêng tư & Bảo mật</h1>
-      <p style="color:var(--muted); font-size:13px; margin-bottom:24px;">Cập nhật lần cuối: 30 tháng 10, 2026 · Phiên bản 0.3.1</p>
+      <p style="color:var(--muted); font-size:13px; margin-bottom:24px;">Cập nhật lần cuối: 1 tháng 11, 2026 · Phiên bản 0.3.1</p>
 
-      <h2>1. Cam kết 100% Cục bộ (Local Storage)</h2>
+      <h2>1. Lưu trữ trên thiết bị & xử lý bộ ôn AI</h2>
       <p>LectureSub for Udemy tôn trọng tuyệt đối quyền riêng tư và dữ liệu cá nhân của người học:</p>
       <ul>
         <li><strong>Không thu thập dữ liệu cá nhân:</strong> Tiện ích không thu thập, không theo dõi, không lưu trữ trên bất kỳ máy chủ bên ngoài nào tài khoản Udemy, cookie, mật khẩu hay lịch sử duyệt web của bạn.</li>
@@ -96,12 +96,13 @@
 
       <h2>2. Giải trình các quyền hạn của Extension</h2>
       <ul>
+        <li><code>http://127.0.0.1:8787/*</code>: Kết nối server bộ ôn cục bộ trong bản thử; không phải dịch vụ AI công khai.</li>
         <li><code>storage</code>: Dùng để lưu lại cấu hình hiển thị và sổ từ vựng cá nhân trực tiếp trên máy tính của bạn.</li>
         <li><code>https://www.udemy.com/*</code>: Dùng để đọc dòng phụ đề từ video bài giảng và hiển thị khung phụ đề song ngữ cùng thẻ tra nghĩa từ trực tiếp trên trang bài học Udemy.</li>
       </ul>
 
       <h2>3. Dịch thuật & An toàn nội dung</h2>
-      <p>Tính năng dịch thuật sử dụng bộ dịch tích hợp sẵn trong trình duyệt Chrome (On-device Translator API). Nội dung bài học và từ vựng không bị gửi sang bất kỳ máy chủ bên thứ ba nào qua mạng Internet.</p>
+      <p>Tính năng dịch thuật sử dụng bộ dịch tích hợp sẵn trong trình duyệt Chrome (On-device Translator API). Riêng tính năng dịch phụ đề không gửi nội dung tới dịch vụ dịch bên ngoài. Bộ ôn AI thử nghiệm là tính năng riêng: sau khi bạn đồng ý và bấm tạo, tên bài và transcript được gửi qua server LectureSub cục bộ tới DeepSeek để xử lý. Không gửi cookie, tài khoản hay video Udemy. Server thử nghiệm không lưu transcript hoặc ghi transcript vào log. Bộ ôn được lưu trên máy; tối đa 5 bản transcript tạm có hiệu lực 30 phút, bản hết hạn được dọn khi nhận bản mới.</p>
 
       <h2>4. Tuyên bố thương hiệu</h2>
       <p>LectureSub for Udemy là dự án độc lập, mã nguồn mở theo giấy phép MIT. "Udemy" là nhãn hiệu đã được đăng ký của Udemy, Inc.</p>

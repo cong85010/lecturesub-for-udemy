@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="vi">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Ôn bài · LectureSub</title><link rel="icon" href="assets/icon-32.png"><link rel="stylesheet" href="ui.css"><link rel="stylesheet" href="study.css"></head>
+<body>
+<header><a class="wordmark" href="study.html"><strong>Lecture</strong>Sub</a><a href="options.html">Cài đặt phụ đề</a></header>
+<main>
+  <aside aria-label="Bộ ôn đã lưu"><h2>Bài học của anh</h2><p id="empty">Chưa có bộ ôn. Mở bài Udemy và bấm “Ôn bài” trên video.</p><nav id="library" aria-label="Chọn bài để ôn"></nav></aside>
+  <section aria-labelledby="title">
+    <p id="course"></p><h1 id="title">Nhớ lại điều vừa học.</h1>
+    <p id="intro">Tự trả lời trước khi mở đáp án. Mỗi thẻ chỉ tập trung vào một ý.</p>
+    <div id="setup" hidden>
+      <p id="capture-info"></p>
+      <label class="consent"><input id="consent" type="checkbox"><span>Đồng ý gửi tên bài và toàn bộ transcript qua server LectureSub đến DeepSeek để tạo bộ ôn. Không gửi cookie hay tài khoản Udemy.</span></label>
+      <button id="generate" class="primary" disabled>Tạo bộ ôn với DeepSeek</button>
+      <p class="muted">Chỉ gửi khi anh bấm tạo. Bộ ôn được lưu trên máy này. AI có thể sai; hãy đối chiếu dẫn chứng.</p>
+    </div>
+    <p id="status" role="status" aria-live="polite"></p>
+    <div id="pack" hidden>
+      <div class="view-switch" role="group" aria-label="Cách ôn"><button id="questions-view" aria-pressed="true">Câu hỏi</button><button id="cards-view" aria-pressed="false">Flashcard</button><a id="source" target="_blank" rel="noopener">Mở lại bài Udemy</a></div>
+      <div id="questions"></div>
+      <div id="cards" hidden>
+        <p id="counter"></p>
+        <article class="flashcard" aria-label="Thẻ đang ôn"><h2 id="front"></h2><div id="back" hidden><p id="back-text"></p><details><summary>Dẫn chứng trong bài</summary><blockquote id="card-quote"></blockquote></details></div><button id="flip" class="primary">Hiện đáp án</button></article>
+        <div id="grading" hidden><button id="again" class="secondary">Chưa nhớ · ôn lại</button><button id="remember" class="primary">Đã nhớ</button></div>
+        <div class="card-nav"><button id="previous">Thẻ trước</button><button id="next">Thẻ tiếp</button></div>
+        <p id="due-info" class="muted"></p>
+      </div>
+    </div>
+  </section>
+</main>
+<script src="client.js"></script><script src="study.js"></script>
+</body></html>

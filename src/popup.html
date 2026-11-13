@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="vi"><head><meta charset="utf-8"><title>LectureSub for Udemy</title><link rel="icon" type="image/png" href="assets/icon-32.png"><link rel="stylesheet" href="popup.css"></head>
+<html lang="vi"><head><meta charset="utf-8"><title>LectureSub for Udemy</title><link rel="icon" type="image/png" href="assets/icon-32.png"><script src="theme.js"></script><link rel="stylesheet" href="popup.css"></head>
 <body><main>
   <header>
     <div class="brand">
@@ -12,15 +12,16 @@
   <p id="status" role="status">Đang tải cài đặt…</p>
   <div class="actions">
     <button id="options" type="button" class="primary">Mở cài đặt<svg viewBox="0 0 20 20" aria-hidden="true"><path d="m8 5 5 5-5 5"/></svg></button>
-    <button id="notebook" type="button"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 3h10v14l-5-3-5 3V3Z"/></svg>Từ vựng</button>
-    <button id="game-btn" type="button" class="game-btn"><span>🎮 Đấu trường Thẻ bài 3D</span><span id="game-badge" class="game-badge">3D</span></button>
+    <div class="action-list">
+      <button id="notebook" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4.5A1.5 1.5 0 0 1 6.5 3H19v15H6.5A1.5 1.5 0 0 0 5 19.5v-15Z"/><path d="M5 19.5A1.5 1.5 0 0 0 6.5 21H19M9 7.5h6"/></svg><span>Từ vựng</span><span id="word-badge" class="count-badge" aria-hidden="true" hidden></span></button>
+      <button id="game-btn" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="4" width="12" height="16" rx="2" transform="rotate(8 13 12)"/><path d="M5.2 6.6 4 17.4a2 2 0 0 0 1.8 2.2l2.4.3"/></svg><span>Ôn tập</span><span id="game-badge" class="count-badge due" hidden></span></button>
+      <button id="study-library" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.6 9.3a2.5 2.5 0 0 1 4.8.9c0 1.7-2.4 2.1-2.4 3.6M12 17h.01"/></svg><span>Câu hỏi &amp; flashcard bài học</span></button>
+    </div>
   </div>
   <p class="note">Chọn cùng ngôn ngữ nguồn trong menu CC của Udemy, rồi bật dịch trên video. Lần đầu Chrome cần tải bộ ngôn ngữ.</p>
   <footer class="popup-footer">
     <a href="https://github.com/cong85010/lecturesub-for-udemy" target="_blank" rel="noopener">GitHub</a>
-    <span>·</span>
     <a href="privacy.html" target="_blank" rel="noopener">Bảo mật</a>
-    <span>·</span>
     <a href="https://lecturesub.congphan.dev" target="_blank" rel="noopener">Trang chủ</a>
   </footer>
-</main><script src="languages.js"></script><script src="settings.js"></script><script src="client.js"></script><script src="controls.js"></script><script src="popup.js"></script></body></html>
+</main><script src="languages.js"></script><script src="settings.js"></script><script src="library.js"></script><script src="client.js"></script><script src="controls.js"></script><script src="popup.js"></script></body></html>

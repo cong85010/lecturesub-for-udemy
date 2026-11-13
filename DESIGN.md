@@ -31,3 +31,14 @@ The example background is a local generated image plate; editable lesson title, 
 ## Assets and provenance
 
 Local lesson background: `src/assets/lesson-preview.png`. Built-in imagegen source and prompt are recorded in `docs/design/reading-room-assets.md`. No remote runtime font/image dependency.
+
+## Study surface · November 1, 2026
+`src/study.html` extends Reading Room in Operate mode: saved lessons in a narrow left column, current lesson and question/flashcard controls on the right. Questions have an optional scratch answer and a native disclosure for answers/evidence; flashcards reveal one answer at a time and provide remembered/again actions. No automatic AI grading. Mobile stacks the lesson library above the active deck. Existing paper, charcoal and chartreuse tokens remain the visual authority.
+
+## Management dashboard · 0.3.2 · November 3, 2026
+`src/options.html` is now an app-shell dashboard: fixed left sidebar (Phụ đề / Từ vựng / Ôn tập / Hướng dẫn, word-count badge), topbar with title, save state and a Sáng/Tối/Hệ thống theme switch (`src/theme.js`, stored in localStorage). Tokens live at the top of `src/options.css` with full dark-mode values.
+- Palette: cool grey canvas `#f3f4f7`, white surfaces, ink `#151821`; teal `#0f766e` (dark `#2dd4bf`) for actions, navigation and focus; subtitle amber `#ffc93c` reserved for looked-up words only (preview highlight, context mark in the notebook, top edge of the review card).
+- Từ vựng: four-figure stat strip, search with actions, row list (word + meaning | context with the word marked | meta | delete).
+- Ôn tập: replaces the dark "arena" with index-card styling on a dotted desk; no emoji icons; sentence text is HTML-escaped before the blank is inserted.
+- Responsive: ≤1240px preview stacks above controls, ≤900px icon-only sidebar, ≤760px bottom tab bar.
+- Shared tokens and control overrides live in `src/tokens.css`, imported by `options.css` and `popup.css` after `ui.css`. The popup follows the same theme choice via `theme.js`, shows a word count on Từ vựng and an amber due count on Ôn tập. `study.html` and `privacy.html` still use plain `ui.css`.

@@ -1,17 +1,37 @@
 <!doctype html>
-<html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>LectureSub for Udemy — Cài đặt</title><link rel="icon" type="image/png" href="assets/icon-32.png"><link rel="stylesheet" href="options.css"></head>
+<html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>LectureSub for Udemy — Cài đặt</title><link rel="icon" type="image/png" href="assets/icon-32.png"><script src="theme.js"></script><link rel="stylesheet" href="options.css"></head>
 <body>
   <a class="skip-link" href="#page-title">Đến nội dung chính</a>
-  <header class="app-header"><div class="header-inner">
-    <a class="logo" href="#settings"><img class="logo-mark" src="assets/icon-48.png" alt="" width="28" height="28" /><strong>Lecture</strong><span>Sub</span></a>
-    <nav aria-label="Điều hướng"><button data-view="settings" type="button">Phụ đề</button><button data-view="vocabulary" type="button">Từ vựng</button><button data-view="game" type="button">🎮 Thẻ bài 3D</button><button data-view="help" type="button">Hướng dẫn</button></nav>
-    <div class="save-state" data-state="idle"><svg width="21" height="21" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11"/><path d="m7 12 3.2 3.2L17 8.5"/></svg><span id="save-status" role="status">Đang tải…</span></div><span class="version">v0.3.1</span>
-  </div></header>
-  <main>
-    <header class="page-header"><div><h1 id="page-title" tabindex="-1">Phụ đề</h1><p id="page-description">Chọn ngôn ngữ và chỉnh cách hiển thị.</p></div></header>
+  <div class="shell">
+    <aside class="sidebar">
+      <a class="logo" href="#settings"><img class="logo-mark" src="assets/icon-48.png" alt="" width="28" height="28" /><span class="logo-text"><strong>Lecture</strong>Sub</span></a>
+      <nav aria-label="Điều hướng">
+        <button data-view="settings" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M10.5 10.2a2.2 2.2 0 1 0 0 3.6M17 10.2a2.2 2.2 0 1 0 0 3.6"/></svg><span>Phụ đề</span></button>
+        <button data-view="vocabulary" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4.5A1.5 1.5 0 0 1 6.5 3H19v15H6.5A1.5 1.5 0 0 0 5 19.5v-15Z"/><path d="M5 19.5A1.5 1.5 0 0 0 6.5 21H19M9 7.5h6"/></svg><span>Từ vựng</span><span class="nav-badge" id="nav-word-count" aria-hidden="true"></span></button>
+        <button data-view="game" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="4" width="12" height="16" rx="2" transform="rotate(8 13 12)"/><path d="M5.2 6.6 4 17.4a2 2 0 0 0 1.8 2.2l2.4.3"/></svg><span>Ôn tập</span></button>
+        <button data-view="help" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.6 9.3a2.5 2.5 0 0 1 4.8.9c0 1.7-2.4 2.1-2.4 3.6M12 17h.01"/></svg><span>Hướng dẫn</span></button>
+      </nav>
+      <div class="sidebar-foot">
+        <p class="sidebar-note">Phụ đề song ngữ và sổ từ cho bài giảng Udemy. Dữ liệu lưu trên máy bạn.</p>
+        <div class="sidebar-meta"><a href="https://lecturesub.congphan.dev" target="_blank" rel="noopener">Trang chủ</a><span class="version">v0.3.2</span></div>
+      </div>
+    </aside>
+    <div class="workspace">
+      <header class="topbar">
+        <div class="page-header"><h1 id="page-title" tabindex="-1">Phụ đề</h1><p id="page-description">Chọn ngôn ngữ và chỉnh cách hiển thị.</p></div>
+        <div class="topbar-tools">
+          <div class="save-state" data-state="idle"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11"/><path d="m7 12 3.2 3.2L17 8.5"/></svg><span id="save-status" role="status">Đang tải…</span></div>
+          <div class="theme-switch" role="radiogroup" aria-label="Giao diện">
+            <button type="button" role="radio" data-theme-choice="light" aria-label="Sáng" title="Sáng"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"/></svg></button>
+            <button type="button" role="radio" data-theme-choice="dark" aria-label="Tối" title="Tối"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z"/></svg></button>
+            <button type="button" role="radio" data-theme-choice="system" aria-label="Theo hệ thống" title="Theo hệ thống"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4.5" width="18" height="12" rx="2"/><path d="M8.5 20h7M12 16.5V20"/></svg></button>
+          </div>
+        </div>
+      </header>
+      <main>
     <section id="settings-view" class="settings-layout">
       <aside class="settings-panel">
-        <section class="language-block"><div class="inspector-heading"><h2>Ngôn ngữ</h2><div id="enable-control"></div></div>
+        <section class="language-block"><div class="inspector-heading"><div><h2>Ngôn ngữ</h2><p>Bật hoặc tắt phụ đề trên Udemy</p></div><div id="enable-control"></div></div>
           <div id="language-controls" class="language-controls"></div>
           <p class="language-hint">Chọn cùng ngôn ngữ nguồn trong menu CC của Udemy.</p>
         </section>
@@ -35,221 +55,153 @@
       </section>
     </section>
     <section id="vocabulary-view" hidden>
-      <div class="notebook-tools">
-        <div class="search"><label for="word-search">Tìm từ vựng</label><input id="word-search" type="search" placeholder="Từ, nghĩa hoặc câu gốc…"></div>
-        <div class="notebook-actions">
-          <a href="#game" class="game-jump-btn">🎮 Luyện tập 3D</a>
-          <button id="export" type="button" class="primary">Xuất CSV</button>
+      <dl class="vocab-stats">
+        <div><dt>Từ đã lưu</dt><dd id="stat-total">0</dd></div>
+        <div><dt>Thêm trong 7 ngày</dt><dd id="stat-week">0</dd></div>
+        <div><dt>Bài học</dt><dd id="stat-lessons">0</dd></div>
+        <div><dt>Cần ôn hôm nay</dt><dd id="stat-due">0</dd></div>
+      </dl>
+      <div class="notebook">
+        <div class="notebook-tools">
+          <div class="search"><label for="word-search">Tìm từ vựng</label><div class="search-box"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></svg><input id="word-search" type="search" placeholder="Từ, nghĩa hoặc câu gốc…"></div></div>
+          <div class="notebook-actions">
+            <a href="#game" class="game-jump-btn">Ôn tập thẻ</a>
+            <button id="export" type="button" class="primary">Xuất CSV</button>
+          </div>
         </div>
+        <div class="notebook-summary"><span id="word-count"></span><div id="undo-area" hidden><span>Đã xóa từ.</span> <button id="undo" type="button" class="text-button">Hoàn tác</button></div></div>
+        <p id="word-error" role="alert"></p><ul id="words" class="word-list"></ul><div id="empty" class="empty" hidden><h2></h2><p></p></div>
       </div>
-      <div class="notebook-summary"><span id="word-count"></span><div id="undo-area" hidden><span>Đã xóa từ.</span> <button id="undo" type="button" class="text-button">Hoàn tác</button></div></div>
-      <p id="word-error" role="alert"></p><ul id="words" class="word-list"></ul><div id="empty" class="empty" hidden><h2></h2><p></p></div>
     </section>
     <section id="game-view" class="game-studio-layout" hidden>
-      <!-- LEFT DASHBOARD: STATS & DECK SELECTOR -->
       <aside class="game-sidebar">
         <div class="sidebar-block">
           <div class="dash-user-row">
-            <h2>Tiến độ học tập</h2>
+            <h2>Tiến độ</h2>
             <span class="user-level-badge" id="dash-level-badge">Cấp 1</span>
           </div>
-
           <div class="stats-grid">
-            <div class="stat-card">
-              <div class="stat-icon">🔥</div>
-              <div class="stat-meta">
-                <span class="stat-number" id="dash-streak">1 ngày</span>
-                <span class="stat-label">Chuỗi học</span>
-              </div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-icon">⚡</div>
-              <div class="stat-meta">
-                <span class="stat-number" id="dash-xp">25 XP</span>
-                <span class="stat-label">Kinh nghiệm</span>
-              </div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-icon">⏰</div>
-              <div class="stat-meta">
-                <span class="stat-number" id="dash-due-count">0 từ</span>
-                <span class="stat-label">Cần ôn</span>
-              </div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-icon">🏆</div>
-              <div class="stat-meta">
-                <span class="stat-number" id="dash-mastered-count">0 từ</span>
-                <span class="stat-label">Đã thuộc</span>
-              </div>
-            </div>
+            <div class="stat-card"><span class="stat-number" id="dash-streak">1 ngày</span><span class="stat-label">Chuỗi học</span></div>
+            <div class="stat-card"><span class="stat-number" id="dash-xp">25 XP</span><span class="stat-label">Kinh nghiệm</span></div>
+            <div class="stat-card"><span class="stat-number" id="dash-due-count">0 từ</span><span class="stat-label">Cần ôn</span></div>
+            <div class="stat-card"><span class="stat-number" id="dash-mastered-count">0 từ</span><span class="stat-label">Đã thuộc</span></div>
           </div>
         </div>
-
         <div class="sidebar-block deck-select-block">
-          <h3>Chọn cọc bài</h3>
-          <div class="mode-options" role="radiogroup" aria-label="Chọn cọc bài ôn tập">
+          <h3>Chọn bộ thẻ</h3>
+          <div class="mode-options" role="radiogroup" aria-label="Chọn bộ thẻ ôn tập">
             <label class="mode-card active" id="mode-due-card">
               <input type="radio" name="deckMode" value="due" checked>
-              <div class="mode-info">
-                <strong>Từ đến hạn hôm nay</strong>
-                <span>Theo thuật toán SM-2</span>
-              </div>
+              <div class="mode-info"><strong>Đến hạn hôm nay</strong><span>Lịch lặp lại SM-2</span></div>
               <span class="mode-badge" id="mode-due-badge">0</span>
             </label>
             <label class="mode-card" id="mode-all-card">
               <input type="radio" name="deckMode" value="all">
-              <div class="mode-info">
-                <strong>Tất cả từ đã lưu</strong>
-                <span>Ôn tập toàn bộ sổ từ</span>
-              </div>
+              <div class="mode-info"><strong>Tất cả từ đã lưu</strong><span>Ôn toàn bộ sổ từ</span></div>
               <span class="mode-badge" id="mode-all-badge">0</span>
             </label>
             <label class="mode-card" id="mode-sample-card">
               <input type="radio" name="deckMode" value="sample">
-              <div class="mode-info">
-                <strong>Bộ từ Tech & AI mẫu</strong>
-                <span>Khái niệm chuyên sâu</span>
-              </div>
+              <div class="mode-info"><strong>Bộ mẫu Tech & AI</strong><span>Thuật ngữ thường gặp</span></div>
               <span class="mode-badge">5</span>
             </label>
           </div>
-          <button id="btn-restart-session" type="button" class="deck-restart-btn">🔄 Bắt đầu phiên mới</button>
+          <button id="btn-restart-session" type="button" class="deck-restart-btn">Bắt đầu phiên mới</button>
         </div>
-
         <div class="sidebar-block srs-info-box">
-          <p>💡 <strong>Thuật toán SM-2</strong> tính toán chu kỳ lặp lại ngắt quãng để tối ưu hóa việc chuyển từ vựng từ bộ nhớ ngắn hạn sang dài hạn.</p>
+          <p>SM-2 xếp lịch ôn dựa trên mức bạn nhớ: từ dễ hẹn lâu hơn, từ quên quay lại sớm.</p>
         </div>
       </aside>
-
-      <!-- RIGHT COLUMN: 3D CARD ARENA MAT -->
-      <section class="game-arena-column" aria-label="Sân đấu thẻ bài 3D">
+      <section class="game-arena-column" aria-label="Khu ôn thẻ">
         <div class="arena-board">
           <div class="arena-ambient-glow" aria-hidden="true"></div>
-
-          <!-- Top HUD inside arena -->
           <div class="game-hud">
-            <div class="hud-item hud-streak">
-              <span class="hud-streak-fire">🔥</span>
-              <span id="game-streak-label">1 ngày</span>
-            </div>
-            <div class="hud-item hud-xp">
-              <div class="xp-bar-bg"><div id="game-xp-fill" class="xp-bar-fill"></div></div>
-              <span id="game-xp-label">0 / 100 XP</span>
-            </div>
-            <div class="hud-item hud-controls">
-              <span id="game-card-counter" class="card-counter">0 / 0</span>
-              <button id="game-sound-btn" class="hud-sound-btn" type="button" aria-label="Bật/Tắt âm thanh" title="Âm thanh game">🔊</button>
-            </div>
+            <div class="hud-item hud-streak"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3c1 3.5 5 5.2 5 10a5 5 0 0 1-10 0c0-2.4 1.2-3.8 2.3-4.9.3 1.7 1 2.6 2 2.9C11 8.6 11 6 12 3Z"/></svg><span id="game-streak-label">1 ngày</span></div>
+            <div class="hud-item hud-xp"><div class="xp-bar-bg"><div id="game-xp-fill" class="xp-bar-fill"></div></div><span id="game-xp-label">0 / 100 XP</span></div>
+            <div class="hud-item hud-controls"><span id="game-card-counter" class="card-counter">0 / 0</span><button id="game-sound-btn" class="hud-sound-btn" type="button" aria-label="Bật/Tắt âm thanh" title="Âm thanh" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4V5Z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg></button></div>
           </div>
-
-          <!-- 3D Card Stage with physical deck layers underneath -->
           <div class="arena-stage-container">
             <div class="deck-stack-layer stack-under-2" aria-hidden="true"></div>
             <div class="deck-stack-layer stack-under-1" aria-hidden="true"></div>
-
             <div class="card-stage" id="card-stage">
-              <div class="game-card" id="active-card" tabindex="0" role="region" aria-label="Thẻ bài học tập 3D">
-                <!-- FRONT FACE -->
+              <div class="game-card" id="active-card" tabindex="0" role="region" aria-label="Thẻ ôn tập">
                 <div class="card-face card-front">
                   <div class="holo-sheen" id="sheen-front"></div>
                   <div class="card-inner-frame">
                     <div class="card-top-bar">
-                      <span class="rarity-badge" id="card-rarity">CORE CONCEPT</span>
-                      <button id="btn-audio-pronounce" class="speaker-btn" type="button" aria-label="Phát âm tiếng Anh" title="Nghe phát âm">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
-                      </button>
+                      <span class="rarity-badge" id="card-rarity">Từ của bạn</span>
+                      <button id="btn-audio-pronounce" class="speaker-btn" type="button" aria-label="Phát âm tiếng Anh" title="Nghe phát âm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg></button>
                     </div>
                     <div class="card-body">
                       <div class="card-word-title" id="front-word">...</div>
                       <div class="card-ipa" id="front-ipa"></div>
-                      <div class="challenge-box">
-                        <span class="challenge-label">THỬ THÁCH ĐIỀN TỪ:</span>
-                        <p id="front-challenge-sentence" class="challenge-text"></p>
-                      </div>
+                      <div class="challenge-box"><span class="challenge-label">Điền từ còn thiếu</span><p id="front-challenge-sentence" class="challenge-text"></p></div>
                     </div>
-                    <div class="card-footer-hint">
-                      <span>Chạm thẻ hoặc bấm <kbd>Space</kbd> để lật xem nghĩa</span>
-                    </div>
+                    <div class="card-footer-hint"><span>Bấm vào thẻ hoặc <kbd>Space</kbd> để lật</span></div>
                   </div>
                 </div>
-
-                <!-- BACK FACE -->
                 <div class="card-face card-back">
                   <div class="holo-sheen" id="sheen-back"></div>
                   <div class="card-inner-frame">
-                    <div class="card-top-bar">
-                      <span class="card-origin-pill" id="back-origin">Bài học</span>
-                      <span class="card-pair-badge" id="back-pair">EN → VI</span>
-                    </div>
+                    <div class="card-top-bar"><span class="card-origin-pill" id="back-origin">Bài học</span><span class="card-pair-badge" id="back-pair">EN → VI</span></div>
                     <div class="card-body">
                       <div class="card-word-title back-title" id="back-word-title">...</div>
-                      <div class="meaning-box">
-                        <div class="meaning-label">Ý NGHĨA CHUYÊN NGÀNH:</div>
-                        <p id="back-meaning" class="meaning-text"></p>
-                      </div>
-                      <div class="context-box">
-                        <div class="context-label">NGỮ CẢNH BÀI HỌC:</div>
-                        <p id="back-context-sentence" class="context-text"></p>
-                      </div>
+                      <div class="meaning-box"><div class="meaning-label">Nghĩa</div><p id="back-meaning" class="meaning-text"></p></div>
+                      <div class="context-box"><div class="context-label">Ngữ cảnh trong bài</div><p id="back-context-sentence" class="context-text"></p></div>
                     </div>
                     <div class="card-srs-actions">
-                      <button id="btn-srs-again" class="srs-btn srs-again" type="button">
-                        <span class="srs-btn-num">[1]</span>
-                        <span class="srs-btn-label">Quên</span>
-                        <span class="srs-btn-time">&lt; 5p</span>
-                      </button>
-                      <button id="btn-srs-good" class="srs-btn srs-good" type="button">
-                        <span class="srs-btn-num">[2]</span>
-                        <span class="srs-btn-label">Tạm nhớ</span>
-                        <span class="srs-btn-time">1 ngày</span>
-                      </button>
-                      <button id="btn-srs-easy" class="srs-btn srs-easy" type="button">
-                        <span class="srs-btn-num">[3]</span>
-                        <span class="srs-btn-label">Đã thuộc</span>
-                        <span class="srs-btn-time">+25 XP</span>
-                      </button>
+                      <button id="btn-srs-again" class="srs-btn srs-again" type="button"><span class="srs-btn-num">1</span><span class="srs-btn-label">Quên</span><span class="srs-btn-time">&lt; 5 phút</span></button>
+                      <button id="btn-srs-good" class="srs-btn srs-good" type="button"><span class="srs-btn-num">2</span><span class="srs-btn-label">Tạm nhớ</span><span class="srs-btn-time">1 ngày</span></button>
+                      <button id="btn-srs-easy" class="srs-btn srs-easy" type="button"><span class="srs-btn-num">3</span><span class="srs-btn-label">Đã thuộc</span><span class="srs-btn-time">+25 XP</span></button>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-
             <div id="deck-finished-view" class="deck-finished" hidden>
-              <div class="finished-icon">🏆</div>
-              <h2>Tuyệt vời! Bạn đã hoàn thành các thẻ hôm nay!</h2>
-              <p id="finished-stats">Đã ôn tập xong toàn bộ từ đến hạn. Hãy tiếp tục duy trì chuỗi học để củng cố trí nhớ dài hạn!</p>
+              <div class="finished-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></div>
+              <h2>Xong bộ thẻ hôm nay</h2>
+              <p id="finished-stats">Bạn đã ôn hết các từ đến hạn. Quay lại ngày mai để giữ chuỗi học.</p>
               <div class="finished-actions">
-                <button id="btn-restart-deck" type="button" class="primary">Luyện tập lại bộ từ này</button>
-                <button id="btn-practice-samples" type="button" class="text-button">Thử thách bộ từ Tech mở rộng</button>
+                <button id="btn-restart-deck" type="button" class="primary">Ôn lại bộ này</button>
+                <button id="btn-practice-samples" type="button" class="text-button">Thử bộ mẫu Tech & AI</button>
               </div>
             </div>
           </div>
-
           <div class="game-keyboard-legend">
-            <span><kbd>Space</kbd> Lật thẻ</span>
-            <span><kbd>1</kbd> Quên</span>
-            <span><kbd>2</kbd> Tạm nhớ</span>
-            <span><kbd>3</kbd> Đã thuộc</span>
+            <span><kbd>Space</kbd> Lật thẻ</span><span><kbd>1</kbd> Quên</span><span><kbd>2</kbd> Tạm nhớ</span><span><kbd>3</kbd> Đã thuộc</span>
           </div>
         </div>
       </section>
-
       <canvas id="game-confetti-canvas"></canvas>
     </section>
-    <section id="help-view" class="help" hidden><h2>Bắt đầu trên Udemy</h2><ol><li>Mở bài giảng và chọn ngôn ngữ phụ đề trong menu CC của Udemy.</li><li>Chọn cùng ngôn ngữ nguồn trong LectureSub.</li><li>Bấm <strong>Bật dịch miễn phí</strong> trên video. Chrome tải bộ ngôn ngữ lần đầu.</li><li>Bấm một từ trong bản gốc để tra nghĩa, rồi bấm <strong>Lưu từ</strong> nếu muốn ôn lại.</li></ol>
-      <h2>Những điều cần biết</h2><p>Ngôn ngữ có thể dùng phụ thuộc bộ dịch Chrome trên máy bạn. Đổi cặp ngôn ngữ có thể cần tải thêm bộ ngôn ngữ. Trang cài đặt kiểm tra khả dụng; bộ dịch được khởi tạo từ nút trên video.</p><p>Phím tắt <kbd>Alt</kbd> + <kbd>Shift</kbd> + <kbd>C</kbd> bật/tắt phụ đề và không chạy khi bạn đang nhập liệu. <kbd>Esc</kbd> đóng ô tra từ.</p><p>Nghĩa là bản dịch của từ đơn, chưa phải từ điển chuyên sâu theo ngữ cảnh. Dịch AI qua API sẽ được bổ sung sau.</p><p>LectureSub chỉ chạy trên www.udemy.com ở Chrome máy tính, không nhận diện giọng nói hoặc tải video. Từ vựng và tối đa 500 bản dịch được lưu cục bộ. Sổ từ tối đa 2.000 mục.</p><p>CSV có thể mở bằng Excel hoặc Google Sheets. Dữ liệu bắt đầu bằng ký tự công thức được thêm dấu nháy để giữ dưới dạng văn bản.</p>
-      <h2>Nếu chưa thấy phụ đề</h2><p>Kiểm tra phụ đề nguồn trong menu CC của Udemy, tải lại tab sau khi cập nhật extension và thử bật bộ dịch lại. Cặp không hỗ trợ sẽ có thông báo; extension không gửi văn bản sang dịch vụ bên ngoài để dịch thay.</p>
-      <h2>Liên hệ & Đóng góp</h2>
-      <p>LectureSub for Udemy là dự án mã nguồn mở phát hành theo giấy phép MIT bởi <strong>Cong Phan</strong> (<a href="https://congphan.dev" target="_blank" rel="noopener">congphan.dev</a>).</p>
-      <ul>
-        <li><strong>Chrome Web Store:</strong> <a href="https://chromewebstore.google.com/detail/hobglnefedjphfojbkbelabhekcpiilp?utm_source=item-share-cb" target="_blank" rel="noopener">Cài đặt & Đánh giá trên Chrome Web Store ⭐⭐⭐⭐⭐</a></li>
-        <li><strong>Trang chủ:</strong> <a href="https://lecturesub.congphan.dev" target="_blank" rel="noopener">lecturesub.congphan.dev</a></li>
-        <li><strong>Mã nguồn & Báo lỗi (GitHub):</strong> <a href="https://github.com/cong85010/lecturesub-for-udemy" target="_blank" rel="noopener">github.com/cong85010/lecturesub-for-udemy</a></li>
-        <li><strong>Email phản hồi:</strong> <a href="mailto:contact@congphan.dev?subject=[LectureSub%20Feedback]">contact@congphan.dev</a></li>
-        <li><strong>Chính sách quyền riêng tư:</strong> <a href="privacy.html" target="_blank">Xem cam kết bảo mật & quyền hạn →</a></li>
-      </ul>
+    <section id="help-view" class="help" hidden>
+      <article class="help-main">
+        <h2>Bắt đầu trên Udemy</h2>
+        <ol class="steps"><li>Mở bài giảng và chọn ngôn ngữ phụ đề trong menu CC của Udemy.</li><li>Chọn cùng ngôn ngữ nguồn trong LectureSub.</li><li>Bấm <strong>Bật dịch miễn phí</strong> trên video. Chrome tải bộ ngôn ngữ lần đầu.</li><li>Bấm một từ trong bản gốc để tra nghĩa, rồi bấm <strong>Lưu từ</strong> nếu muốn ôn lại.</li></ol>
+        <h2>Những điều cần biết</h2>
+        <p>Ngôn ngữ có thể dùng phụ thuộc bộ dịch Chrome trên máy bạn. Đổi cặp ngôn ngữ có thể cần tải thêm bộ ngôn ngữ. Trang cài đặt kiểm tra khả dụng; bộ dịch được khởi tạo từ nút trên video.</p>
+        <p>Phím tắt <kbd>Alt</kbd> + <kbd>Shift</kbd> + <kbd>C</kbd> bật/tắt phụ đề và không chạy khi bạn đang nhập liệu. <kbd>Esc</kbd> đóng ô tra từ.</p>
+        <p>Nghĩa là bản dịch của từ đơn, chưa phải từ điển chuyên sâu theo ngữ cảnh. Dịch AI qua API sẽ được bổ sung sau.</p>
+        <p>LectureSub chỉ chạy trên www.udemy.com ở Chrome máy tính, không nhận diện giọng nói hoặc tải video. Từ vựng và tối đa 500 bản dịch được lưu cục bộ. Sổ từ tối đa 2.000 mục.</p>
+        <p>CSV có thể mở bằng Excel hoặc Google Sheets. Dữ liệu bắt đầu bằng ký tự công thức được thêm dấu nháy để giữ dưới dạng văn bản.</p>
+        <h2>Nếu chưa thấy phụ đề</h2>
+        <p>Kiểm tra phụ đề nguồn trong menu CC của Udemy, tải lại tab sau khi cập nhật extension và thử bật bộ dịch lại. Cặp không hỗ trợ sẽ có thông báo; extension không gửi văn bản sang dịch vụ bên ngoài để dịch thay.</p>
+      </article>
+      <aside class="help-aside">
+        <h2>Liên hệ & đóng góp</h2>
+        <p>LectureSub for Udemy là dự án mã nguồn mở theo giấy phép MIT của <strong>Cong Phan</strong> (<a href="https://congphan.dev" target="_blank" rel="noopener">congphan.dev</a>).</p>
+        <ul class="link-list">
+          <li><a href="https://chromewebstore.google.com/detail/hobglnefedjphfojbkbelabhekcpiilp?utm_source=item-share-cb" target="_blank" rel="noopener">Đánh giá trên Chrome Web Store</a></li>
+          <li><a href="https://lecturesub.congphan.dev" target="_blank" rel="noopener">Trang chủ lecturesub.congphan.dev</a></li>
+          <li><a href="https://github.com/cong85010/lecturesub-for-udemy" target="_blank" rel="noopener">Mã nguồn và báo lỗi trên GitHub</a></li>
+          <li><a href="mailto:contact@congphan.dev?subject=[LectureSub%20Feedback]">Gửi email phản hồi</a></li>
+          <li><a href="privacy.html" target="_blank">Chính sách quyền riêng tư</a></li>
+        </ul>
+      </aside>
     </section>
-  </main>
+      </main>
+    </div>
+  </div>
   <script src="languages.js"></script><script src="settings.js"></script><script src="library.js"></script><script src="client.js"></script><script src="controls.js"></script><script src="preview.js"></script><script src="options.js"></script>
 </body></html>

@@ -26,5 +26,8 @@ User reference: Language Reactor functionality. Keep the Udemy lesson central; i
 ## Product Principles
 - Keep captions aligned with the current lesson.
 - Show honest availability and translation errors.
-- Keep course text on the device.
+- Keep caption translation on the device. For the opt-in study prototype, send transcript through the local server to DeepSeek only after explicit consent.
 - Respect the learner's playback state.
+
+## Study prototype · November 1, 2026
+The user approved server-backed questions and flashcards with DeepSeek. The prototype uses a local Node server (127.0.0.1:8787), owner-managed credentials, consent before each generation, local saved decks and basic review dates. Learners do not bring API keys. Public hosting, user accounts, public-service quotas and billing are not implemented.

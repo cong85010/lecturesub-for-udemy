@@ -27,6 +27,9 @@
     try { await app.call('options.open', { section }); window.close(); }
     catch (error) { status.textContent = error.message; }
   }
+  document.querySelector('#study-library').addEventListener('click', async () => {
+    try { await app.call('study.open'); window.close(); } catch(error) {status.textContent=error.message;}
+  });
   document.querySelector('#options').addEventListener('click', () => open());
   document.querySelector('#notebook').addEventListener('click', () => open('vocabulary'));
   document.querySelector('#game-btn').addEventListener('click', () => open('game'));
@@ -36,8 +39,10 @@
     const dueCount = list.filter(w => !w.srsDueDate || w.srsDueDate <= now).length;
     const badge = document.querySelector('#game-badge');
     if (badge && dueCount > 0) {
-      badge.textContent = `${dueCount} từ`;
+      badge.textContent = `${dueCount} cần ôn`;
       badge.hidden = false;
     }
+    const words = document.querySelector('#word-badge');
+    if (words && list.length) { words.textContent = String(list.length); words.hidden = false; }
   }).catch(() => {});
 })();

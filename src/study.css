@@ -1,0 +1,35 @@
+header { min-height:80px; padding:20px 5vw; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--line); gap:20px; }
+.wordmark { color:var(--ink); text-decoration:none; font-size:23px; letter-spacing:-.03em; }
+main { max-width:1200px; margin:0 auto; padding:48px 32px; display:grid; grid-template-columns:240px minmax(0,1fr); gap:64px; }
+aside { border-right:1px solid var(--line); padding-right:24px; }
+aside h2 { font-size:16px; margin:0 0 20px; }
+#library { display:flex; flex-direction:column; gap:8px; }
+#library button { text-align:left; overflow-wrap:anywhere; padding:12px; }
+#library button[aria-current="true"] { background:var(--highlight); }
+#empty,.muted,#course,#counter,#due-info { color:var(--muted); }
+#course { margin:0 0 12px; font-size:14px; overflow-wrap:anywhere; }
+h1 { font-size:clamp(28px,4vw,42px); line-height:1.15; letter-spacing:-.03em; margin:0 0 20px; overflow-wrap:anywhere; }
+#intro { font-size:16px; margin-bottom:32px; }
+#setup { max-width:65ch; border-top:1px solid var(--line); padding-top:20px; }
+.consent { display:flex; gap:12px; align-items:flex-start; margin:24px 0; cursor:pointer; }
+.consent input { margin-top:3px; }
+#status { min-height:24px; white-space:pre-wrap; color:var(--accent); }
+#status[data-error="true"] { color:var(--danger); }
+.view-switch { display:flex; gap:8px; align-items:center; flex-wrap:wrap; border-bottom:1px solid var(--line); padding-bottom:16px; margin-bottom:28px; }
+.view-switch button[aria-pressed="true"] { background:var(--highlight); }
+.view-switch a { margin-left:auto; font-size:13px; }
+.question { padding:0 0 28px; margin-bottom:28px; border-bottom:1px solid var(--line); }
+.question h2 { font-size:19px; line-height:1.5; margin:0 0 16px; }
+textarea { width:100%; min-height:100px; resize:vertical; font:inherit; color:var(--ink); background:var(--surface); border:1px solid var(--control-border); padding:14px; border-radius:6px; margin-bottom:12px; caret-color:var(--accent); }
+textarea:focus-visible,summary:focus-visible { outline:2px solid var(--accent); outline-offset:3px; }
+summary { cursor:pointer; color:var(--accent); padding:8px 0; }
+blockquote { margin:16px 0 0; padding:12px 0; font-style:italic; color:var(--muted); }
+.flashcard { background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:32px; min-height:280px; display:flex; flex-direction:column; align-items:flex-start; }
+.flashcard h2 { font-size:25px; line-height:1.4; margin:0 0 24px; }
+.flashcard #flip { margin-top:auto; }
+#back { margin-bottom:24px; }
+#grading { display:flex; gap:12px; margin-top:20px; }
+.card-nav { display:flex; justify-content:space-between; margin-top:16px; }
+section p,blockquote,h2 { overflow-wrap:anywhere; white-space:pre-wrap; }
+section { min-width:0; max-width:75ch; }
+@media(max-width:700px) { main { padding:28px 20px; grid-template-columns:1fr; gap:32px; } aside { border-right:0; border-bottom:1px solid var(--line); padding:0 0 20px; } #library { flex-direction:row; overflow-x:auto; } #library button { min-width:160px; } .flashcard { padding:24px; } .view-switch a { margin-left:0; } }

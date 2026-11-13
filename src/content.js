@@ -119,8 +119,14 @@
     const version = languageVersion;
     provider.availability().then(result => {
       if (version !== languageVersion || translationState !== 'idle') return;
-      if (provider.isEnabled()) translationState = 'ready';
-      else if (result === 'unavailable' || result === 'no') translationState = 'unsupported';
+      if (provider.isEnabled()) {
+        translationState = 'ready';
+      } else if (result === 'available' || result === 'readily') {
+        enableTranslation();
+        return;
+      } else if (result === 'unavailable' || result === 'no') {
+        translationState = 'unsupported';
+      }
       ui?.translatorState(translationState); refreshStatus();
     }).catch(() => {});
   }
@@ -155,7 +161,7 @@
       ui = app.createOverlay(adapter.container, { enable: enableTranslation,
         toggle: value => patchSettings({ enabled: value }), patch: patchSettings,
         settings: () => openOptions(), notebook: () => openOptions('vocabulary'),
-        word: lookup, saveWord, dismiss, replay: replayCue,
+        word: lookup, saveWord, dismiss, replay: replayCue, study: () => app.openStudy(),
         retry() { if (provider.isEnabled()) renderCue(true); else enableTranslation(); },
       });
       adapter.setEnabled(settings.enabled); ui.settings(settings); ui.enabled(settings.enabled); ui.translatorState(translationState);

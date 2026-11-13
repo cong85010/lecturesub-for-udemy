@@ -1,13 +1,13 @@
 # Privacy Policy for LectureSub for Udemy
 
-Last updated: October 29, 2026
+Last updated: November 1, 2026
 
 **LectureSub for Udemy** ("the Extension") is dedicated to protecting your privacy. This Privacy Policy explains our practices regarding user data.
 
 ## 1. Information Collection and Usage
 
 - **No Personal Data Collected:** LectureSub does not collect, transmit, sell, or share any personal information, browsing history, Udemy account credentials, or payment details.
-- **Local Storage:** All settings (such as font size, colors, target language, and subtitle display modes) and your saved vocabulary list are stored strictly on your local device via Chrome's `chrome.storage.local` API.
+- **Local Storage:** All settings (such as font size, colors, target language, and subtitle display modes), saved study decks and your saved vocabulary list are stored strictly on your local device via Chrome's `chrome.storage.local` API.
 - **No Remote Tracking or Analytics:** The extension contains zero tracking scripts, telemetry, analytics cookies, or advertising SDKs.
 
 ## 2. Permissions Justification
@@ -17,7 +17,9 @@ Last updated: October 29, 2026
 
 ## 3. Translation Processing
 
-Translations are performed using Google Chrome's built-in on-device Translator API. No text is sent to third-party translation servers by this extension.
+Translations are performed using Google Chrome's built-in on-device Translator API. Caption translation does not send text to third-party translation servers. The separate optional study feature sends the lecture title and transcript through the configured local LectureSub server to DeepSeek only after the user consents and clicks Generate. This is not on-device AI; DeepSeek processes that submitted text under its own privacy terms. No Udemy cookies, credentials, or video are sent. The local prototype does not log or persist transcript on the server. Generated decks stay in local extension storage. Up to five temporary transcript drafts remain locally for at most 30 minutes of validity, with expired drafts purged on the next capture.
+
+The development build additionally requests `http://127.0.0.1:8787/*` to contact the local study server; it does not ship a public AI endpoint.
 
 ## 4. Third-Party Disclaimer
 
